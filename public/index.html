@@ -1,0 +1,429 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Magento WebSocket Testing</title>
+    
+        <!-- Bootstrap -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.css" rel="stylesheet">
+    <link href="css/font-awesome.css" rel="stylesheet">
+        
+        <style>
+            .button-wrapper .btn {
+                margin-bottom:8px;
+                margin-top:8px;
+            }
+        </style>
+</head>
+
+    <body>
+            
+    <div class="container-fluid">
+    
+    <div class="row">
+        
+        <div class="col-sm-12">
+                
+            <form class="form" action="">                   
+               <div class="input-group input-group-lg">
+                 <input type="text" class="form-control" id="message-text" placeholder="What do you want to say?">
+                 <span class="input-group-btn">
+                   <button class="btn btn-primary" id="submit-message" type="submit">Submit</button>
+                 </span>
+               </div>
+           </form>
+     
+           <div class="btn-group-vertical button-wrapper">
+                <button class="btn btn-primary" id="submit-image" type="submit">Send Image</button>
+               <button class="btn btn-primary" id="start-recording" type="submit">Record Audio</button>
+                <button class="btn btn-primary" id="stop-recording" type="submit" style="display: none">Stop Recording</button>
+                      
+        <button class="btn btn-primary" id="play">Play</button>
+        <button class="btn btn-primary" id="pause">Pause</button>
+         <button class="btn btn-primary" id="stop">Stop</button>
+           </div>
+       
+
+            <ul id="results"></ul>     
+            <div id="image-results"></div>
+            <iframe name="download-iframe" id="download-iframe" width="1" height="1" frameborder="0" src=""></iframe>
+            
+        <!--<audio id="audio" controls="controls">
+            <source id="wavSource" src="" type="audio/wav"></source>
+        </audio>-->
+        
+        
+        <input id="file" type="file"/>
+        
+        
+        </div>
+        </div>
+        </div>
+    
+        <!-- JavaScript -->
+        <script src="js/jquery-2.0.3.min.js"></script>
+        <script src="js/underscore.js"></script>
+        <script src="js/backbone.js"></script>
+        
+        <!--<script src="js/app.js"></script>-->
+        <script src="js/bootstrap.js"></script>
+        <script src="js/jquery-ui.js"></script>
+        
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="js/siofu/client.js"></script>
+       <script src="js/socket.io-stream.js"></script>
+               
+    <script>
+            
+       
+        $('#start-recording').on('click', function(e) {
+    
+                //window.Stream = client.createStream();
+            
+            if (!navigator.getUserMedia)
+              navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+                if (navigator.getUserMedia) {
+         
+                    $('#start-recording').hide();
+                    $('#stop-recording').show();
+            
+                    console.log('Recording');
+                
+                        navigator.getUserMedia({audio:true}, success, function(e) {
+                          alert('Error capturing audio.');
+                        });
+                      } else alert('getUserMedia not supported in this browser.');
+        
+              
+            var recording = false;
+        
+            window.startRecording = function() {
+              recording = true;
+            }
+            
+        
+           window.stopRecording = function() {
+                  recording = false;
+                  //window.Stream.end();
+            }
+                
+                          
+            $('#stop-recording').on('click', function(e) {
+                
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('Recording stopped');
+
+                recording = false;
+                //window.Stream.end();
+                
+                $('#start-recording').show();
+                $('#stop-recording').hide();
+ 
+            });
+            
+
+            function success(e) {
+        
+              // the sample rate is in context.sampleRate
+              audioInput = context.createMediaStreamSource(e);
+        
+              var bufferSize = 2048;
+              recorder = context.createScriptProcessor(bufferSize, 1, 1);
+        
+              recorder.onaudioprocess = function(e){
+      
+                var left = e.inputBuffer.getChannelData(0);
+                //window.Stream.write(convertoFloat32ToInt16(left));
+                
+                    var file = fs.createWriteStream(convertoFloat32ToInt16(left));
+                  
+                    file.on('data', function(buffer){
+                        io.sockets.emit('recording-input', { buffer: buffer })
+                    });
+                
+              }
+        
+              audioInput.connect(recorder)
+              recorder.connect(context.destination);
+    
+            }
+        
+            function convertoFloat32ToInt16(buffer) {
+              var l = buffer.length;
+              var buf = new Int16Array(l)
+        
+              while (l--) {
+                buf[l] = buffer[l]*0xFFFF;    //convert to 16 bit
+              }
+              return buf.buffer
+            }
+            
+                startTime = 0;
+                
+                        
+          
+        });
+            
+     
+      
+        
+        var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID = Math.random()
+
+        // SOCKET IO
+      
+        //SOCKET IO STREAM
+
+        /*
+        var uploader = new SocketIOFileUpload(socket);
+         document.getElementById("submit-image").addEventListener("click", uploader.prompt, false);
+         
+        uploader.addEventListener("start", function(event){
+            event.file.meta.type = "image";
+        });
+                 
+            
+            socket.on('disconnect', function(){
+               console.log('SocketIO connection to the server terminated');
+                     
+            });
+
+       
+            $('#submit-message').on('click', function(e) {
+                e.preventDefault();
+                var message = $('#message-text').val();                   
+                socket.emit('message', { sender: tabID, message: message });
+                $('#text').val("");
+            });
+     
+            socket.on('message', function (data) {
+               $('#results').append('<li>Message from ' + data.sender + ': <strong>' + data.message + '</strong></li>')
+            });
+            
+            socket.on("image", function(data) {
+                var src = data.src;
+                $('#image-results').append('<img src="' + src + '" style="padding: 10px">');
+            });
+        
+              socket.on("download", function(data) {
+                var url = data.url;
+                $('#download-iframe').attr('src', data.url);
+            });
+              */
+  
+
+              
+            function audioStream() {
+                
+                var socket = io.connect();
+         
+                          
+             // HERE WE DO THE FILE UPLOAD / STREAM WITH SS   
+            socket.on('connect', function() {
+                
+              console.log('SocketIO connection to the server established');
+                                 
+                /*var filename = "test_128.mp3";
+                var file = "https://backbone-node.dev/uploads/audio/" + filename;*/
+                              
+                function initiateAudioContext() {
+                    audioContext = window.AudioContext || window.webkitAudioContext;
+                    context = new audioContext();
+                    console.log("init new audio context");
+                    console.log(context);
+                }
+                
+                // THIS BIT DOES NOW WORK, BUT ONLY TO ONE SOCKET!!       
+                startTime = 0;
+                var audioStream = ss(socket).on('audio', function(stream, data) {
+                
+                console.log('receiving audio stream via socket io stream');
+        
+                    
+                    initiateAudioContext();
+                
+                    stream.on('data', function(audio_buffer) {
+       
+                        
+                    //localStorage.setItem('stream_state', 'started');
+                    
+                        //console.log('receiving data from audio stream...');
+                         
+                        var arrayBuffer = audio_buffer.toArrayBuffer();
+                           
+                        context.decodeAudioData(arrayBuffer, function(buffer) {
+                        
+                                
+                        if(localStorage.getItem("stream_state") === "stopped") {
+                            
+                            //context.suspend();
+                                          
+                            //var source = context.createBufferSource();
+                            //console.log('stream state stopped in storage');
+            
+                            //source.buffer = context.createBuffer(2, 1, 44100);
+                            //return false;
+                            //source.stop();
+                            //source.disconnect();
+                           
+                      
+                        } else {
+                            
+                                console.log('stream state started in storage');
+                                              
+                                var source = context.createBufferSource();
+                                source.buffer = buffer;
+                                 
+                                source.disconnect();
+                                source.connect(context.destination);
+                                source.start(startTime);
+        
+                                startTime += buffer.duration;                    
+                      
+                        }
+                
+       
+                           }, function (error) {
+                                   console.error("failed to decode:", error);
+                               });
+               
+                
+                
+                    });
+               
+                
+                        $('#pause').on('click', function(e) {                
+                                context.suspend();
+                            });
+                          
+                            $('#play').on('click', function(e) {                
+                                context.resume();
+                            });
+   
+                                       
+                        stream.on('end', function() {
+                            console.log('Audio stream ended');
+                });
+        
+              
+            });
+        
+               
+        
+        });
+            
+        return socket;    
+    }
+    
+                     
+    $('#file').change(function(e) {
+                                           
+        socket = audioStream();           
+        var file = e.target.files[0];
+        
+        var stream = ss.createStream({
+            highWaterMark: 1024,
+            objectMode: false,
+            allowHalfOpen: false
+        });
+        
+        
+        ss(socket).emit('file', stream, {size: file.size, name: file.name});
+        ss.createBlobReadStream(file).pipe(stream);
+        
+        localStorage.setItem('stream_state', 'started');
+                  
+        //THIS WORKS BUT ISNT STREAMING
+        //socket.emit('audio-stream', { buffer: file });
+    
+    });
+                                                                      
+            
+  $('#stop').on('click', function(e) {
+      
+          e.stopPropagation();
+          
+           ss(socket).emit('stop-audio-stream');                       
+             
+           localStorage.setItem('stream_state', 'stopped');
+           
+                                      
+              context.close().then(function() {
+                  console.log('close promise resolved');
+                  //console.log(context);
+                   //initiateAudioContext();
+                  
+                  //audioStream();
+                   
+              });
+              
+                                      
+
+  });
+                                
+
+                
+              // THIS ONE - NON-SS - WORKS BUT NOT SURE IT@S STREAMING, END TO END
+                       // LEAVING THIS NOW AS CANNOT STOP EMIT!
+           
+                
+                /*startTime = 0;
+              
+              socket.on("audio", function(data) {
+       
+                
+                //console.log('Playing stream from server!');
+                
+                 //context = new audioContext();
+  
+                context.decodeAudioData(data.buffer, function(buffer) {
+                        
+                        //console.log(buffer);
+                        
+                        var source = context.createBufferSource();
+                      
+                        source.buffer = buffer;
+                        source.connect(context.destination);
+                        
+                        source.start(startTime);
+
+                        startTime += buffer.duration;
+              
+                          $('#pause').on('click', function(e) {                
+                                context.suspend();
+                            });
+                          
+                            $('#play').on('click', function(e) {                
+                                context.resume();
+                            });
+                            
+                              $('#stop').on('click', function(e) {
+                                e.stopPropagation();
+                                 socket.emit('stop-audio', { stop: true });
+                                 
+                                   
+                                   //buffer = null;
+                                   //source.stop();         
+                        
+                            });
+                            
+                    }, function (error) {
+                            console.error("failed to decode:", error);
+                        });
+               
+                           
+                           
+            });*/
+              
+
+              
+              
+            </script>
+    
+    </body>
+</html>
