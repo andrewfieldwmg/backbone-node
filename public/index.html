@@ -18,6 +18,7 @@
         </style>
 </head>
 
+    
     <body>
             
     <div class="container-fluid">
@@ -40,9 +41,12 @@
                <button class="btn btn-primary" id="start-recording" type="submit">Record Audio</button>
                 <button class="btn btn-primary" id="stop-recording" type="submit" style="display: none">Stop Recording</button>
                       
-        <button class="btn btn-primary" id="play">Play</button>
-        <button class="btn btn-primary" id="pause">Pause</button>
-         <button class="btn btn-primary" id="stop">Stop</button>
+                      
+            <button class="btn btn-primary" id="listen">Listen</button>          
+               <button class="btn btn-primary" id="pause">Pause</button>
+               <button class="btn btn-primary" id="resume">Resume</button>
+            <button class="btn btn-primary" id="stop">Stop</button>
+            
            </div>
        
 
@@ -53,11 +57,9 @@
         <!--<audio id="audio" controls="controls">
             <source id="wavSource" src="" type="audio/wav"></source>
         </audio>-->
-        
-        
+         
         <input id="file" type="file"/>
-        
-        
+          
         </div>
         </div>
         </div>
@@ -171,8 +173,7 @@
         });
             
      
-      
-        
+    
         var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID = Math.random()
 
         // SOCKET IO
@@ -218,19 +219,15 @@
   
 
               
-            function audioStream() {
+        function audioStream() {
                 
-                var socket = io.connect();
-         
-                          
+            var socket = io.connect();
+                                
              // HERE WE DO THE FILE UPLOAD / STREAM WITH SS   
             socket.on('connect', function() {
                 
               console.log('SocketIO connection to the server established');
-                                 
-                /*var filename = "test_128.mp3";
-                var file = "https://backbone-node.dev/uploads/audio/" + filename;*/
-                              
+                                        
                 function initiateAudioContext() {
                     audioContext = window.AudioContext || window.webkitAudioContext;
                     context = new audioContext();
@@ -242,14 +239,12 @@
                 startTime = 0;
                 var audioStream = ss(socket).on('audio', function(stream, data) {
                 
-                console.log('receiving audio stream via socket io stream');
-        
+                console.log('receiving audio stream via socket io stream');  
                     
                     initiateAudioContext();
                 
                     stream.on('data', function(audio_buffer) {
-       
-                        
+                              
                     //localStorage.setItem('stream_state', 'started');
                     
                         //console.log('receiving data from audio stream...');
@@ -257,8 +252,7 @@
                         var arrayBuffer = audio_buffer.toArrayBuffer();
                            
                         context.decodeAudioData(arrayBuffer, function(buffer) {
-                        
-                                
+                       
                         if(localStorage.getItem("stream_state") === "stopped") {
                             
                             //context.suspend();
@@ -269,8 +263,7 @@
                             //source.buffer = context.createBuffer(2, 1, 44100);
                             //return false;
                             //source.stop();
-                            //source.disconnect();
-                           
+                            //source.disconnect();                        
                       
                         } else {
                             
@@ -297,16 +290,17 @@
                     });
                
                 
-                        $('#pause').on('click', function(e) {                
+                           $('#pause').on('click', function(e) {                
                                 context.suspend();
                             });
                           
-                            $('#play').on('click', function(e) {                
+                            $('#resume').on('click', function(e) {                
                                 context.resume();
                             });
-   
+                            
                                        
                         stream.on('end', function() {
+                            
                             console.log('Audio stream ended');
                 });
         
@@ -320,7 +314,13 @@
         return socket;    
     }
     
-                     
+          
+          
+    $('#listen').on('click', function(e) {                
+          audioStream(); 
+    });
+            
+                          
     $('#file').change(function(e) {
                                            
         socket = audioStream();           
@@ -337,9 +337,7 @@
         ss.createBlobReadStream(file).pipe(stream);
         
         localStorage.setItem('stream_state', 'started');
-                  
-        //THIS WORKS BUT ISNT STREAMING
-        //socket.emit('audio-stream', { buffer: file });
+
     
     });
                                                                       
@@ -351,9 +349,9 @@
            ss(socket).emit('stop-audio-stream');                       
              
            localStorage.setItem('stream_state', 'stopped');
-           
-                                      
+                                         
               context.close().then(function() {
+                
                   console.log('close promise resolved');
                   //console.log(context);
                    //initiateAudioContext();
