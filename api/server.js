@@ -94,49 +94,72 @@ console.log('BinaryJS client connected');
     var upload_dir = path.join(__dirname, '../', 'public/uploads');  
     
 
-//TRY LOOPING ALL SOCKETS!
-    
+
 io.sockets.on('connection', function (socket) {
     
           console.log('SocketIO client connected');
  
+ 
+        socket.on('file', function(data) {
+            
+            //console.log("receiving file data");
+            
+                function toArrayBuffer(buffer) {
+                 
+                     var ab = new ArrayBuffer(buffer.length);
+                     var view = new Uint8Array(ab);
+                     for (var i = 0; i < buffer.length; ++i) {
+                         view[i] = buffer[i];
+                     }
+                     return ab;
+                 }
+                    
+            var arrayBuffer = toArrayBuffer(data.buffer.data);
+            
+            io.sockets.emit('audio', { buffer: arrayBuffer });
 
-    ss(socket).on('file', function(inbound_stream, data) {
-        
-        console.log('receiving file stream: ' + data.name);
-   
+        });
+            
+             
+        socket.on('stop-audio-stream', function (data) {
+            
+            console.log('stop message received');
+
+            socket.disconnect();
+      
+        });
+           
+           
         //WRITE THE FILE TO THE SERVER ALSO...
         //var file_write_stream = fs.createWriteStream(path.normalize(audio_path + "/" + data.name));
         //inbound_stream.pipe(file_write_stream);
 
-            var outbound_stream = ss.createStream();
-            ss(socket).emit('audio', outbound_stream);
-            inbound_stream.pipe(outbound_stream);            
+            //var outbound_stream = ss.createStream();
+            //ss(socket).emit('audio', outbound_stream);
+            //inbound_stream.pipe(outbound_stream);            
   
-            console.log('piping stream to client');
+            //console.log('sending stream to client(s)');
             
-                ss(socket).on('stop-audio-stream', function (data) {
-                    
-                    console.log('stop message received');
-                    
-                    inbound_stream.read(0);
-                    inbound_stream.push(null);
-                    inbound_stream.end();
-                    inbound_stream.destroy();
-                    outbound_stream.read(0);
-                    outbound_stream.push(null);
-                    outbound_stream.end();
-                    outbound_stream.destroy();
-                    
-                    socket.disconnect();
-              
-                });
-                   
+                 
+            //RETRY THIS TO HIT ALL CLIENTS
+            
+            /*
+            inbound_stream.on('data', function(chunk) {
+                
+            // use a chunk of image. a chunk is a Buffer.
+                //console.log('receiving data from file stream');
+                
+                //THIS IS THE NON-FULLY-STREAMING BIT? THAT WORKS
+                io.sockets.emit('audio', { buffer: chunk });
+   
+            });
+        
+       
 
         
-        outbound_stream.on('end', function() {
+        inbound_stream.on('end', function() {
             console.log('Audio stream ended: ' + data.name);
-        });
+        });*/
 
  
         // THIS ONE WORKS BUT ISN'T STREAMING REALLY...   
@@ -154,34 +177,7 @@ io.sockets.on('connection', function (socket) {
              
            });*/
     
-    
-     
-        //LEAVING THIS BELOW AS CANNOT STOP EMIT
-        
-        /*inbound_stream.on('data', function(chunk) {
-            
-        // use a chunk of image. a chunk is a Buffer.
-            //console.log('receiving data from file stream');
-            
-            //THIS IS THE NON-FULLY-STREAMING BIT? THAT WORKS
-            io.sockets.emit('audio', { buffer: chunk });
-            
-                    
-                socket.on('stop-audio', function (data) {
-                    //console.log('stop audio button clicked');
-                    inbound_stream.read(0);
-                    inbound_stream.destroy();
-                    inbound_stream.push(null);
-                    inbound_stream.end();
-                    chunk = "";
-              
-                    //io.sockets.emit('audio', { buffer: null });
-                });
-
-        });*/
-
-      
-    });
+  
  
 });
  
