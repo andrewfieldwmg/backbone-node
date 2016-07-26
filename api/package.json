@@ -1,0 +1,15 @@
+{
+  "name": "api",
+  "main": "server.js",
+  "dependencies": {
+    "binaryjs": "^0.2.1",
+    "body-parser": "~1.0.1",
+    "crypto": "~0.0.3",
+    "express": "~4.0.0",
+    "mysql": "~2.5.0",
+    "node-wav": "0.0.1",
+    "sequelize": "~1.7.0",
+    "socketio-file-upload": "^0.4.6",
+    "wav": "^1.0.1"
+  }
+}
