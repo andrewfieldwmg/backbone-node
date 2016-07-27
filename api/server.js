@@ -65,18 +65,55 @@ console.log('BinaryJS client connected');
 */
 
     
-
 /////SOCKET IO//////
-   
-        io.sockets.on('message', function (data) {
-            console.log('Received a message!' + data.message);
-            var message = data.message;
-            var sender = data.sender;
+        io.sockets.on('connection', function (socket) {
+         
+             socket.on('message', function (data) {
+                 console.log('Received a message!' + data.message);
+                 var message = data.message;
+                 var sender = data.sender;
+                 
+                 io.sockets.emit('message', { message: message, sender: sender });
+             
+             });
+             
+             
+
+            //IMAGE UPLOAD USING THE OTHER LIBRARY - CAN WE REPLACE THIS WITH STANDARD SOCKET IO NOW?
+                var uploader = new siofu();
+                uploader.dir = upload_dir;
+                uploader.listen(socket);
             
-            io.sockets.emit('message', { message: message, sender: sender });
-        
+                // Do something when a file is saved:
+                uploader.on("saved", function(event){
+                    
+                    if (event.file.meta.type === "image") {
+                    
+                            var just_filename = event.file.name.slice(0, -4);
+                            var just_extension = getExtension(event.file.name);
+                            var thumbnail_filename = just_filename + "_small." + just_extension;
+                            
+                            im.resize({
+                                srcData: fs.readFileSync(uploader.dir + "/" + event.file.name, 'binary'),
+                                width:   256
+                              }, function(err, stdout, stderr){
+                                if (err) throw err
+                                fs.writeFileSync(uploader.dir + "/" + thumbnail_filename, stdout, 'binary');
+                                console.log('resized ' + event.file.name + ' to fit within 256x256px')
+                              
+                                //fs.readFile(uploader.dir + "/" + event.file.name, function(err, buf){
+                                    io.sockets.emit('image', { src: "/uploads/" +  thumbnail_filename });
+                    
+                                //}) 
+                      
+                            });
+                    
+                    }
+                      
+                });
         });
-        
+   
+   
         // Error handler:
         io.sockets.on("error", function(event){
             console.log("Error from uploader", event);
@@ -87,7 +124,7 @@ console.log('BinaryJS client connected');
               console.log('SocketIO client disconnected');
         
         });
-    
+
     
     //var socketId = socket.id;
     //var clientIp = socket.request.connection.remoteAddress;
@@ -106,15 +143,12 @@ console.log('BinaryJS client connected');
             //var file_write_stream = fs.createWriteStream(path.normalize(audio_path + "/" + data.name));
             //inbound_stream.pipe(file_write_stream);
     
-                //var outbound_stream = ss.createStream();
-                //ss(socket).emit('audio', outbound_stream);
-                //inbound_stream.pipe(outbound_stream);            
-      
                 console.log('sending stream to client(s):' + data.name);
        
                 inbound_stream.on('data', function(chunk) {
                 
-                socket.broadcast.emit('audio', { buffer: chunk });
+                //socket.broadcast.emit('audio', { buffer: chunk });
+                io.sockets.emit('audio', { buffer: chunk });
                 });
                       
                       
@@ -141,42 +175,7 @@ console.log('BinaryJS client connected');
         });
      
     });
-     
-    
-    
-//IMAGE UPLOAD USING THE OTHER LIBRARY - CAN WE REPLACE THIS WITH STANDARD SOCKET IO NOW?
-    /*var uploader = new siofu();
-    uploader.dir = upload_dir;
-    uploader.listen(socket);
-    
-    
-    // Do something when a file is saved:
-    uploader.on("saved", function(event){
-        
-        if (event.file.meta.type === "image") {
-        
-                var just_filename = event.file.name.slice(0, -4);
-                var just_extension = getExtension(event.file.name);
-                var thumbnail_filename = just_filename + "_small." + just_extension;
-                
-                im.resize({
-                    srcData: fs.readFileSync(uploader.dir + "/" + event.file.name, 'binary'),
-                    width:   256
-                  }, function(err, stdout, stderr){
-                    if (err) throw err
-                    fs.writeFileSync(uploader.dir + "/" + thumbnail_filename, stdout, 'binary');
-                    console.log('resized ' + event.file.name + ' to fit within 256x256px')
-                  
-                    //fs.readFile(uploader.dir + "/" + event.file.name, function(err, buf){
-                        io.sockets.emit('image', { src: "/uploads/" +  thumbnail_filename });
-        
-                    //}) 
-          
-                });
-        
-        }
-          
-    });*/
+
 
     
         /*socket.on('play-audio', function (data) {
