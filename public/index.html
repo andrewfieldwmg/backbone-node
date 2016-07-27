@@ -35,325 +35,58 @@
                  </span>
                </div>
            </form>
-     
+            
+        <p>
            <div class="btn-group-vertical button-wrapper">
                 <button class="btn btn-primary" id="submit-image" type="submit">Send Image</button>
                <button class="btn btn-primary" id="start-recording" type="submit">Record Audio</button>
                 <button class="btn btn-primary" id="stop-recording" type="submit" style="display: none">Stop Recording</button>
-                      
-                      
-            <button class="btn btn-primary" id="listen">Listen</button>          
-               <button class="btn btn-primary" id="pause">Pause</button>
-               <button class="btn btn-primary" id="resume">Resume</button>
-            <button class="btn btn-primary" id="stop">Stop</button>
+                
+            <input id="audio-file" type="file" style="display: none"/>
+            <button class="btn btn-primary" id="start-file-stream">Stream An MP3</button>
+                
+            <button class="btn btn-primary" id="listen">Listen to Others</button>          
+               <button class="btn btn-primary" id="pause" style="display: none">Pause</button>
+               <button class="btn btn-primary" id="resume" style="display: none">Resume</button>
+            <button class="btn btn-danger" id="stop">Stop All Audio</button>
             
            </div>
-       
-
-            <ul id="results"></ul>     
-            <div id="image-results"></div>
+       </p>
+            
+            <p>
+                <ul class="list-group" id="message-results"></ul>
+            </p>
+            
+            <p>
+                <div id="image-results"></div>
+            </p>
+            
             <iframe name="download-iframe" id="download-iframe" width="1" height="1" frameborder="0" src=""></iframe>
             
         <!--<audio id="audio" controls="controls">
             <source id="wavSource" src="" type="audio/wav"></source>
         </audio>-->
-         
-        <input id="file" type="file"/>
+
           
         </div>
         </div>
         </div>
     
         <!-- JavaScript -->
-        <script src="js/jquery-2.0.3.min.js"></script>
-        <script src="js/underscore.js"></script>
-        <script src="js/backbone.js"></script>
+        <script src="vendor/jquery-2.0.3.min.js"></script>
+        <script src="vendor/underscore.js"></script>
+        <script src="vendor/backbone.js"></script>
         
         <!--<script src="js/app.js"></script>-->
-        <script src="js/bootstrap.js"></script>
-        <script src="js/jquery-ui.js"></script>
+        <script src="vendor/bootstrap.js"></script>
+        <script src="vendor/jquery-ui.js"></script>
         
         <script src="/socket.io/socket.io.js"></script>
-        <script src="js/siofu/client.js"></script>
-       <script src="js/socket.io-stream.js"></script>
-               
-    <script>
-            
-       
-        $('#start-recording').on('click', function(e) {
-    
-                //window.Stream = client.createStream();
-            
-            if (!navigator.getUserMedia)
-              navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia || navigator.msGetUserMedia;
-
-                if (navigator.getUserMedia) {
-         
-                    $('#start-recording').hide();
-                    $('#stop-recording').show();
-            
-                    console.log('Recording');
-                
-                        navigator.getUserMedia({audio:true}, success, function(e) {
-                          alert('Error capturing audio.');
-                        });
-                      } else alert('getUserMedia not supported in this browser.');
+        <script src="vendor/siofu/client.js"></script>
+        <script src="vendor/socket.io-stream.js"></script>
         
-              
-            var recording = false;
+        <script src="js/app.js"></script>
         
-            window.startRecording = function() {
-              recording = true;
-            }
-            
-        
-           window.stopRecording = function() {
-                  recording = false;
-                  //window.Stream.end();
-            }
-                
-                          
-            $('#stop-recording').on('click', function(e) {
-                
-                e.preventDefault();
-                e.stopPropagation();
-                
-                console.log('Recording stopped');
-
-                recording = false;
-                //window.Stream.end();
-                
-                $('#start-recording').show();
-                $('#stop-recording').hide();
- 
-            });
-            
-
-            function success(e) {
-        
-              // the sample rate is in context.sampleRate
-              audioInput = context.createMediaStreamSource(e);
-        
-              var bufferSize = 2048;
-              recorder = context.createScriptProcessor(bufferSize, 1, 1);
-        
-              recorder.onaudioprocess = function(e){
-      
-                var left = e.inputBuffer.getChannelData(0);
-                //window.Stream.write(convertoFloat32ToInt16(left));
-                
-                    var file = fs.createWriteStream(convertoFloat32ToInt16(left));
-                  
-                    file.on('data', function(buffer){
-                        io.sockets.emit('recording-input', { buffer: buffer })
-                    });
-                
-              }
-        
-              audioInput.connect(recorder)
-              recorder.connect(context.destination);
-    
-            }
-        
-            function convertoFloat32ToInt16(buffer) {
-              var l = buffer.length;
-              var buf = new Int16Array(l)
-        
-              while (l--) {
-                buf[l] = buffer[l]*0xFFFF;    //convert to 16 bit
-              }
-              return buf.buffer
-            }
-            
-                startTime = 0;
-                
-                        
-          
-        });
-            
-     
-    
-        var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID = Math.random()
-
-        // SOCKET IO
-      
-        //SOCKET IO STREAM
-
-        /*
-        var uploader = new SocketIOFileUpload(socket);
-         document.getElementById("submit-image").addEventListener("click", uploader.prompt, false);
-         
-        uploader.addEventListener("start", function(event){
-            event.file.meta.type = "image";
-        });
-                 
-            
-            socket.on('disconnect', function(){
-               console.log('SocketIO connection to the server terminated');
-                     
-            });
-
-       
-            $('#submit-message').on('click', function(e) {
-                e.preventDefault();
-                var message = $('#message-text').val();                   
-                socket.emit('message', { sender: tabID, message: message });
-                $('#text').val("");
-            });
-     
-            socket.on('message', function (data) {
-               $('#results').append('<li>Message from ' + data.sender + ': <strong>' + data.message + '</strong></li>')
-            });
-            
-            socket.on("image", function(data) {
-                var src = data.src;
-                $('#image-results').append('<img src="' + src + '" style="padding: 10px">');
-            });
-        
-              socket.on("download", function(data) {
-                var url = data.url;
-                $('#download-iframe').attr('src', data.url);
-            });
-              */
-  
-                               
-        function initiateAudioContext() {
-            
-            audioContext = window.AudioContext || window.webkitAudioContext;
-                        
-            if (typeof audioContext != "undefined") {
-
-            context = new audioContext();
-            console.log("init new audio context");
-            
-            } else {
-                console.log("audio context already loaded");
-            }
-            
-            return context;
-        }
-                
-              
-        function audioStreamSocketIo() {
-                
-            var socket = io.connect();
-                                
-             // HERE WE DO THE FILE UPLOAD / STREAM WITH SS   
-            socket.on('connect', function() {
-                
-              console.log('SocketIO connection to the server established');
-         
-                // THIS BIT DOES NOW WORK, BUT ONLY TO ONE SOCKET!!       
- 
-                context = initiateAudioContext();
-
-                startTime = 0;   
-                socket.on("audio", function(data) {
-       
-                //console.log('receiving audio stream via socket io stream');  
-            
-                context.decodeAudioData(data.buffer, function(buffer) {
-                        
-                        if(localStorage.getItem("stream_state") === "stopped") {
-                            
-                            //context.suspend();
-                                          
-                            //var source = context.createBufferSource();
-                            //console.log('stream state stopped in storage');
-            
-                            //source.buffer = context.createBuffer(2, 1, 44100);
-                            //return false;
-                            //source.stop();
-                            //source.disconnect();
-                            
-                            return false;
-                      
-                        } else {
-                               
-                            var source = context.createBufferSource();
-                          
-                            source.buffer = buffer;
-                            source.connect(context.destination);
-                            
-                            source.start(startTime);
-    
-                            startTime += buffer.duration;
-                        }
-            
-                        }, function (error) {
-                            console.error("failed to decode:", error);
-                        });
-                
-              
-                          $('#pause').on('click', function(e) {                
-                                context.suspend();
-                            });
-                          
-                            $('#resume').on('click', function(e) {                
-                                context.resume();
-                            });
-                  
-                           
-                    });
-                                                    
-                            
-                    $('#stop').on('click', function(e) {
-                      
-                          e.stopPropagation();
-                          
-                           socket.emit('stop-audio-stream');                       
-                             
-                           localStorage.setItem('stream_state', 'stopped');
-                                                         
-                              context.close().then(function() {
-                                
-                                  console.log('close promise resolved');
-                                  //console.log(context);
-                                   //initiateAudioContext();
-                                  
-                                  //audioStream();
-                  
-                              });
-                   
-                    });
-                  
-      
-                });
-            
-            
-            return socket;    
-        }
-        
-          
-          
-    $('#listen').on('click', function(e) {                
-          audioStreamSocketIo(); 
-    });
-            
-                          
-    $('#file').change(function(e) {
-                                           
-        socket = audioStreamSocketIo();           
-        var file = e.target.files[0];
-        
-        var stream = ss.createStream({
-            highWaterMark: 1024,
-            objectMode: false,
-            allowHalfOpen: false
-        });
-             
-        ss(socket).emit('file', stream, {size: file.size, name: file.name});
-        ss.createBlobReadStream(file).pipe(stream);
-        
-        localStorage.setItem('stream_state', 'started');
-    
-    });
-
-                                
-
-        
-            </script>
     
     </body>
 </html>
