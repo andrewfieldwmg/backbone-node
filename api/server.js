@@ -94,97 +94,54 @@ console.log('BinaryJS client connected');
     var upload_dir = path.join(__dirname, '../', 'public/uploads');  
     
 
-//TRY LOOPING ALL SOCKETS!
-    
-io.sockets.on('connection', function (socket) {
-    
-          console.log('SocketIO client connected');
- 
-
-    ss(socket).on('file', function(inbound_stream, data) {
+    io.sockets.on('connection', function (socket) {
         
-        console.log('receiving file stream: ' + data.name);
-   
-        //WRITE THE FILE TO THE SERVER ALSO...
-        //var file_write_stream = fs.createWriteStream(path.normalize(audio_path + "/" + data.name));
-        //inbound_stream.pipe(file_write_stream);
-
-            var outbound_stream = ss.createStream();
-            ss(socket).emit('audio', outbound_stream);
-            inbound_stream.pipe(outbound_stream);            
-  
-            console.log('piping stream to client');
-            
-                ss(socket).on('stop-audio-stream', function (data) {
-                    
-                    console.log('stop message received');
-                    
-                    inbound_stream.read(0);
-                    inbound_stream.push(null);
-                    inbound_stream.end();
-                    inbound_stream.destroy();
-                    outbound_stream.read(0);
-                    outbound_stream.push(null);
-                    outbound_stream.end();
-                    outbound_stream.destroy();
-                    
-                    socket.disconnect();
-              
-                });
-                   
-
-        
-        outbound_stream.on('end', function() {
-            console.log('Audio stream ended: ' + data.name);
-        });
-
- 
-        // THIS ONE WORKS BUT ISN'T STREAMING REALLY...   
-        /*socket.on('audio-stream', function (data) {
-               
-               console.log('receiving file stream');
-          
-               //var outbound_stream = ss.createStream();
-               //ss(socket).emit('audio', outbound_stream);
-               //inbound_stream.pipe(outbound_stream);
-                   
-               // use a chunk of image. a chunk is a Buffer.
-                   //console.log('receiving data from file stream');
-                   io.sockets.emit('audio', { buffer: data.buffer });   
-             
-           });*/
-    
-    
+        console.log('SocketIO client connected');
      
-        //LEAVING THIS BELOW AS CANNOT STOP EMIT
-        
-        /*inbound_stream.on('data', function(chunk) {
+        ss(socket).on('file', function(inbound_stream, data) {
             
-        // use a chunk of image. a chunk is a Buffer.
-            //console.log('receiving data from file stream');
-            
-            //THIS IS THE NON-FULLY-STREAMING BIT? THAT WORKS
-            io.sockets.emit('audio', { buffer: chunk });
-            
-                    
-                socket.on('stop-audio', function (data) {
-                    //console.log('stop audio button clicked');
-                    inbound_stream.read(0);
-                    inbound_stream.destroy();
-                    inbound_stream.push(null);
-                    inbound_stream.end();
-                    chunk = "";
-              
-                    //io.sockets.emit('audio', { buffer: null });
-                });
-
-        });*/
-
+            console.log('receiving file stream: ' + data.name);
+       
+            //WRITE THE FILE TO THE SERVER ALSO...
+            //var file_write_stream = fs.createWriteStream(path.normalize(audio_path + "/" + data.name));
+            //inbound_stream.pipe(file_write_stream);
+    
+                //var outbound_stream = ss.createStream();
+                //ss(socket).emit('audio', outbound_stream);
+                //inbound_stream.pipe(outbound_stream);            
       
+                console.log('sending stream to client(s):' + data.name);
+       
+                inbound_stream.on('data', function(chunk) {
+                
+                socket.broadcast.emit('audio', { buffer: chunk });
+                });
+                      
+                      
+                    socket.on('stop-audio-stream', function (data) {
+                        
+        
+                        inbound_stream.read(0);
+                        inbound_stream.push(null);
+                        inbound_stream.end();
+                        inbound_stream.destroy();
+      
+                        socket.disconnect();
+                        console.log('Client disconnected');
+                  
+                    });
+                       
+    
+            
+            inbound_stream.on('end', function() {
+                console.log('Inbound audio stream ended: ' + data.name);
+            });
+    
+          
+        });
+     
     });
- 
-});
- 
+     
     
     
 //IMAGE UPLOAD USING THE OTHER LIBRARY - CAN WE REPLACE THIS WITH STANDARD SOCKET IO NOW?
