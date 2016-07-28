@@ -1,101 +1,11 @@
 var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID = Math.random()
-      
-        $('#start-recording').on('click', function(e) {
-    
-        //window.Stream = client.createStream();
-            
-            if (!navigator.getUserMedia)
-              navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
-                if (navigator.getUserMedia) {
-         
-                    $('#start-recording').hide();
-                    $('#stop-recording').show();
-            
-                    console.log('Recording');
-                
-                        navigator.getUserMedia({audio:true}, success, function(e) {
-                          alert('Error capturing audio.');
-                        });
-                      } else alert('getUserMedia not supported in this browser.');
-        
-              
-            var recording = false;
-        
-            window.startRecording = function() {
-              recording = true;
-            }
-            
-        
-           window.stopRecording = function() {
-                  recording = false;
-                  //window.Stream.end();
-            }
-                
-                          
-            $('#stop-recording').on('click', function(e) {
-                
-                e.preventDefault();
-                e.stopPropagation();
-                
-                console.log('Recording stopped');
-
-                recording = false;
-                //window.Stream.end();
-                
-                $('#start-recording').show();
-                $('#stop-recording').hide();
- 
-            });
-            
-
-            function success(e) {
-        
-              // the sample rate is in context.sampleRate
-              audioInput = context.createMediaStreamSource(e);
-        
-              var bufferSize = 2048;
-              recorder = context.createScriptProcessor(bufferSize, 1, 1);
-        
-              recorder.onaudioprocess = function(e){
-      
-                var left = e.inputBuffer.getChannelData(0);
-                //window.Stream.write(convertoFloat32ToInt16(left));
-                
-                    var file = fs.createWriteStream(convertoFloat32ToInt16(left));
-                  
-                    file.on('data', function(buffer){
-                        io.sockets.emit('recording-input', { buffer: buffer })
-                    });
-                
-              }
-        
-              audioInput.connect(recorder)
-              recorder.connect(context.destination);
-    
-            }
-        
-            function convertoFloat32ToInt16(buffer) {
-              var l = buffer.length;
-              var buf = new Int16Array(l)
-        
-              while (l--) {
-                buf[l] = buffer[l]*0xFFFF;    //convert to 16 bit
-              }
-              return buf.buffer
-            }
-            
-                startTime = 0;                 
-          
-        });
-            
              
         var socket = io.connect();
                               
-        socket.on('connect', function() {       
-            console.log("Socket IO connected");
-        });
+        //socket.on('connect', function() {       
+        //    console.log("Socket IO connected");
+        //});
         
         
         socket.on('disconnect', function(){
@@ -177,7 +87,9 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
                     return;
                 
                 } else {
-                    
+                       
+                       console.log(data.buffer);
+
                     context.decodeAudioData(data.buffer, function(buffer) {
          
                             var source = context.createBufferSource();
@@ -261,23 +173,12 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
         $.when(
                $('#stop').triggerHandler('click') /* asynchronous task */
         ).done(function() {
-      
-            var myWorker = new Worker('web-workers/decodeAudioData.js');
-            myWorker.postMessage("hello");
-            
-            myWorker.onmessage = function(e) {
-                console.log(e.data);
-            }
-            
+   
     
             socket = audioStreamSocketIo();           
             var file = e.target.files[0];
             
-            var stream = ss.createStream({
-                highWaterMark: 1024,
-                objectMode: false,
-                allowHalfOpen: false
-            });
+            var stream = ss.createStream();
                  
             ss(socket).emit('file', stream, {size: file.size, name: file.name});
             ss.createBlobReadStream(file).pipe(stream);
@@ -286,5 +187,131 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
         
         });
 
-   });                              
+   });
+    
+      
+      
+    $('#start-recording').on('click', function(e) {
+    
+    
+        var socket = audioStreamSocketIo(); 
+        //window.Stream = client.createStream();
+        
+              
+        //socket.on('connect', function() {
+            
+        var stream = ss.createStream();
+        ss(socket).emit('file', stream, {name: "Audio Recording"});
+                     
+            if (!navigator.getUserMedia)
+              navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+                if (navigator.getUserMedia) {
+         
+                    $('#start-recording').hide();
+                    $('#stop-recording').show();
+    
+                
+                        navigator.getUserMedia({audio:true}, success, function(e) {
+                          alert('Error capturing audio.');
+                        });
+                      } else alert('getUserMedia not supported in this browser.');
+        
+              
+            var recording = false;
+        
+            function startRecording() {
+                console.log('window start rec');
+                recording = true;
+                localStorage.setItem('stream_state', 'started');
+            }
+            
+        
+           function stopRecording() {
+                  recording = false;
+                  stream.end();
+                  localStorage.setItem('stream_state', 'stopped');
+            }
+                
+                          
+            $('#stop-recording').on('click', function(e) {
+                
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('Recording stopped');
+
+                stopRecording();
+                
+                $('#start-recording').show();
+                $('#stop-recording').hide();
+ 
+            });
+            
+
+        
+           function success(e) {
+            
+             audioContext = window.AudioContext || window.webkitAudioContext;
+             context = new audioContext();
+             
+             startRecording();
+       
+             // the sample rate is in context.sampleRate
+             audioInput = context.createMediaStreamSource(e);
+       
+             var bufferSize = 2048;
+             recorder = context.createScriptProcessor(bufferSize, 1, 1);
+       
+             recorder.onaudioprocess = function(e){
+               if(!recording)  {
+                return;
+               }
+   
+               //console.log ('recording');
+               var left = e.inputBuffer.getChannelData(0);
+               
+               //console.log(left);
+               
+               stream.write(new ss.Buffer(left));
+               
+                
+               //window.Stream.write(convertoFloat32ToInt16(left));
+             }
+       
+             audioInput.connect(recorder)
+             recorder.connect(context.destination); 
+           }
+               
+        
+            function convertoFloat32ToInt16(buffer) {
+              var l = buffer.length;
+              var buf = new Int16Array(l)
+        
+              while (l--) {
+                buf[l] = buffer[l]*0xFFFF;    //convert to 16 bit
+              }
+              return buf.buffer
+            }
+            
+                //startTime = 0;                 
+          
+        //});
+            
+    });
+    
+    
+           $('#web-worker').on('click', function(e) {
+                     
+    
+            
+            var decodeAudioWorker = new Worker('web-workers/decodeAudioData.js');
+            
+            /*decodeAudioWorker.postMessage(data, [data]);
+            
+            decodeAudioWorker.onmessage = function(e) {
+                console.log(e.data);
+            }*/
+           });
     

@@ -1,0 +1,1501 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/root/.nvm/versions/node/v4.4.4/bin/node',
+1 verbose cli   '/root/.nvm/versions/node/v4.4.4/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   'lame' ]
+2 info using npm@2.15.1
+3 info using node@v4.4.4
+4 verbose install initial load of /var/www/vhosts/backbone-node/api/package.json
+5 warn package.json api@ No description
+6 warn package.json api@ No repository field.
+7 warn package.json api@ No README data
+8 warn package.json api@ No license field.
+9 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/abbrev/package.json
+10 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/accepts/package.json
+11 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/after/package.json
+12 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/ansi-regex/package.json
+13 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/ansi-styles/package.json
+14 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/anymatch/package.json
+15 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/arr-diff/package.json
+16 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/arr-flatten/package.json
+17 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/array-unique/package.json
+18 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/arraybuffer.slice/package.json
+19 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/arrify/package.json
+20 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/async/package.json
+21 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/async-each/package.json
+22 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/backo2/package.json
+23 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/balanced-match/package.json
+24 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/base64-arraybuffer/package.json
+25 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/base64id/package.json
+26 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/benchmark/package.json
+27 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/better-assert/package.json
+28 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/bignumber.js/package.json
+29 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/binary-extensions/package.json
+30 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/binaryjs/package.json
+31 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/binarypack/package.json
+32 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/blob/package.json
+33 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/bluebird/package.json
+34 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/body-parser/package.json
+35 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/brace-expansion/package.json
+36 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/braces/package.json
+37 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/buffer-crc32/package.json
+38 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/buffer-shims/package.json
+39 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/buffercursor/package.json
+40 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/bytes/package.json
+41 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/callsite/package.json
+42 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/chalk/package.json
+43 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/chokidar/package.json
+44 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/circular-json/package.json
+45 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/commander/package.json
+46 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/component-bind/package.json
+47 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/component-emitter/package.json
+48 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/component-inherit/package.json
+49 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/concat-map/package.json
+50 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/configstore/package.json
+51 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/cookie/package.json
+52 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/cookie-signature/package.json
+53 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/core-util-is/package.json
+54 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/crypto/package.json
+55 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/debug/package.json
+56 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/deep-extend/package.json
+57 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/dottie/package.json
+58 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/duplexer/package.json
+59 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/duplexify/package.json
+60 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/end-of-stream/package.json
+61 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/engine.io/package.json
+62 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/engine.io-client/package.json
+63 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/engine.io-parser/package.json
+64 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/es6-promise/package.json
+65 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/escape-html/package.json
+66 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/escape-string-regexp/package.json
+67 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/event-stream/package.json
+68 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/expand-brackets/package.json
+69 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/expand-range/package.json
+70 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/express/package.json
+71 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/extglob/package.json
+72 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/extsprintf/package.json
+73 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/eyes/package.json
+74 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/filename-regex/package.json
+75 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/fill-range/package.json
+76 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/for-in/package.json
+77 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/for-own/package.json
+78 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/fresh/package.json
+79 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/from/package.json
+80 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/generic-pool/package.json
+81 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/glob-base/package.json
+82 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/glob-parent/package.json
+83 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/got/package.json
+84 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/graceful-fs/package.json
+85 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/has-ansi/package.json
+86 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/has-binary/package.json
+87 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/has-cors/package.json
+88 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/ignore-by-default/package.json
+89 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/imagemagick/package.json
+90 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/imurmurhash/package.json
+91 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/indexof/package.json
+92 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/infinity-agent/package.json
+93 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/inherits/package.json
+94 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/ini/package.json
+95 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/ip/package.json
+96 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/is-binary-path/package.json
+97 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/is-buffer/package.json
+98 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/is-dotfile/package.json
+99 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/is-equal-shallow/package.json
+100 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/is-extendable/package.json
+101 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/is-extglob/package.json
+102 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/is-finite/package.json
+103 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/is-glob/package.json
+104 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/is-npm/package.json
+105 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/is-number/package.json
+106 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/is-posix-bracket/package.json
+107 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/is-primitive/package.json
+108 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/is-redirect/package.json
+109 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/is-stream/package.json
+110 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/isarray/package.json
+111 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/isobject/package.json
+112 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/json3/package.json
+113 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/kind-of/package.json
+114 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/latest-version/package.json
+115 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/lingo/package.json
+116 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/lodash/package.json
+117 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/lodash._baseassign/package.json
+118 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/lodash._basecopy/package.json
+119 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/lodash._bindcallback/package.json
+120 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/lodash._createassigner/package.json
+121 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/lodash._getnative/package.json
+122 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/lodash._isiterateecall/package.json
+123 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/lodash.assign/package.json
+124 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/lodash.defaults/package.json
+125 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/lodash.isarguments/package.json
+126 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/lodash.isarray/package.json
+127 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/lodash.keys/package.json
+128 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/lodash.restparam/package.json
+129 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/lowercase-keys/package.json
+130 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/map-stream/package.json
+131 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/merge-descriptors/package.json
+132 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/methods/package.json
+133 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/micromatch/package.json
+134 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/mime/package.json
+135 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/mime-db/package.json
+136 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/mime-types/package.json
+137 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/minimatch/package.json
+138 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/minimist/package.json
+139 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/mkdirp/package.json
+140 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/moment/package.json
+141 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/ms/package.json
+142 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/mysql/package.json
+143 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/nan/package.json
+144 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/negotiator/package.json
+145 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/nested-error-stacks/package.json
+146 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/node-thumbnail/package.json
+147 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/node-uuid/package.json
+148 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/node-wav/package.json
+149 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/nodemon/package.json
+150 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/nopt/package.json
+151 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/normalize-path/package.json
+152 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/number-is-nan/package.json
+153 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/nvm/package.json
+154 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/object-assign/package.json
+155 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/object-component/package.json
+156 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/object.omit/package.json
+157 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/once/package.json
+158 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/options/package.json
+159 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/os-homedir/package.json
+160 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/os-tmpdir/package.json
+161 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/osenv/package.json
+162 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/package-json/package.json
+163 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/parse-glob/package.json
+164 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/parsejson/package.json
+165 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/parseqs/package.json
+166 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/parseuri/package.json
+167 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/parseurl/package.json
+168 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/path-is-absolute/package.json
+169 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/path-to-regexp/package.json
+170 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/pause-stream/package.json
+171 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/pinkie/package.json
+172 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/pinkie-promise/package.json
+173 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/prepend-http/package.json
+174 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/preserve/package.json
+175 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/process-nextick-args/package.json
+176 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/ps-tree/package.json
+177 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/qs/package.json
+178 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/randomatic/package.json
+179 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/range-parser/package.json
+180 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/raw-body/package.json
+181 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/rc/package.json
+182 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/read-all-stream/package.json
+183 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/readable-stream/package.json
+184 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/readdirp/package.json
+185 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/regex-cache/package.json
+186 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/registry-url/package.json
+187 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/repeat-element/package.json
+188 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/repeat-string/package.json
+189 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/repeating/package.json
+190 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/require-all/package.json
+191 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/semver/package.json
+192 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/semver-diff/package.json
+193 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/send/package.json
+194 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/sequelize/package.json
+195 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/serve-static/package.json
+196 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/set-immediate-shim/package.json
+197 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/sliced/package.json
+198 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/slide/package.json
+199 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/socket.io/package.json
+200 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/socket.io-adapter/package.json
+201 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/socket.io-client/package.json
+202 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/socket.io-parser/package.json
+203 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/socket.io-stream/package.json
+204 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/socketio-file-upload/package.json
+205 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/split/package.json
+206 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/sql/package.json
+207 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/stream-combiner/package.json
+208 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/stream-parser/package.json
+209 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/stream-shift/package.json
+210 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/streamers/package.json
+211 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/streamws/package.json
+212 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/string-length/package.json
+213 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/string_decoder/package.json
+214 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/strip-ansi/package.json
+215 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/strip-json-comments/package.json
+216 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/supports-color/package.json
+217 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/through/package.json
+218 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/timed-out/package.json
+219 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/tinycolor/package.json
+220 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/to-array/package.json
+221 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/toposort-class/package.json
+222 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/touch/package.json
+223 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/type-is/package.json
+224 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/ultron/package.json
+225 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/undefsafe/package.json
+226 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/underscore/package.json
+227 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/underscore.string/package.json
+228 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/update-notifier/package.json
+229 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/utf8/package.json
+230 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/util-deprecate/package.json
+231 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/utils-merge/package.json
+232 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/uuid/package.json
+233 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/validator/package.json
+234 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/verror/package.json
+235 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/vows/package.json
+236 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/wav/package.json
+237 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/websocketserver/package.json
+238 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/wrappy/package.json
+239 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/write-file-atomic/package.json
+240 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/wru/package.json
+241 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/ws/package.json
+242 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/xdg-basedir/package.json
+243 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/xmlhttprequest-ssl/package.json
+244 verbose installManyTop reading scoped package data from /var/www/vhosts/backbone-node/api/node_modules/yeast/package.json
+245 info package.json after@0.8.1 No license field.
+246 info package.json arr-flatten@1.0.1 license should be a valid SPDX license expression
+247 info package.json array-unique@0.2.1 license should be a valid SPDX license expression
+248 info package.json arraybuffer.slice@0.0.6 No license field.
+249 info package.json base64-arraybuffer@0.1.2 No license field.
+250 info package.json base64id@0.1.0 No license field.
+251 info package.json benchmark@1.0.0 No license field.
+252 info package.json better-assert@1.0.2 No license field.
+253 info package.json binarypack@0.0.4 No license field.
+254 info package.json binaryjs@0.2.1 No license field.
+255 info package.json blob@0.0.4 No license field.
+256 info package.json buffer-crc32@0.2.1 No license field.
+257 info package.json buffercursor@0.0.12 No license field.
+258 info package.json bytes@1.0.0 No license field.
+259 info package.json callsite@1.0.0 No repository field.
+260 info package.json callsite@1.0.0 No license field.
+261 info package.json circular-json@0.1.6 No license field.
+262 info package.json commander@2.1.0 No license field.
+263 info package.json component-bind@1.0.0 No license field.
+264 info package.json component-emitter@1.1.2 No license field.
+265 info package.json component-inherit@0.0.3 No license field.
+266 info package.json cookie@0.1.0 No license field.
+267 info package.json cookie-signature@1.0.3 No license field.
+268 info package.json crypto@0.0.3 crypto is also the name of a node core module.
+269 info package.json crypto@0.0.3 No license field.
+270 info package.json debug@0.8.1 No license field.
+271 info package.json dottie@0.1.0 No license field.
+272 info package.json duplexer@0.1.1 No license field.
+273 info package.json engine.io-parser@1.2.4 No license field.
+274 info package.json escape-html@1.0.1 No license field.
+275 info package.json eyes@0.1.8 No repository field.
+276 info package.json eyes@0.1.8 No license field.
+277 info package.json filename-regex@2.0.0 license should be a valid SPDX license expression
+278 info package.json fresh@0.2.2 No license field.
+279 info package.json generic-pool@2.0.4 No license field.
+280 info package.json glob-base@0.3.0 license should be a valid SPDX license expression
+281 info package.json has-binary@0.1.7 No repository field.
+282 info package.json imagemagick@0.1.3 No license field.
+283 info package.json indexof@0.0.1 No repository field.
+284 info package.json indexof@0.0.1 No license field.
+285 info package.json is-primitive@2.0.0 license should be a valid SPDX license expression
+286 info package.json json3@3.2.6 No license field.
+287 info package.json lingo@0.0.5 No repository field.
+288 info package.json lingo@0.0.5 No license field.
+289 info package.json map-stream@0.1.0 No license field.
+290 info package.json mime@1.2.11 No license field.
+291 info package.json moment@2.5.1 No license field.
+292 info package.json ms@0.7.1 No license field.
+293 info package.json node-uuid@1.4.7 No license field.
+294 info package.json node-thumbnail@0.6.6 No license field.
+295 info package.json nopt@1.0.10 license should be a valid SPDX license expression
+296 info package.json nvm@0.0.3 license should be a valid SPDX license expression
+297 info package.json object-component@0.0.3 No repository field.
+298 info package.json object-component@0.0.3 No license field.
+299 info package.json options@0.0.6 No license field.
+300 info package.json parsejson@0.0.1 No repository field.
+301 info package.json parseqs@0.0.2 No repository field.
+302 info package.json path-to-regexp@0.1.2 No license field.
+303 info package.json pause-stream@0.0.11 license should be a valid SPDX license expression
+304 info package.json preserve@0.2.0 license should be a valid SPDX license expression
+305 info package.json qs@0.6.6 No license field.
+306 info package.json range-parser@1.0.0 No license field.
+307 info package.json repeat-element@1.1.2 license should be a valid SPDX license expression
+308 info package.json require-all@1.0.0 No license field.
+309 info package.json send@0.2.0 No license field.
+310 info package.json socket.io-stream@0.9.0 No license field.
+311 info package.json sql@0.35.0 No license field.
+312 info package.json streamers@0.1.1 No license field.
+313 info package.json streamws@0.1.1 No license field.
+314 info package.json string_decoder@0.10.31 string_decoder is also the name of a node core module.
+315 info package.json tinycolor@0.0.1 No license field.
+316 info package.json to-array@0.1.4 No license field.
+317 info package.json undefsafe@0.0.3 license should be a valid SPDX license expression
+318 info package.json underscore.string@2.3.3 No license field.
+319 info package.json utils-merge@1.0.0 No license field.
+320 info package.json validator@3.2.1 No license field.
+321 info package.json vows@0.6.1 No repository field.
+322 info package.json vows@0.6.1 No license field.
+323 info package.json websocketserver@1.0.0 No license field.
+324 info package.json wru@0.2.7 No license field.
+325 info package.json xmlhttprequest-ssl@1.5.1 No license field.
+326 verbose readDependencies loading dependencies from /var/www/vhosts/backbone-node/api/package.json
+327 silly cache add args [ 'lame', null ]
+328 verbose cache add spec lame
+329 silly cache add parsed spec Result {
+329 silly cache add   raw: 'lame',
+329 silly cache add   scope: null,
+329 silly cache add   name: 'lame',
+329 silly cache add   rawSpec: '',
+329 silly cache add   spec: 'latest',
+329 silly cache add   type: 'tag' }
+330 silly addNamed lame@latest
+331 verbose addNamed "latest" is being treated as a dist-tag for lame
+332 info addNameTag [ 'lame', 'latest' ]
+333 silly mapToRegistry name lame
+334 silly mapToRegistry using default registry
+335 silly mapToRegistry registry http://registry.npmjs.org/
+336 silly mapToRegistry data Result {
+336 silly mapToRegistry   raw: 'lame',
+336 silly mapToRegistry   scope: null,
+336 silly mapToRegistry   name: 'lame',
+336 silly mapToRegistry   rawSpec: '',
+336 silly mapToRegistry   spec: 'latest',
+336 silly mapToRegistry   type: 'tag' }
+337 silly mapToRegistry uri http://registry.npmjs.org/lame
+338 verbose addNameTag registry:http://registry.npmjs.org/lame not in flight; fetching
+339 verbose request uri http://registry.npmjs.org/lame
+340 verbose request no auth needed
+341 info attempt registry request try #1 at 12:24:50 PM
+342 verbose request id 4bcf6b010fda86eb
+343 verbose etag "C8BLLBKPFVX0R9WNEZ6H5XOWE"
+344 http request GET http://registry.npmjs.org/lame
+345 http 304 http://registry.npmjs.org/lame
+346 verbose headers { date: 'Thu, 28 Jul 2016 11:24:49 GMT',
+346 verbose headers   via: '1.1 varnish',
+346 verbose headers   'cache-control': 'max-age=300',
+346 verbose headers   etag: '"C8BLLBKPFVX0R9WNEZ6H5XOWE"',
+346 verbose headers   age: '0',
+346 verbose headers   connection: 'keep-alive',
+346 verbose headers   'x-served-by': 'cache-lhr6339-LHR',
+346 verbose headers   'x-cache': 'HIT',
+346 verbose headers   'x-cache-hits': '1',
+346 verbose headers   'x-timer': 'S1469705089.684087,VS0,VE178',
+346 verbose headers   vary: 'Accept-Encoding' }
+347 silly get cb [ 304,
+347 silly get   { date: 'Thu, 28 Jul 2016 11:24:49 GMT',
+347 silly get     via: '1.1 varnish',
+347 silly get     'cache-control': 'max-age=300',
+347 silly get     etag: '"C8BLLBKPFVX0R9WNEZ6H5XOWE"',
+347 silly get     age: '0',
+347 silly get     connection: 'keep-alive',
+347 silly get     'x-served-by': 'cache-lhr6339-LHR',
+347 silly get     'x-cache': 'HIT',
+347 silly get     'x-cache-hits': '1',
+347 silly get     'x-timer': 'S1469705089.684087,VS0,VE178',
+347 silly get     vary: 'Accept-Encoding' } ]
+348 verbose etag http://registry.npmjs.org/lame from cache
+349 verbose get saving lame to /root/.npm/registry.npmjs.org/lame/.cache.json
+350 verbose correctMkdir /root/.npm correctMkdir not in flight; initializing
+351 silly addNameTag next cb for lame with tag latest
+352 silly addNamed lame@1.2.4
+353 verbose addNamed "1.2.4" is a plain semver version for lame
+354 silly cache afterAdd lame@1.2.4
+355 verbose afterAdd /root/.npm/lame/1.2.4/package/package.json not in flight; writing
+356 verbose correctMkdir /root/.npm correctMkdir not in flight; initializing
+357 verbose afterAdd /root/.npm/lame/1.2.4/package/package.json written
+358 silly install resolved [ { name: 'lame',
+358 silly install resolved     description: 'NodeJS native bindings to libmp3lame & libmpg123.',
+358 silly install resolved     keywords: [ 'lame', 'mpg123', 'mp3', 'mpeg', 'mpg', 'encode', 'decode' ],
+358 silly install resolved     version: '1.2.4',
+358 silly install resolved     author:
+358 silly install resolved      { name: 'Nathan Rajlich',
+358 silly install resolved        email: 'nathan@tootallnate.net',
+358 silly install resolved        url: 'http://tootallnate.net' },
+358 silly install resolved     license: 'MIT',
+358 silly install resolved     repository:
+358 silly install resolved      { type: 'git',
+358 silly install resolved        url: 'git://github.com/TooTallNate/node-lame.git' },
+358 silly install resolved     main: './index.js',
+358 silly install resolved     dependencies:
+358 silly install resolved      { bindings: '^1.2.1',
+358 silly install resolved        debug: '^2.2.0',
+358 silly install resolved        'readable-stream': '^1.0.34',
+358 silly install resolved        nan: '^2.3.5' },
+358 silly install resolved     devDependencies: { mocha: '^2.4.5' },
+358 silly install resolved     scripts: { test: 'mocha --reporter spec', install: 'node-gyp rebuild' },
+358 silly install resolved     gypfile: true,
+358 silly install resolved     gitHead: '892d9097d01197d28946f5dd1fee1c7bf6bae018',
+358 silly install resolved     bugs: { url: 'https://github.com/TooTallNate/node-lame/issues' },
+358 silly install resolved     homepage: 'https://github.com/TooTallNate/node-lame#readme',
+358 silly install resolved     _id: 'lame@1.2.4',
+358 silly install resolved     _shasum: '546801514e2de8ca0c89eef222880c8dc6712485',
+358 silly install resolved     _from: 'lame@latest',
+358 silly install resolved     _npmVersion: '3.8.9',
+358 silly install resolved     _nodeVersion: '6.2.0',
+358 silly install resolved     _npmUser: { name: 'linusu', email: 'linus@folkdatorn.se' },
+358 silly install resolved     dist:
+358 silly install resolved      { shasum: '546801514e2de8ca0c89eef222880c8dc6712485',
+358 silly install resolved        tarball: 'https://registry.npmjs.org/lame/-/lame-1.2.4.tgz' },
+358 silly install resolved     maintainers: [ [Object], [Object], [Object] ],
+358 silly install resolved     _npmOperationalInternal:
+358 silly install resolved      { host: 'packages-12-west.internal.npmjs.com',
+358 silly install resolved        tmp: 'tmp/lame-1.2.4.tgz_1467004820762_0.4870841265656054' },
+358 silly install resolved     directories: {},
+358 silly install resolved     _resolved: 'http://registry.npmjs.org/lame/-/lame-1.2.4.tgz',
+358 silly install resolved     readme: 'ERROR: No README data found!' } ]
+359 info install lame@1.2.4 into /var/www/vhosts/backbone-node/api
+360 info installOne lame@1.2.4
+361 verbose installOne of lame to /var/www/vhosts/backbone-node/api not in flight; installing
+362 verbose correctMkdir /root/.npm/_locks correctMkdir not in flight; initializing
+363 verbose lock using /root/.npm/_locks/lame-2e0223a15d2580db.lock for /var/www/vhosts/backbone-node/api/node_modules/lame
+364 silly install write writing lame 1.2.4 to /var/www/vhosts/backbone-node/api/node_modules/lame
+365 verbose unbuild node_modules/lame
+366 silly gentlyRm /var/www/vhosts/backbone-node/api/node_modules/lame is being purged from base /var/www/vhosts/backbone-node/api
+367 verbose gentlyRm don't care about contents; nuking /var/www/vhosts/backbone-node/api/node_modules/lame
+368 verbose tar unpack /root/.npm/lame/1.2.4/package.tgz
+369 verbose tar unpacking to /var/www/vhosts/backbone-node/api/node_modules/lame
+370 silly gentlyRm /var/www/vhosts/backbone-node/api/node_modules/lame is being purged
+371 verbose gentlyRm don't care about contents; nuking /var/www/vhosts/backbone-node/api/node_modules/lame
+372 silly gunzTarPerm modes [ '755', '644' ]
+373 silly gunzTarPerm extractEntry package.json
+374 silly gunzTarPerm extractEntry .npmignore
+375 silly gunzTarPerm extractEntry README.md
+376 silly gunzTarPerm extractEntry LICENSE
+377 silly gunzTarPerm extractEntry index.js
+378 silly gunzTarPerm extractEntry deps/lame/README
+379 silly gunzTarPerm extractEntry deps/lame/LICENSE
+380 silly gunzTarPerm extractEntry deps/lame/config.sub
+381 silly gunzTarPerm extractEntry deps/lame/ChangeLog
+382 silly gunzTarPerm extractEntry deps/lame/DEFINES
+383 silly gunzTarPerm extractEntry deps/lame/Dll/README
+384 silly gunzTarPerm extractEntry deps/lame/Dll/BladeMP3EncDLL.c
+385 silly gunzTarPerm extractEntry deps/lame/Dll/BladeMP3EncDLL.def
+386 silly gunzTarPerm extractEntry deps/lame/Dll/BladeMP3EncDLL.h
+387 silly gunzTarPerm extractEntry deps/lame/Dll/Example.cpp
+388 silly gunzTarPerm extractEntry deps/lame/Dll/LameDLLInterface.htm
+389 silly gunzTarPerm extractEntry deps/lame/Dll/MP3export.pas
+390 silly gunzTarPerm extractEntry deps/lame/Dll/Makefile.am
+391 silly gunzTarPerm extractEntry deps/lame/Dll/Makefile.in
+392 silly gunzTarPerm extractEntry deps/lame/Dll/Makefile.mingw32
+393 silly gunzTarPerm extractEntry deps/lame/HACKING
+394 silly gunzTarPerm extractEntry deps/lame/INSTALL
+395 silly gunzTarPerm extractEntry deps/lame/INSTALL.configure
+396 silly gunzTarPerm extractEntry deps/lame/ACM/Makefile.in
+397 silly gunzTarPerm extractEntry deps/lame/ACM/ACM.cpp
+398 silly gunzTarPerm extractEntry deps/lame/ACM/ACMStream.cpp
+399 silly gunzTarPerm extractEntry deps/lame/ACM/ACMStream.h
+400 silly gunzTarPerm extractEntry deps/lame/ACM/ADbg/ADbg.cpp
+401 silly gunzTarPerm extractEntry deps/lame/ACM/ADbg/ADbg.h
+402 silly gunzTarPerm extractEntry deps/lame/ACM/ADbg/Makefile.am
+403 silly gunzTarPerm extractEntry deps/lame/ACM/ADbg/Makefile.in
+404 silly gunzTarPerm extractEntry deps/lame/ACM/AEncodeProperties.cpp
+405 silly gunzTarPerm extractEntry deps/lame/ACM/AEncodeProperties.h
+406 silly gunzTarPerm extractEntry deps/lame/ACM/DecodeStream.cpp
+407 silly gunzTarPerm extractEntry deps/lame/ACM/DecodeStream.h
+408 silly gunzTarPerm extractEntry deps/lame/ACM/LameACM.inf
+409 silly gunzTarPerm extractEntry deps/lame/ACM/Makefile.am
+410 silly gunzTarPerm extractEntry deps/lame/ACM/ACM.h
+411 silly gunzTarPerm extractEntry deps/lame/ACM/TODO
+412 silly gunzTarPerm extractEntry deps/lame/ACM/acm.rc
+413 silly gunzTarPerm extractEntry deps/lame/ACM/adebug.h
+414 silly gunzTarPerm extractEntry deps/lame/ACM/ddk/Makefile.am
+415 silly gunzTarPerm extractEntry deps/lame/ACM/ddk/Makefile.in
+416 silly gunzTarPerm extractEntry deps/lame/ACM/ddk/msacmdrv.h
+417 silly gunzTarPerm extractEntry deps/lame/ACM/lame.ico
+418 silly gunzTarPerm extractEntry deps/lame/ACM/lameACM.def
+419 silly gunzTarPerm extractEntry deps/lame/ACM/lame_acm.xml
+420 silly gunzTarPerm extractEntry deps/lame/ACM/main.cpp
+421 silly gunzTarPerm extractEntry deps/lame/ACM/readme.txt
+422 silly gunzTarPerm extractEntry deps/lame/ACM/resource.h
+423 silly gunzTarPerm extractEntry deps/lame/ACM/tinyxml/makedistwin.bat
+424 silly gunzTarPerm extractEntry deps/lame/ACM/tinyxml/Makefile.am
+425 silly gunzTarPerm extractEntry deps/lame/ACM/tinyxml/Makefile.tinyxml
+426 silly gunzTarPerm extractEntry deps/lame/ACM/tinyxml/changes.txt
+427 silly gunzTarPerm extractEntry deps/lame/ACM/tinyxml/dox
+428 silly gunzTarPerm extractEntry deps/lame/ACM/tinyxml/makedistlinux
+429 silly gunzTarPerm extractEntry deps/lame/ACM/tinyxml/Makefile.in
+430 silly gunzTarPerm extractEntry deps/lame/ACM/tinyxml/readme.txt
+431 silly gunzTarPerm extractEntry deps/lame/ACM/tinyxml/tinyxml.cpp
+432 silly gunzTarPerm extractEntry deps/lame/ACM/tinyxml/tinyxml.h
+433 silly gunzTarPerm extractEntry deps/lame/ACM/tinyxml/tinyxmlerror.cpp
+434 silly gunzTarPerm extractEntry deps/lame/ACM/tinyxml/tinyxmlparser.cpp
+435 silly gunzTarPerm extractEntry deps/lame/ACM/tinyxml/xmltest.cpp
+436 silly gunzTarPerm extractEntry deps/lame/Makefile.MSVC
+437 silly gunzTarPerm extractEntry deps/lame/Makefile.am
+438 silly gunzTarPerm extractEntry deps/lame/Makefile.am.global
+439 silly gunzTarPerm extractEntry deps/lame/Makefile.in
+440 silly gunzTarPerm extractEntry deps/lame/Makefile.unix
+441 silly gunzTarPerm extractEntry deps/lame/COPYING
+442 silly gunzTarPerm extractEntry deps/lame/README.WINGTK
+443 silly gunzTarPerm extractEntry deps/lame/STYLEGUIDE
+444 silly gunzTarPerm extractEntry deps/lame/TODO
+445 silly gunzTarPerm extractEntry deps/lame/USAGE
+446 silly gunzTarPerm extractEntry deps/lame/acinclude.m4
+447 silly gunzTarPerm extractEntry deps/lame/aclocal.m4
+448 silly gunzTarPerm extractEntry deps/lame/config/README
+449 silly gunzTarPerm extractEntry deps/lame/config/freebsd/x64/config.h
+450 silly gunzTarPerm extractEntry deps/lame/config/linux/arm/config.h
+451 silly gunzTarPerm extractEntry deps/lame/config/linux/ia32/config.h
+452 silly gunzTarPerm extractEntry deps/lame/config/linux/x64/config.h
+453 silly gunzTarPerm extractEntry deps/lame/config/mac/ia32/config.h
+454 silly gunzTarPerm extractEntry deps/lame/config/mac/x64/config.h
+455 silly gunzTarPerm extractEntry deps/lame/config/solaris/ia32/config.h
+456 silly gunzTarPerm extractEntry deps/lame/config/solaris/x64/config.h
+457 silly gunzTarPerm extractEntry deps/lame/config/win/ia32/config.h
+458 silly gunzTarPerm extractEntry deps/lame/config/win/x64/config.h
+459 silly gunzTarPerm extractEntry deps/lame/config.guess
+460 silly gunzTarPerm extractEntry deps/lame/config.h.in
+461 silly gunzTarPerm extractEntry deps/lame/config.rpath
+462 silly gunzTarPerm extractEntry deps/lame/API
+463 silly gunzTarPerm extractEntry deps/lame/configMS.h
+464 silly gunzTarPerm extractEntry deps/lame/configure
+465 silly gunzTarPerm extractEntry deps/lame/configure.in
+466 silly gunzTarPerm extractEntry deps/lame/debian/lame.docs
+467 silly gunzTarPerm extractEntry deps/lame/debian/Makefile.am
+468 silly gunzTarPerm extractEntry deps/lame/debian/changelog
+469 silly gunzTarPerm extractEntry deps/lame/debian/compat
+470 silly gunzTarPerm extractEntry deps/lame/debian/control
+471 silly gunzTarPerm extractEntry deps/lame/debian/copyright
+472 silly gunzTarPerm extractEntry deps/lame/debian/Makefile.in
+473 silly gunzTarPerm extractEntry deps/lame/debian/lame.install
+474 silly gunzTarPerm extractEntry deps/lame/debian/lame.manpages
+475 silly gunzTarPerm extractEntry deps/lame/debian/libmp3lame-dev.install
+476 silly gunzTarPerm extractEntry deps/lame/debian/libmp3lame0.install
+477 silly gunzTarPerm extractEntry deps/lame/debian/rules
+478 silly gunzTarPerm extractEntry deps/lame/debian/watch
+479 silly gunzTarPerm extractEntry deps/lame/depcomp
+480 silly gunzTarPerm extractEntry deps/lame/doc/Makefile.am
+481 silly gunzTarPerm extractEntry deps/lame/doc/Makefile.in
+482 silly gunzTarPerm extractEntry deps/lame/doc/html/history.html
+483 silly gunzTarPerm extractEntry deps/lame/doc/html/Makefile.am
+484 silly gunzTarPerm extractEntry deps/lame/doc/html/about.html
+485 silly gunzTarPerm extractEntry deps/lame/doc/html/abr.html
+486 silly gunzTarPerm extractEntry deps/lame/doc/html/cbr.html
+487 silly gunzTarPerm extractEntry deps/lame/doc/html/contact.html
+488 silly gunzTarPerm extractEntry deps/lame/doc/html/contributors.html
+489 silly gunzTarPerm extractEntry deps/lame/doc/html/detailed.html
+490 silly gunzTarPerm extractEntry deps/lame/doc/html/Makefile.in
+491 silly gunzTarPerm extractEntry deps/lame/doc/html/index.html
+492 silly gunzTarPerm extractEntry deps/lame/doc/html/introduction.html
+493 silly gunzTarPerm extractEntry deps/lame/doc/html/links.html
+494 silly gunzTarPerm extractEntry deps/lame/doc/html/list.html
+495 silly gunzTarPerm extractEntry deps/lame/doc/html/ms_stereo.html
+496 silly gunzTarPerm extractEntry deps/lame/doc/html/usage.html
+497 silly gunzTarPerm extractEntry deps/lame/doc/html/vbr.html
+498 silly gunzTarPerm extractEntry deps/lame/doc/man/Makefile.am
+499 silly gunzTarPerm extractEntry deps/lame/doc/man/Makefile.in
+500 silly gunzTarPerm extractEntry deps/lame/doc/man/lame.1
+501 silly gunzTarPerm extractEntry deps/lame/dshow/README
+502 silly gunzTarPerm extractEntry deps/lame/dshow/PropPage_adv.h
+503 silly gunzTarPerm extractEntry deps/lame/dshow/Makefile.am
+504 silly gunzTarPerm extractEntry deps/lame/dshow/Makefile.in
+505 silly gunzTarPerm extractEntry deps/lame/dshow/Mpegac.cpp
+506 silly gunzTarPerm extractEntry deps/lame/dshow/Mpegac.def
+507 silly gunzTarPerm extractEntry deps/lame/dshow/Mpegac.h
+508 silly gunzTarPerm extractEntry deps/lame/dshow/PropPage.cpp
+509 silly gunzTarPerm extractEntry deps/lame/dshow/PropPage.h
+510 silly gunzTarPerm extractEntry deps/lame/dshow/PropPage_adv.cpp
+511 silly gunzTarPerm extractEntry deps/lame/dshow/Encoder.h
+512 silly gunzTarPerm extractEntry deps/lame/dshow/Property.rc
+513 silly gunzTarPerm extractEntry deps/lame/dshow/Encoder.cpp
+514 silly gunzTarPerm extractEntry deps/lame/dshow/REG.CPP
+515 silly gunzTarPerm extractEntry deps/lame/dshow/REG.H
+516 silly gunzTarPerm extractEntry deps/lame/dshow/UIDS.H
+517 silly gunzTarPerm extractEntry deps/lame/dshow/aboutprp.cpp
+518 silly gunzTarPerm extractEntry deps/lame/dshow/aboutprp.h
+519 silly gunzTarPerm extractEntry deps/lame/dshow/elogo.ico
+520 silly gunzTarPerm extractEntry deps/lame/dshow/iaudioprops.h
+521 silly gunzTarPerm extractEntry deps/lame/dshow/resource.h
+522 silly gunzTarPerm extractEntry deps/lame/frontend/gtkanal.h
+523 silly gunzTarPerm extractEntry deps/lame/frontend/Makefile.am
+524 silly gunzTarPerm extractEntry deps/lame/frontend/amiga_mpega.c
+525 silly gunzTarPerm extractEntry deps/lame/frontend/brhist.c
+526 silly gunzTarPerm extractEntry deps/lame/frontend/brhist.h
+527 silly gunzTarPerm extractEntry deps/lame/frontend/console.c
+528 silly gunzTarPerm extractEntry deps/lame/frontend/console.h
+529 silly gunzTarPerm extractEntry deps/lame/frontend/depcomp
+530 silly gunzTarPerm extractEntry deps/lame/frontend/get_audio.c
+531 silly gunzTarPerm extractEntry deps/lame/frontend/get_audio.h
+532 silly gunzTarPerm extractEntry deps/lame/frontend/gpkplotting.c
+533 silly gunzTarPerm extractEntry deps/lame/frontend/gpkplotting.h
+534 silly gunzTarPerm extractEntry deps/lame/frontend/gtkanal.c
+535 silly gunzTarPerm extractEntry deps/lame/frontend/Makefile.in
+536 silly gunzTarPerm extractEntry deps/lame/frontend/lame_main.c
+537 silly gunzTarPerm extractEntry deps/lame/frontend/lametime.c
+538 silly gunzTarPerm extractEntry deps/lame/frontend/lametime.h
+539 silly gunzTarPerm extractEntry deps/lame/frontend/main.c
+540 silly gunzTarPerm extractEntry deps/lame/frontend/main.h
+541 silly gunzTarPerm extractEntry deps/lame/frontend/mp3rtp.c
+542 silly gunzTarPerm extractEntry deps/lame/frontend/mp3x.c
+543 silly gunzTarPerm extractEntry deps/lame/frontend/parse.c
+544 silly gunzTarPerm extractEntry deps/lame/frontend/parse.h
+545 silly gunzTarPerm extractEntry deps/lame/frontend/rtp.c
+546 silly gunzTarPerm extractEntry deps/lame/frontend/rtp.h
+547 silly gunzTarPerm extractEntry deps/lame/frontend/timestatus.c
+548 silly gunzTarPerm extractEntry deps/lame/frontend/timestatus.h
+549 silly gunzTarPerm extractEntry deps/lame/include/Makefile.am
+550 silly gunzTarPerm extractEntry deps/lame/include/Makefile.in
+551 silly gunzTarPerm extractEntry deps/lame/include/lame.def
+552 silly gunzTarPerm extractEntry deps/lame/include/lame.h
+553 silly gunzTarPerm extractEntry deps/lame/include/libmp3lame.sym
+554 silly gunzTarPerm extractEntry deps/lame/install-sh
+555 silly gunzTarPerm extractEntry deps/lame/lame.bat
+556 silly gunzTarPerm extractEntry deps/lame/lame.spec
+557 silly gunzTarPerm extractEntry deps/lame/lame.spec.in
+558 silly gunzTarPerm extractEntry deps/lame/libmp3lame/mpglib_interface.c
+559 silly gunzTarPerm extractEntry deps/lame/libmp3lame/Makefile.am
+560 silly gunzTarPerm extractEntry deps/lame/libmp3lame/VbrTag.c
+561 silly gunzTarPerm extractEntry deps/lame/libmp3lame/VbrTag.h
+562 silly gunzTarPerm extractEntry deps/lame/libmp3lame/bitstream.c
+563 silly gunzTarPerm extractEntry deps/lame/libmp3lame/bitstream.h
+564 silly gunzTarPerm extractEntry deps/lame/libmp3lame/depcomp
+565 silly gunzTarPerm extractEntry deps/lame/libmp3lame/encoder.c
+566 silly gunzTarPerm extractEntry deps/lame/libmp3lame/encoder.h
+567 silly gunzTarPerm extractEntry deps/lame/libmp3lame/fft.c
+568 silly gunzTarPerm extractEntry deps/lame/libmp3lame/fft.h
+569 silly gunzTarPerm extractEntry deps/lame/libmp3lame/gain_analysis.c
+570 silly gunzTarPerm extractEntry deps/lame/libmp3lame/gain_analysis.h
+571 silly gunzTarPerm extractEntry deps/lame/libmp3lame/i386/fft3dn.nas
+572 silly gunzTarPerm extractEntry deps/lame/libmp3lame/i386/Makefile.am
+573 silly gunzTarPerm extractEntry deps/lame/libmp3lame/i386/choose_table.nas
+574 silly gunzTarPerm extractEntry deps/lame/libmp3lame/i386/cpu_feat.nas
+575 silly gunzTarPerm extractEntry deps/lame/libmp3lame/i386/fft.nas
+576 silly gunzTarPerm extractEntry deps/lame/libmp3lame/i386/Makefile.in
+577 silly gunzTarPerm extractEntry deps/lame/libmp3lame/i386/fftfpu.nas
+578 silly gunzTarPerm extractEntry deps/lame/libmp3lame/i386/fftsse.nas
+579 silly gunzTarPerm extractEntry deps/lame/libmp3lame/i386/ffttbl.nas
+580 silly gunzTarPerm extractEntry deps/lame/libmp3lame/i386/nasm.h
+581 silly gunzTarPerm extractEntry deps/lame/libmp3lame/i386/scalar.nas
+582 silly gunzTarPerm extractEntry deps/lame/libmp3lame/id3tag.c
+583 silly gunzTarPerm extractEntry deps/lame/libmp3lame/id3tag.h
+584 silly gunzTarPerm extractEntry deps/lame/libmp3lame/l3side.h
+585 silly gunzTarPerm extractEntry deps/lame/libmp3lame/lame-analysis.h
+586 silly gunzTarPerm extractEntry deps/lame/libmp3lame/lame.c
+587 silly gunzTarPerm extractEntry deps/lame/libmp3lame/lame.rc
+588 silly gunzTarPerm extractEntry deps/lame/libmp3lame/lame_global_flags.h
+589 silly gunzTarPerm extractEntry deps/lame/libmp3lame/lameerror.h
+590 silly gunzTarPerm extractEntry deps/lame/libmp3lame/logoe.ico
+591 silly gunzTarPerm extractEntry deps/lame/libmp3lame/machine.h
+592 silly gunzTarPerm extractEntry deps/lame/libmp3lame/Makefile.in
+593 silly gunzTarPerm extractEntry deps/lame/libmp3lame/newmdct.c
+594 silly gunzTarPerm extractEntry deps/lame/libmp3lame/newmdct.h
+595 silly gunzTarPerm extractEntry deps/lame/libmp3lame/presets.c
+596 silly gunzTarPerm extractEntry deps/lame/libmp3lame/psymodel.c
+597 silly gunzTarPerm extractEntry deps/lame/libmp3lame/psymodel.h
+598 silly gunzTarPerm extractEntry deps/lame/libmp3lame/quantize.c
+599 silly gunzTarPerm extractEntry deps/lame/libmp3lame/quantize.h
+600 silly gunzTarPerm extractEntry deps/lame/libmp3lame/quantize_pvt.c
+601 silly gunzTarPerm extractEntry deps/lame/libmp3lame/quantize_pvt.h
+602 silly gunzTarPerm extractEntry deps/lame/libmp3lame/reservoir.c
+603 silly gunzTarPerm extractEntry deps/lame/libmp3lame/reservoir.h
+604 silly gunzTarPerm extractEntry deps/lame/libmp3lame/set_get.c
+605 silly gunzTarPerm extractEntry deps/lame/libmp3lame/set_get.h
+606 silly gunzTarPerm extractEntry deps/lame/libmp3lame/tables.c
+607 silly gunzTarPerm extractEntry deps/lame/libmp3lame/tables.h
+608 silly gunzTarPerm extractEntry deps/lame/libmp3lame/takehiro.c
+609 silly gunzTarPerm extractEntry deps/lame/libmp3lame/util.c
+610 silly gunzTarPerm extractEntry deps/lame/libmp3lame/util.h
+611 silly gunzTarPerm extractEntry deps/lame/libmp3lame/vbrquantize.c
+612 silly gunzTarPerm extractEntry deps/lame/libmp3lame/vbrquantize.h
+613 silly gunzTarPerm extractEntry deps/lame/libmp3lame/vector/Makefile.am
+614 silly gunzTarPerm extractEntry deps/lame/libmp3lame/vector/Makefile.in
+615 silly gunzTarPerm extractEntry deps/lame/libmp3lame/vector/lame_intrin.h
+616 silly gunzTarPerm extractEntry deps/lame/libmp3lame/vector/xmm_quantize_sub.c
+617 silly gunzTarPerm extractEntry deps/lame/libmp3lame/version.c
+618 silly gunzTarPerm extractEntry deps/lame/libmp3lame/version.h
+619 silly gunzTarPerm extractEntry deps/lame/libmp3lame.gyp
+620 silly gunzTarPerm extractEntry deps/lame/ltmain.sh
+621 silly gunzTarPerm extractEntry deps/lame/mac/LAME.mcp
+622 silly gunzTarPerm extractEntry deps/lame/mac/LAME_Carbon_Debug.pch
+623 silly gunzTarPerm extractEntry deps/lame/mac/LAME_Carbon_Final.pch
+624 silly gunzTarPerm extractEntry deps/lame/mac/LAME_Classic_Debug.pch
+625 silly gunzTarPerm extractEntry deps/lame/mac/LAME_Classic_Final.pch
+626 silly gunzTarPerm extractEntry deps/lame/mac/MacDLLMain.c
+627 silly gunzTarPerm extractEntry deps/lame/mac/Makefile.am
+628 silly gunzTarPerm extractEntry deps/lame/mac/Makefile.in
+629 silly gunzTarPerm extractEntry deps/lame/mac/Precompile_Common.h
+630 silly gunzTarPerm extractEntry deps/lame/macosx/English.lproj/InfoPlist.strings
+631 silly gunzTarPerm extractEntry deps/lame/macosx/English.lproj/Makefile.am
+632 silly gunzTarPerm extractEntry deps/lame/macosx/English.lproj/Makefile.in
+633 silly gunzTarPerm extractEntry deps/lame/macosx/Info.plist
+634 silly gunzTarPerm extractEntry deps/lame/macosx/LAME.xcodeproj/Makefile.am
+635 silly gunzTarPerm extractEntry deps/lame/macosx/LAME.xcodeproj/Makefile.in
+636 silly gunzTarPerm extractEntry deps/lame/macosx/LAME.xcodeproj/project.pbxproj
+637 silly gunzTarPerm extractEntry deps/lame/macosx/LAME_Prefix.pch
+638 silly gunzTarPerm extractEntry deps/lame/macosx/Makefile.am
+639 silly gunzTarPerm extractEntry deps/lame/macosx/Makefile.in
+640 silly gunzTarPerm extractEntry deps/lame/misc/lame4dos.bat
+641 silly gunzTarPerm extractEntry deps/lame/misc/Lame.vbs
+642 silly gunzTarPerm extractEntry deps/lame/misc/Makefile.in
+643 silly gunzTarPerm extractEntry deps/lame/misc/abx.c
+644 silly gunzTarPerm extractEntry deps/lame/misc/ath.c
+645 silly gunzTarPerm extractEntry deps/lame/misc/auenc
+646 silly gunzTarPerm extractEntry deps/lame/misc/depcomp
+647 silly gunzTarPerm extractEntry deps/lame/misc/Makefile.am
+648 silly gunzTarPerm extractEntry deps/lame/misc/lameGUI.html
+649 silly gunzTarPerm extractEntry deps/lame/misc/lameid3.pl
+650 silly gunzTarPerm extractEntry deps/lame/misc/mk_mp3.sh
+651 silly gunzTarPerm extractEntry deps/lame/misc/mlame
+652 silly gunzTarPerm extractEntry deps/lame/misc/mlame_corr.c
+653 silly gunzTarPerm extractEntry deps/lame/misc/mugeco.sh
+654 silly gunzTarPerm extractEntry deps/lame/misc/scalartest.c
+655 silly gunzTarPerm extractEntry deps/lame/missing
+656 silly gunzTarPerm extractEntry deps/lame/mpglib/README
+657 silly gunzTarPerm extractEntry deps/lame/mpglib/interface.c
+658 silly gunzTarPerm extractEntry deps/lame/mpglib/Makefile.in
+659 silly gunzTarPerm extractEntry deps/lame/mpglib/AUTHORS
+660 silly gunzTarPerm extractEntry deps/lame/mpglib/common.c
+661 silly gunzTarPerm extractEntry deps/lame/mpglib/common.h
+662 silly gunzTarPerm extractEntry deps/lame/mpglib/dct64_i386.c
+663 silly gunzTarPerm extractEntry deps/lame/mpglib/dct64_i386.h
+664 silly gunzTarPerm extractEntry deps/lame/mpglib/decode_i386.c
+665 silly gunzTarPerm extractEntry deps/lame/mpglib/decode_i386.h
+666 silly gunzTarPerm extractEntry deps/lame/mpglib/depcomp
+667 silly gunzTarPerm extractEntry deps/lame/mpglib/huffman.h
+668 silly gunzTarPerm extractEntry deps/lame/mpglib/Makefile.am
+669 silly gunzTarPerm extractEntry deps/lame/mpglib/interface.h
+670 silly gunzTarPerm extractEntry deps/lame/mpglib/l2tables.h
+671 silly gunzTarPerm extractEntry deps/lame/mpglib/layer1.c
+672 silly gunzTarPerm extractEntry deps/lame/mpglib/layer1.h
+673 silly gunzTarPerm extractEntry deps/lame/mpglib/layer2.c
+674 silly gunzTarPerm extractEntry deps/lame/mpglib/layer2.h
+675 silly gunzTarPerm extractEntry deps/lame/mpglib/layer3.c
+676 silly gunzTarPerm extractEntry deps/lame/mpglib/layer3.h
+677 silly gunzTarPerm extractEntry deps/lame/mpglib/mpg123.h
+678 silly gunzTarPerm extractEntry deps/lame/mpglib/mpglib.h
+679 silly gunzTarPerm extractEntry deps/lame/mpglib/tabinit.c
+680 silly gunzTarPerm extractEntry deps/lame/mpglib/tabinit.h
+681 silly gunzTarPerm extractEntry deps/lame/test.c
+682 silly gunzTarPerm extractEntry deps/lame/testcase.mp3
+683 silly gunzTarPerm extractEntry deps/lame/testcase.wav
+684 silly gunzTarPerm extractEntry deps/lame/vc_solution/vc9_lame_dll.vcproj
+685 silly gunzTarPerm extractEntry deps/lame/vc_solution/Makefile.am
+686 silly gunzTarPerm extractEntry deps/lame/vc_solution/arch_nasm.vsprops
+687 silly gunzTarPerm extractEntry deps/lame/vc_solution/arch_sse2.vsprops
+688 silly gunzTarPerm extractEntry deps/lame/vc_solution/arch_x87.vsprops
+689 silly gunzTarPerm extractEntry deps/lame/vc_solution/vc9_lame.sln
+690 silly gunzTarPerm extractEntry deps/lame/vc_solution/vc9_lame_acm.vcproj
+691 silly gunzTarPerm extractEntry deps/lame/vc_solution/vc9_lame_acm_adbg.vcproj
+692 silly gunzTarPerm extractEntry deps/lame/vc_solution/vc9_lame_acm_tinyxml.vcproj
+693 silly gunzTarPerm extractEntry deps/lame/vc_solution/vc9_lame_clients.sln
+694 silly gunzTarPerm extractEntry deps/lame/vc_solution/vc9_lame_config.vsprops
+695 silly gunzTarPerm extractEntry deps/lame/vc_solution/Makefile.in
+696 silly gunzTarPerm extractEntry deps/lame/vc_solution/vc9_lame_dll_example.vcproj
+697 silly gunzTarPerm extractEntry deps/lame/vc_solution/vc9_lame_dshow.vcproj
+698 silly gunzTarPerm extractEntry deps/lame/vc_solution/vc9_lame_lame.vcproj
+699 silly gunzTarPerm extractEntry deps/lame/vc_solution/vc9_lame_mp3rtp.vcproj
+700 silly gunzTarPerm extractEntry deps/lame/vc_solution/vc9_lame_mp3x.vcproj
+701 silly gunzTarPerm extractEntry deps/lame/vc_solution/vc9_lame_test.vcproj
+702 silly gunzTarPerm extractEntry deps/lame/vc_solution/vc9_libmp3lame.vcproj
+703 silly gunzTarPerm extractEntry deps/lame/vc_solution/vc9_libmp3lame_dll.vcproj
+704 silly gunzTarPerm extractEntry deps/lame/vc_solution/vc9_mpglib.vcproj
+705 silly gunzTarPerm extractEntry deps/lame/vc_solution/vc9_nasm.rules
+706 silly gunzTarPerm extractEntry deps/mpg123/README
+707 silly gunzTarPerm extractEntry deps/mpg123/doc/LICENSE
+708 silly gunzTarPerm extractEntry deps/mpg123/doc/README.gain
+709 silly gunzTarPerm extractEntry deps/mpg123/doc/BUGS
+710 silly gunzTarPerm extractEntry deps/mpg123/doc/CONTACT
+711 silly gunzTarPerm extractEntry deps/mpg123/doc/ACCURACY
+712 silly gunzTarPerm extractEntry deps/mpg123/doc/Makefile.am
+713 silly gunzTarPerm extractEntry deps/mpg123/doc/Makefile.in
+714 silly gunzTarPerm extractEntry deps/mpg123/doc/PATENTS
+715 silly gunzTarPerm extractEntry deps/mpg123/doc/README.3DNOW
+716 silly gunzTarPerm extractEntry deps/mpg123/doc/BENCHMARKING
+717 silly gunzTarPerm extractEntry deps/mpg123/doc/README.remote
+718 silly gunzTarPerm extractEntry deps/mpg123/doc/ROAD_TO_LGPL
+719 silly gunzTarPerm extractEntry deps/mpg123/doc/THANKS
+720 silly gunzTarPerm extractEntry deps/mpg123/doc/TODO
+721 silly gunzTarPerm extractEntry deps/mpg123/doc/doxy_examples.c
+722 silly gunzTarPerm extractEntry deps/mpg123/doc/doxygen.conf
+723 silly gunzTarPerm extractEntry deps/mpg123/doc/doxyhead.xhtml
+724 silly gunzTarPerm extractEntry deps/mpg123/doc/examples/Makefile
+725 silly gunzTarPerm extractEntry deps/mpg123/doc/examples/dump_seekindex.c
+726 silly gunzTarPerm extractEntry deps/mpg123/doc/examples/extract_frames.c
+727 silly gunzTarPerm extractEntry deps/mpg123/doc/examples/feedseek.c
+728 silly gunzTarPerm extractEntry deps/mpg123/doc/examples/id3dump.c
+729 silly gunzTarPerm extractEntry deps/mpg123/doc/examples/mpg123_to_wav.c
+730 silly gunzTarPerm extractEntry deps/mpg123/doc/examples/mpglib.c
+731 silly gunzTarPerm extractEntry deps/mpg123/doc/examples/scan.c
+732 silly gunzTarPerm extractEntry deps/mpg123/doc/libmpg123_speed.txt
+733 silly gunzTarPerm extractEntry deps/mpg123/ChangeLog
+734 silly gunzTarPerm extractEntry deps/mpg123/INSTALL
+735 silly gunzTarPerm extractEntry deps/mpg123/Makefile.am
+736 silly gunzTarPerm extractEntry deps/mpg123/Makefile.in
+737 silly gunzTarPerm extractEntry deps/mpg123/NEWS
+738 silly gunzTarPerm extractEntry deps/mpg123/NEWS.libmpg123
+739 silly gunzTarPerm extractEntry deps/mpg123/AUTHORS
+740 silly gunzTarPerm extractEntry deps/mpg123/TODO
+741 silly gunzTarPerm extractEntry deps/mpg123/aclocal.m4
+742 silly gunzTarPerm extractEntry deps/mpg123/config/freebsd/x64/config.h
+743 silly gunzTarPerm extractEntry deps/mpg123/config/freebsd/x64/mpg123.h
+744 silly gunzTarPerm extractEntry deps/mpg123/config/linux/arm/config.h
+745 silly gunzTarPerm extractEntry deps/mpg123/config/linux/arm/mpg123.h
+746 silly gunzTarPerm extractEntry deps/mpg123/config/linux/ia32/config.h
+747 silly gunzTarPerm extractEntry deps/mpg123/config/linux/ia32/mpg123.h
+748 silly gunzTarPerm extractEntry deps/mpg123/config/linux/x64/config.h
+749 silly gunzTarPerm extractEntry deps/mpg123/config/linux/x64/mpg123.h
+750 silly gunzTarPerm extractEntry deps/mpg123/config/mac/ia32/config.h
+751 silly gunzTarPerm extractEntry deps/mpg123/config/mac/ia32/mpg123.h
+752 silly gunzTarPerm extractEntry deps/mpg123/config/mac/x64/config.h
+753 silly gunzTarPerm extractEntry deps/mpg123/config/mac/x64/mpg123.h
+754 silly gunzTarPerm extractEntry deps/mpg123/config/solaris/ia32/config.h
+755 silly gunzTarPerm extractEntry deps/mpg123/config/solaris/ia32/mpg123.h
+756 silly gunzTarPerm extractEntry deps/mpg123/config/solaris/x64/config.h
+757 silly gunzTarPerm extractEntry deps/mpg123/config/solaris/x64/mpg123.h
+758 silly gunzTarPerm extractEntry deps/mpg123/config/win/ia32/config.h
+759 silly gunzTarPerm extractEntry deps/mpg123/config/win/ia32/mpg123.h
+760 silly gunzTarPerm extractEntry deps/mpg123/config/win/x64/config.h
+761 silly gunzTarPerm extractEntry deps/mpg123/config/win/x64/mpg123.h
+762 silly gunzTarPerm extractEntry deps/mpg123/configure
+763 silly gunzTarPerm extractEntry deps/mpg123/configure.ac
+764 silly gunzTarPerm extractEntry deps/mpg123/COPYING
+765 silly gunzTarPerm extractEntry deps/mpg123/equalize.dat
+766 silly gunzTarPerm extractEntry deps/mpg123/libmpg123.pc.in
+767 silly gunzTarPerm extractEntry deps/mpg123/m4/addrconfig.m4
+768 silly gunzTarPerm extractEntry deps/mpg123/m4/libtool.m4
+769 silly gunzTarPerm extractEntry deps/mpg123/m4/ltoptions.m4
+770 silly gunzTarPerm extractEntry deps/mpg123/m4/ltsugar.m4
+771 silly gunzTarPerm extractEntry deps/mpg123/m4/ltversion.m4
+772 silly gunzTarPerm extractEntry deps/mpg123/m4/lt~obsolete.m4
+773 silly gunzTarPerm extractEntry deps/mpg123/makedll.sh
+774 silly gunzTarPerm extractEntry deps/mpg123/man1/mpg123.1
+775 silly gunzTarPerm extractEntry deps/mpg123/mpg123.gyp
+776 silly gunzTarPerm extractEntry deps/mpg123/mpg123.spec
+777 silly gunzTarPerm extractEntry deps/mpg123/mpg123.spec.in
+778 silly gunzTarPerm extractEntry deps/mpg123/ports/README
+779 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2005/libmpg123/libmpg123.vcproj
+780 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008/dump_seekindex/dump_seekindex.vcproj
+781 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008/feedseek/feedseek.vcproj
+782 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008/libmpg123/libmpg123.vcproj
+783 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008/mpg123.sln
+784 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008/mpglib/mpglib.vcproj
+785 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008/scan/scan.vcproj
+786 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/2008clr.sln
+787 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/examples/ReplaceReaderclr/Program.cs
+788 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/examples/ReplaceReaderclr/Properties/AssemblyInfo.cs
+789 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/examples/ReplaceReaderclr/ReplaceReaderclr.csproj
+790 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/examples/feedseekclr/Program.cs
+791 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/examples/feedseekclr/Properties/AssemblyInfo.cs
+792 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/examples/feedseekclr/feedseekclr.csproj
+793 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/examples/scanclr/Program.cs
+794 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/examples/scanclr/Properties/AssemblyInfo.cs
+795 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/examples/scanclr/scanclr.csproj
+796 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/mpg123clr.cpp
+797 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/AssemblyInfo.cpp
+798 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/advanced.cpp
+799 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/advanced.h
+800 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/dllmain.cpp
+801 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/enum.h
+802 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/error.cpp
+803 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/error.h
+804 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/id3v1.cpp
+805 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/id3v1.h
+806 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/id3v2.cpp
+807 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/id3v2.h
+808 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/ReadMe.txt
+809 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/mpg123clr.h
+810 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/mpg123clr.rc
+811 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/mpg123clr.vcproj
+812 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/resource.h
+813 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/stdafx.cpp
+814 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/stdafx.h
+815 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/string.cpp
+816 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/string.h
+817 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/targetver.h
+818 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/text.cpp
+819 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2008clr/mpg123clr/text.h
+820 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2010/dump_seekindex/dump_seekindex.vcxproj
+821 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2010/dump_seekindex/dump_seekindex.vcxproj.filters
+822 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2010/feedseek/feedseek.vcxproj
+823 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2010/feedseek/feedseek.vcxproj.filters
+824 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2010/libmpg123/libmpg123.vcxproj
+825 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2010/mpg123.sln
+826 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2010/scan/scan.vcxproj
+827 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/2010/scan/scan.vcxproj.filters
+828 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/CMP3Stream/README
+829 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/CMP3Stream/INCLUDE/CORE/CORE_FileIn.H
+830 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/CMP3Stream/INCLUDE/CORE/SourceFilter_MP3.H
+831 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/CMP3Stream/INCLUDE/IIEP_Def.H
+832 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/CMP3Stream/INCLUDE/IIEP_FileIn.H
+833 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/CMP3Stream/SOURCE/CORE_FileIn.CPP
+834 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/CMP3Stream/SOURCE/CORE_Log.CPP
+835 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/CMP3Stream/SOURCE/CORE_Mutex.CPP
+836 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/CMP3Stream/SOURCE/SourceFilter_MP3Stream.CPP
+837 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/CMP3Stream/libMPG123/PLACE_LIBMPG123_SOURCES_HERE
+838 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/CMP3Stream/libMPG123/libMPG123.vcproj
+839 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/config.h
+840 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/examples/feedseek.c
+841 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/examples/scan.c
+842 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/mpg123.h
+843 silly gunzTarPerm extractEntry deps/mpg123/ports/MSVC++/msvc.c
+844 silly gunzTarPerm extractEntry deps/mpg123/ports/Sony_PSP/README
+845 silly gunzTarPerm extractEntry deps/mpg123/ports/Sony_PSP/Makefile.psp
+846 silly gunzTarPerm extractEntry deps/mpg123/ports/Sony_PSP/config.h
+847 silly gunzTarPerm extractEntry deps/mpg123/ports/Sony_PSP/readers.c.patch
+848 silly gunzTarPerm extractEntry deps/mpg123/ports/Xcode/config.h
+849 silly gunzTarPerm extractEntry deps/mpg123/ports/Xcode/mpg123.h
+850 silly gunzTarPerm extractEntry deps/mpg123/ports/Xcode/mpg123.xcodeproj/project.pbxproj
+851 silly gunzTarPerm extractEntry deps/mpg123/ports/mpg123_.pas
+852 silly gunzTarPerm extractEntry deps/mpg123/scripts/benchmark-cpu.pl
+853 silly gunzTarPerm extractEntry deps/mpg123/scripts/tag_lyrics.py
+854 silly gunzTarPerm extractEntry deps/mpg123/src/module.c
+855 silly gunzTarPerm extractEntry deps/mpg123/src/Makefile.am
+856 silly gunzTarPerm extractEntry deps/mpg123/src/audio.c
+857 silly gunzTarPerm extractEntry deps/mpg123/src/audio.h
+858 silly gunzTarPerm extractEntry deps/mpg123/src/buffer.c
+859 silly gunzTarPerm extractEntry deps/mpg123/src/buffer.h
+860 silly gunzTarPerm extractEntry deps/mpg123/src/common.c
+861 silly gunzTarPerm extractEntry deps/mpg123/src/common.h
+862 silly gunzTarPerm extractEntry deps/mpg123/src/config.h.in
+863 silly gunzTarPerm extractEntry deps/mpg123/src/control_generic.c
+864 silly gunzTarPerm extractEntry deps/mpg123/src/equalizer.c
+865 silly gunzTarPerm extractEntry deps/mpg123/src/genre.c
+866 silly gunzTarPerm extractEntry deps/mpg123/src/genre.h
+867 silly gunzTarPerm extractEntry deps/mpg123/src/getlopt.c
+868 silly gunzTarPerm extractEntry deps/mpg123/src/getlopt.h
+869 silly gunzTarPerm extractEntry deps/mpg123/src/httpget.c
+870 silly gunzTarPerm extractEntry deps/mpg123/src/httpget.h
+871 silly gunzTarPerm extractEntry deps/mpg123/src/legacy_module.c
+872 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/mpg123lib_intern.h
+873 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/Makefile.am
+874 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/compat.c
+875 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/compat.h
+876 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/dct36_3dnow.S
+877 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/dct36_3dnowext.S
+878 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/dct64.c
+879 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/dct64_3dnow.S
+880 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/dct64_3dnowext.S
+881 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/dct64_altivec.c
+882 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/dct64_i386.c
+883 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/dct64_i486.c
+884 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/dct64_mmx.S
+885 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/dct64_neon.S
+886 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/dct64_neon_float.S
+887 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/dct64_sse.S
+888 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/dct64_sse_float.S
+889 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/dct64_x86_64.S
+890 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/dct64_x86_64_float.S
+891 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/debug.h
+892 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/decode.h
+893 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/dither.c
+894 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/dither.h
+895 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/equalizer.c
+896 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/equalizer_3dnow.S
+897 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/feature.c
+898 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/format.c
+899 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/frame.c
+900 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/frame.h
+901 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/gapless.h
+902 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/getbits.h
+903 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/getcpuflags.S
+904 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/getcpuflags.h
+905 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/huffman.h
+906 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/icy.c
+907 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/icy.h
+908 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/icy2utf8.c
+909 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/icy2utf8.h
+910 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/id3.c
+911 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/id3.h
+912 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/index.c
+913 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/index.h
+914 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/intsym.h
+915 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/l12_integer_tables.h
+916 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/l2tables.h
+917 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/l3_integer_tables.h
+918 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/layer1.c
+919 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/layer2.c
+920 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/layer3.c
+921 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/lfs_alias.c
+922 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/lfs_wrap.c
+923 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/libmpg123.c
+924 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/mangle.h
+925 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/mpeghead.h
+926 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/mpg123.h.in
+927 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/Makefile.in
+928 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/ntom.c
+929 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/optimize.c
+930 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/optimize.h
+931 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/parse.c
+932 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/parse.h
+933 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/reader.h
+934 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/readers.c
+935 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/sample.h
+936 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/stringbuf.c
+937 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth.c
+938 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth.h
+939 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_3dnow.S
+940 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_3dnowext.S
+941 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_8bit.c
+942 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_8bit.h
+943 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_altivec.c
+944 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_arm.S
+945 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_arm_accurate.S
+946 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_i486.c
+947 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_i586.S
+948 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_i586_dither.S
+949 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_mmx.S
+950 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_mono.h
+951 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_neon.S
+952 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_neon_accurate.S
+953 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_neon_float.S
+954 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_neon_s32.S
+955 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_ntom.h
+956 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_real.c
+957 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_s32.c
+958 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_sse.S
+959 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_sse3d.h
+960 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_sse_accurate.S
+961 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_sse_float.S
+962 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_sse_s32.S
+963 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_stereo_neon.S
+964 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_stereo_neon_accurate.S
+965 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_stereo_neon_float.S
+966 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_stereo_neon_s32.S
+967 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_stereo_sse_accurate.S
+968 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_stereo_sse_float.S
+969 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_stereo_sse_s32.S
+970 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_stereo_x86_64.S
+971 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_stereo_x86_64_accurate.S
+972 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_stereo_x86_64_float.S
+973 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_stereo_x86_64_s32.S
+974 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_x86_64.S
+975 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_x86_64_accurate.S
+976 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_x86_64_float.S
+977 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synth_x86_64_s32.S
+978 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/synths.h
+979 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/tabinit.c
+980 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/tabinit_mmx.S
+981 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/testcpu.c
+982 silly gunzTarPerm extractEntry deps/mpg123/src/libmpg123/true.h
+983 silly gunzTarPerm extractEntry deps/mpg123/src/local.c
+984 silly gunzTarPerm extractEntry deps/mpg123/src/local.h
+985 silly gunzTarPerm extractEntry deps/mpg123/src/metaprint.c
+986 silly gunzTarPerm extractEntry deps/mpg123/src/metaprint.h
+987 silly gunzTarPerm extractEntry deps/mpg123/src/Makefile.in
+988 silly gunzTarPerm extractEntry deps/mpg123/src/module.h
+989 silly gunzTarPerm extractEntry deps/mpg123/src/mpg123.c
+990 silly gunzTarPerm extractEntry deps/mpg123/src/mpg123app.h
+991 silly gunzTarPerm extractEntry deps/mpg123/src/output/nas.c
+992 silly gunzTarPerm extractEntry deps/mpg123/src/output/Makefile.am
+993 silly gunzTarPerm extractEntry deps/mpg123/src/output/aix.c
+994 silly gunzTarPerm extractEntry deps/mpg123/src/output/alib.c
+995 silly gunzTarPerm extractEntry deps/mpg123/src/output/alsa.c
+996 silly gunzTarPerm extractEntry deps/mpg123/src/output/arts.c
+997 silly gunzTarPerm extractEntry deps/mpg123/src/output/coreaudio.c
+998 silly gunzTarPerm extractEntry deps/mpg123/src/output/dummy.c
+999 silly gunzTarPerm extractEntry deps/mpg123/src/output/esd.c
+1000 silly gunzTarPerm extractEntry deps/mpg123/src/output/hp.c
+1001 silly gunzTarPerm extractEntry deps/mpg123/src/output/jack.c
+1002 silly gunzTarPerm extractEntry deps/mpg123/src/output/mint.c
+1003 silly gunzTarPerm extractEntry deps/mpg123/src/output/Makefile.in
+1004 silly gunzTarPerm extractEntry deps/mpg123/src/output/openal.c
+1005 silly gunzTarPerm extractEntry deps/mpg123/src/output/os2.c
+1006 silly gunzTarPerm extractEntry deps/mpg123/src/output/oss.c
+1007 silly gunzTarPerm extractEntry deps/mpg123/src/output/output.h
+1008 silly gunzTarPerm extractEntry deps/mpg123/src/output/portaudio.c
+1009 silly gunzTarPerm extractEntry deps/mpg123/src/output/pulse.c
+1010 silly gunzTarPerm extractEntry deps/mpg123/src/output/sdl.c
+1011 silly gunzTarPerm extractEntry deps/mpg123/src/output/sgi.c
+1012 silly gunzTarPerm extractEntry deps/mpg123/src/output/sndio.c
+1013 silly gunzTarPerm extractEntry deps/mpg123/src/output/sun.c
+1014 silly gunzTarPerm extractEntry deps/mpg123/src/output/win32.c
+1015 silly gunzTarPerm extractEntry deps/mpg123/src/playlist.c
+1016 silly gunzTarPerm extractEntry deps/mpg123/src/playlist.h
+1017 silly gunzTarPerm extractEntry deps/mpg123/src/resolver.c
+1018 silly gunzTarPerm extractEntry deps/mpg123/src/resolver.h
+1019 silly gunzTarPerm extractEntry deps/mpg123/src/sfifo.c
+1020 silly gunzTarPerm extractEntry deps/mpg123/src/sfifo.h
+1021 silly gunzTarPerm extractEntry deps/mpg123/src/streamdump.c
+1022 silly gunzTarPerm extractEntry deps/mpg123/src/streamdump.h
+1023 silly gunzTarPerm extractEntry deps/mpg123/src/term.c
+1024 silly gunzTarPerm extractEntry deps/mpg123/src/term.h
+1025 silly gunzTarPerm extractEntry deps/mpg123/src/tests/noise.c
+1026 silly gunzTarPerm extractEntry deps/mpg123/src/tests/plain_id3.c
+1027 silly gunzTarPerm extractEntry deps/mpg123/src/tests/seek_accuracy.c
+1028 silly gunzTarPerm extractEntry deps/mpg123/src/tests/seek_whence.c
+1029 silly gunzTarPerm extractEntry deps/mpg123/src/tests/testtext.h
+1030 silly gunzTarPerm extractEntry deps/mpg123/src/tests/text.c
+1031 silly gunzTarPerm extractEntry deps/mpg123/src/wav.c
+1032 silly gunzTarPerm extractEntry deps/mpg123/src/wavhead.h
+1033 silly gunzTarPerm extractEntry deps/mpg123/src/win32_net.c
+1034 silly gunzTarPerm extractEntry deps/mpg123/src/win32_support.c
+1035 silly gunzTarPerm extractEntry deps/mpg123/src/win32_support.h
+1036 silly gunzTarPerm extractEntry deps/mpg123/src/xfermem.c
+1037 silly gunzTarPerm extractEntry deps/mpg123/src/xfermem.h
+1038 silly gunzTarPerm extractEntry deps/mpg123/test.c
+1039 silly gunzTarPerm extractEntry deps/mpg123/windows-builds.sh
+1040 silly gunzTarPerm extractEntry binding.gyp
+1041 silly gunzTarPerm extractEntry History.md
+1042 silly gunzTarPerm extractEntry examples/floatpcm2mp3.js
+1043 silly gunzTarPerm extractEntry examples/mp32wav.js
+1044 silly gunzTarPerm extractEntry examples/mp3player.js
+1045 silly gunzTarPerm extractEntry examples/wav2mp3.js
+1046 silly gunzTarPerm extractEntry examples/sample.float.pcm
+1047 silly gunzTarPerm extractEntry lib/bindings.js
+1048 silly gunzTarPerm extractEntry lib/decoder.js
+1049 silly gunzTarPerm extractEntry lib/encoder.js
+1050 silly gunzTarPerm extractEntry src/bindings.cc
+1051 silly gunzTarPerm extractEntry src/node_lame.cc
+1052 silly gunzTarPerm extractEntry src/node_lame.h
+1053 silly gunzTarPerm extractEntry src/node_mpg123.cc
+1054 silly gunzTarPerm extractEntry src/node_mpg123.h
+1055 silly gunzTarPerm extractEntry src/node_pointer.h
+1056 silly gunzTarPerm extractEntry .travis.yml
+1057 silly gunzTarPerm extractEntry test/decoder.js
+1058 silly gunzTarPerm extractEntry test/fixtures/pipershut_lo.mp3
+1059 verbose write writing to /var/www/vhosts/backbone-node/api/node_modules/lame/package.json
+1060 info preinstall lame@1.2.4
+1061 verbose readDependencies loading dependencies from /var/www/vhosts/backbone-node/api/node_modules/lame/package.json
+1062 silly prepareForInstallMany adding bindings@^1.2.1 from lame dependencies
+1063 silly prepareForInstallMany adding debug@^2.2.0 from lame dependencies
+1064 verbose readDependencies loading dependencies from /var/www/vhosts/backbone-node/api/node_modules/lame/package.json
+1065 silly cache add args [ 'debug@^2.2.0', null ]
+1066 verbose cache add spec debug@^2.2.0
+1067 silly cache add parsed spec Result {
+1067 silly cache add   raw: 'debug@^2.2.0',
+1067 silly cache add   scope: null,
+1067 silly cache add   name: 'debug',
+1067 silly cache add   rawSpec: '^2.2.0',
+1067 silly cache add   spec: '>=2.2.0 <3.0.0',
+1067 silly cache add   type: 'range' }
+1068 silly addNamed debug@>=2.2.0 <3.0.0
+1069 verbose addNamed ">=2.2.0 <3.0.0" is a valid semver range for debug
+1070 silly addNameRange { name: 'debug', range: '>=2.2.0 <3.0.0', hasData: false }
+1071 silly mapToRegistry name debug
+1072 silly mapToRegistry using default registry
+1073 silly mapToRegistry registry http://registry.npmjs.org/
+1074 silly mapToRegistry data Result {
+1074 silly mapToRegistry   raw: 'debug',
+1074 silly mapToRegistry   scope: null,
+1074 silly mapToRegistry   name: 'debug',
+1074 silly mapToRegistry   rawSpec: '',
+1074 silly mapToRegistry   spec: 'latest',
+1074 silly mapToRegistry   type: 'tag' }
+1075 silly mapToRegistry uri http://registry.npmjs.org/debug
+1076 verbose addNameRange registry:http://registry.npmjs.org/debug not in flight; fetching
+1077 silly cache add args [ 'bindings@^1.2.1', null ]
+1078 verbose cache add spec bindings@^1.2.1
+1079 silly cache add parsed spec Result {
+1079 silly cache add   raw: 'bindings@^1.2.1',
+1079 silly cache add   scope: null,
+1079 silly cache add   name: 'bindings',
+1079 silly cache add   rawSpec: '^1.2.1',
+1079 silly cache add   spec: '>=1.2.1 <2.0.0',
+1079 silly cache add   type: 'range' }
+1080 silly addNamed bindings@>=1.2.1 <2.0.0
+1081 verbose addNamed ">=1.2.1 <2.0.0" is a valid semver range for bindings
+1082 silly addNameRange { name: 'bindings', range: '>=1.2.1 <2.0.0', hasData: false }
+1083 silly mapToRegistry name bindings
+1084 silly mapToRegistry using default registry
+1085 silly mapToRegistry registry http://registry.npmjs.org/
+1086 silly mapToRegistry data Result {
+1086 silly mapToRegistry   raw: 'bindings',
+1086 silly mapToRegistry   scope: null,
+1086 silly mapToRegistry   name: 'bindings',
+1086 silly mapToRegistry   rawSpec: '',
+1086 silly mapToRegistry   spec: 'latest',
+1086 silly mapToRegistry   type: 'tag' }
+1087 silly mapToRegistry uri http://registry.npmjs.org/bindings
+1088 verbose addNameRange registry:http://registry.npmjs.org/bindings not in flight; fetching
+1089 verbose request uri http://registry.npmjs.org/debug
+1090 verbose request no auth needed
+1091 info attempt registry request try #1 at 12:25:00 PM
+1092 verbose etag "9IDGPGEFI31ET8U2NFO244MET"
+1093 http request GET http://registry.npmjs.org/debug
+1094 verbose request uri http://registry.npmjs.org/bindings
+1095 verbose request no auth needed
+1096 info attempt registry request try #1 at 12:25:00 PM
+1097 verbose etag "33TX4J3DNTGF7K41ZUV6OA182"
+1098 http request GET http://registry.npmjs.org/bindings
+1099 http 200 http://registry.npmjs.org/debug
+1100 verbose headers { server: 'CouchDB/1.6.1 (Erlang OTP/R16B03)',
+1100 verbose headers   etag: '"7J2T8S3I0QIQM876ABRYG1U2S"',
+1100 verbose headers   'content-type': 'application/json',
+1100 verbose headers   'content-encoding': 'gzip',
+1100 verbose headers   'cache-control': 'max-age=300',
+1100 verbose headers   'content-length': '9140',
+1100 verbose headers   'accept-ranges': 'bytes',
+1100 verbose headers   date: 'Thu, 28 Jul 2016 11:24:59 GMT',
+1100 verbose headers   via: '1.1 varnish',
+1100 verbose headers   age: '70',
+1100 verbose headers   connection: 'keep-alive',
+1100 verbose headers   'x-served-by': 'cache-lhr6339-LHR',
+1100 verbose headers   'x-cache': 'HIT',
+1100 verbose headers   'x-cache-hits': '3',
+1100 verbose headers   'x-timer': 'S1469705099.421491,VS0,VE0',
+1100 verbose headers   vary: 'Accept-Encoding' }
+1101 silly get cb [ 200,
+1101 silly get   { server: 'CouchDB/1.6.1 (Erlang OTP/R16B03)',
+1101 silly get     etag: '"7J2T8S3I0QIQM876ABRYG1U2S"',
+1101 silly get     'content-type': 'application/json',
+1101 silly get     'content-encoding': 'gzip',
+1101 silly get     'cache-control': 'max-age=300',
+1101 silly get     'content-length': '9140',
+1101 silly get     'accept-ranges': 'bytes',
+1101 silly get     date: 'Thu, 28 Jul 2016 11:24:59 GMT',
+1101 silly get     via: '1.1 varnish',
+1101 silly get     age: '70',
+1101 silly get     connection: 'keep-alive',
+1101 silly get     'x-served-by': 'cache-lhr6339-LHR',
+1101 silly get     'x-cache': 'HIT',
+1101 silly get     'x-cache-hits': '3',
+1101 silly get     'x-timer': 'S1469705099.421491,VS0,VE0',
+1101 silly get     vary: 'Accept-Encoding' } ]
+1102 verbose get saving debug to /root/.npm/registry.npmjs.org/debug/.cache.json
+1103 verbose correctMkdir /root/.npm correctMkdir not in flight; initializing
+1104 http 304 http://registry.npmjs.org/bindings
+1105 verbose headers { date: 'Thu, 28 Jul 2016 11:24:59 GMT',
+1105 verbose headers   via: '1.1 varnish',
+1105 verbose headers   'cache-control': 'max-age=300',
+1105 verbose headers   etag: '"33TX4J3DNTGF7K41ZUV6OA182"',
+1105 verbose headers   age: '103',
+1105 verbose headers   connection: 'keep-alive',
+1105 verbose headers   'x-served-by': 'cache-lhr6331-LHR',
+1105 verbose headers   'x-cache': 'HIT',
+1105 verbose headers   'x-cache-hits': '2',
+1105 verbose headers   'x-timer': 'S1469705099.462089,VS0,VE0',
+1105 verbose headers   vary: 'Accept-Encoding' }
+1106 silly get cb [ 304,
+1106 silly get   { date: 'Thu, 28 Jul 2016 11:24:59 GMT',
+1106 silly get     via: '1.1 varnish',
+1106 silly get     'cache-control': 'max-age=300',
+1106 silly get     etag: '"33TX4J3DNTGF7K41ZUV6OA182"',
+1106 silly get     age: '103',
+1106 silly get     connection: 'keep-alive',
+1106 silly get     'x-served-by': 'cache-lhr6331-LHR',
+1106 silly get     'x-cache': 'HIT',
+1106 silly get     'x-cache-hits': '2',
+1106 silly get     'x-timer': 'S1469705099.462089,VS0,VE0',
+1106 silly get     vary: 'Accept-Encoding' } ]
+1107 verbose etag http://registry.npmjs.org/bindings from cache
+1108 verbose get saving bindings to /root/.npm/registry.npmjs.org/bindings/.cache.json
+1109 verbose correctMkdir /root/.npm correctMkdir not in flight; initializing
+1110 silly addNameRange number 2 { name: 'debug', range: '>=2.2.0 <3.0.0', hasData: true }
+1111 silly addNameRange versions [ 'debug',
+1111 silly addNameRange   [ '0.0.1',
+1111 silly addNameRange     '0.1.0',
+1111 silly addNameRange     '0.2.0',
+1111 silly addNameRange     '0.3.0',
+1111 silly addNameRange     '0.4.0',
+1111 silly addNameRange     '0.4.1',
+1111 silly addNameRange     '0.5.0',
+1111 silly addNameRange     '0.6.0',
+1111 silly addNameRange     '0.7.0',
+1111 silly addNameRange     '0.7.1',
+1111 silly addNameRange     '0.7.2',
+1111 silly addNameRange     '0.7.3',
+1111 silly addNameRange     '0.7.4',
+1111 silly addNameRange     '0.8.0',
+1111 silly addNameRange     '0.8.1',
+1111 silly addNameRange     '1.0.0',
+1111 silly addNameRange     '1.0.1',
+1111 silly addNameRange     '1.0.2',
+1111 silly addNameRange     '1.0.3',
+1111 silly addNameRange     '1.0.4',
+1111 silly addNameRange     '2.0.0',
+1111 silly addNameRange     '2.1.0',
+1111 silly addNameRange     '2.1.1',
+1111 silly addNameRange     '2.1.2',
+1111 silly addNameRange     '2.1.3',
+1111 silly addNameRange     '2.2.0' ] ]
+1112 silly addNamed debug@2.2.0
+1113 verbose addNamed "2.2.0" is a plain semver version for debug
+1114 silly cache afterAdd debug@2.2.0
+1115 verbose afterAdd /root/.npm/debug/2.2.0/package/package.json not in flight; writing
+1116 verbose correctMkdir /root/.npm correctMkdir not in flight; initializing
+1117 silly addNameRange number 2 { name: 'bindings', range: '>=1.2.1 <2.0.0', hasData: true }
+1118 silly addNameRange versions [ 'bindings',
+1118 silly addNameRange   [ '0.0.1',
+1118 silly addNameRange     '0.1.0',
+1118 silly addNameRange     '0.1.1',
+1118 silly addNameRange     '0.2.0',
+1118 silly addNameRange     '0.2.1',
+1118 silly addNameRange     '0.2.2',
+1118 silly addNameRange     '0.2.3',
+1118 silly addNameRange     '0.2.4',
+1118 silly addNameRange     '0.3.0',
+1118 silly addNameRange     '0.4.0',
+1118 silly addNameRange     '1.0.0',
+1118 silly addNameRange     '1.1.0',
+1118 silly addNameRange     '1.1.1',
+1118 silly addNameRange     '1.2.0',
+1118 silly addNameRange     '1.2.1' ] ]
+1119 silly addNamed bindings@1.2.1
+1120 verbose addNamed "1.2.1" is a plain semver version for bindings
+1121 verbose afterAdd /root/.npm/debug/2.2.0/package/package.json written
+1122 silly cache afterAdd bindings@1.2.1
+1123 verbose afterAdd /root/.npm/bindings/1.2.1/package/package.json not in flight; writing
+1124 verbose correctMkdir /root/.npm correctMkdir not in flight; initializing
+1125 verbose afterAdd /root/.npm/bindings/1.2.1/package/package.json written
+1126 silly install resolved [ { name: 'debug',
+1126 silly install resolved     version: '2.2.0',
+1126 silly install resolved     repository: { type: 'git', url: 'git://github.com/visionmedia/debug.git' },
+1126 silly install resolved     description: 'small debugging utility',
+1126 silly install resolved     keywords: [ 'debug', 'log', 'debugger' ],
+1126 silly install resolved     author: { name: 'TJ Holowaychuk', email: 'tj@vision-media.ca' },
+1126 silly install resolved     contributors: [ [Object] ],
+1126 silly install resolved     license: 'MIT',
+1126 silly install resolved     dependencies: { ms: '0.7.1' },
+1126 silly install resolved     devDependencies: { browserify: '9.0.3', mocha: '*' },
+1126 silly install resolved     main: './node.js',
+1126 silly install resolved     browser: './browser.js',
+1126 silly install resolved     component: { scripts: [Object] },
+1126 silly install resolved     gitHead: 'b38458422b5aa8aa6d286b10dfe427e8a67e2b35',
+1126 silly install resolved     bugs: { url: 'https://github.com/visionmedia/debug/issues' },
+1126 silly install resolved     homepage: 'https://github.com/visionmedia/debug',
+1126 silly install resolved     _id: 'debug@2.2.0',
+1126 silly install resolved     scripts: {},
+1126 silly install resolved     _shasum: 'f87057e995b1a1f6ae6a4960664137bc56f039da',
+1126 silly install resolved     _from: 'debug@>=2.2.0 <3.0.0',
+1126 silly install resolved     _npmVersion: '2.7.4',
+1126 silly install resolved     _nodeVersion: '0.12.2',
+1126 silly install resolved     _npmUser: { name: 'tootallnate', email: 'nathan@tootallnate.net' },
+1126 silly install resolved     maintainers: [ [Object], [Object] ],
+1126 silly install resolved     dist:
+1126 silly install resolved      { shasum: 'f87057e995b1a1f6ae6a4960664137bc56f039da',
+1126 silly install resolved        tarball: 'https://registry.npmjs.org/debug/-/debug-2.2.0.tgz' },
+1126 silly install resolved     directories: {},
+1126 silly install resolved     _resolved: 'http://registry.npmjs.org/debug/-/debug-2.2.0.tgz',
+1126 silly install resolved     readme: 'ERROR: No README data found!' },
+1126 silly install resolved   { name: 'bindings',
+1126 silly install resolved     description: 'Helper module for loading your native module\'s .node file',
+1126 silly install resolved     keywords: [ 'native', 'addon', 'bindings', 'gyp', 'waf', 'c', 'c++' ],
+1126 silly install resolved     version: '1.2.1',
+1126 silly install resolved     author:
+1126 silly install resolved      { name: 'Nathan Rajlich',
+1126 silly install resolved        email: 'nathan@tootallnate.net',
+1126 silly install resolved        url: 'http://tootallnate.net' },
+1126 silly install resolved     repository:
+1126 silly install resolved      { type: 'git',
+1126 silly install resolved        url: 'git://github.com/TooTallNate/node-bindings.git' },
+1126 silly install resolved     main: './bindings.js',
+1126 silly install resolved     bugs: { url: 'https://github.com/TooTallNate/node-bindings/issues' },
+1126 silly install resolved     homepage: 'https://github.com/TooTallNate/node-bindings',
+1126 silly install resolved     license: 'MIT',
+1126 silly install resolved     gitHead: 'e404152ee27f8478ccbc7122ee051246e8e5ec02',
+1126 silly install resolved     _id: 'bindings@1.2.1',
+1126 silly install resolved     scripts: {},
+1126 silly install resolved     _shasum: '14ad6113812d2d37d72e67b4cacb4bb726505f11',
+1126 silly install resolved     _from: 'bindings@>=1.2.1 <2.0.0',
+1126 silly install resolved     _npmVersion: '1.4.14',
+1126 silly install resolved     _npmUser: { name: 'tootallnate', email: 'nathan@tootallnate.net' },
+1126 silly install resolved     maintainers: [ [Object], [Object] ],
+1126 silly install resolved     dist:
+1126 silly install resolved      { shasum: '14ad6113812d2d37d72e67b4cacb4bb726505f11',
+1126 silly install resolved        tarball: 'https://registry.npmjs.org/bindings/-/bindings-1.2.1.tgz' },
+1126 silly install resolved     directories: {},
+1126 silly install resolved     _resolved: 'http://registry.npmjs.org/bindings/-/bindings-1.2.1.tgz',
+1126 silly install resolved     readme: 'ERROR: No README data found!' } ]
+1127 info install debug@2.2.0 into /var/www/vhosts/backbone-node/api/node_modules/lame
+1128 info install bindings@1.2.1 into /var/www/vhosts/backbone-node/api/node_modules/lame
+1129 info installOne debug@2.2.0
+1130 verbose installOne of debug to /var/www/vhosts/backbone-node/api/node_modules/lame not in flight; installing
+1131 verbose correctMkdir /root/.npm/_locks correctMkdir not in flight; initializing
+1132 info installOne bindings@1.2.1
+1133 verbose installOne of bindings to /var/www/vhosts/backbone-node/api/node_modules/lame not in flight; installing
+1134 verbose correctMkdir /root/.npm/_locks correctMkdir not in flight; initializing
+1135 verbose lock using /root/.npm/_locks/debug-772aabb27fe3e66e.lock for /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/debug
+1136 verbose lock using /root/.npm/_locks/bindings-da3391f5f85a1bab.lock for /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/bindings
+1137 silly install write writing debug 2.2.0 to /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/debug
+1138 silly install write writing bindings 1.2.1 to /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/bindings
+1139 verbose unbuild node_modules/lame/node_modules/debug
+1140 verbose unbuild node_modules/lame/node_modules/bindings
+1141 silly gentlyRm /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/debug is being purged from base /var/www/vhosts/backbone-node/api
+1142 verbose gentlyRm don't care about contents; nuking /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/debug
+1143 silly gentlyRm /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/bindings is being purged from base /var/www/vhosts/backbone-node/api
+1144 verbose gentlyRm don't care about contents; nuking /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/bindings
+1145 verbose tar unpack /root/.npm/debug/2.2.0/package.tgz
+1146 verbose tar unpacking to /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/debug
+1147 silly gentlyRm /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/debug is being purged
+1148 verbose gentlyRm don't care about contents; nuking /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/debug
+1149 verbose tar unpack /root/.npm/bindings/1.2.1/package.tgz
+1150 verbose tar unpacking to /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/bindings
+1151 silly gentlyRm /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/bindings is being purged
+1152 verbose gentlyRm don't care about contents; nuking /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/bindings
+1153 silly gunzTarPerm modes [ '755', '644' ]
+1154 silly gunzTarPerm modes [ '755', '644' ]
+1155 silly gunzTarPerm extractEntry package.json
+1156 silly gunzTarPerm extractEntry package.json
+1157 silly gunzTarPerm extractEntry .npmignore
+1158 silly gunzTarPerm extractEntry node.js
+1159 silly gunzTarPerm extractEntry README.md
+1160 silly gunzTarPerm extractEntry bindings.js
+1161 silly gunzTarPerm extractEntry debug.js
+1162 silly gunzTarPerm extractEntry browser.js
+1163 silly gunzTarPerm extractEntry Readme.md
+1164 silly gunzTarPerm extractEntry bower.json
+1165 silly gunzTarPerm extractEntry .jshintrc
+1166 silly gunzTarPerm extractEntry component.json
+1167 silly gunzTarPerm extractEntry Makefile
+1168 verbose write writing to /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/bindings/package.json
+1169 info preinstall bindings@1.2.1
+1170 verbose readDependencies loading dependencies from /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/bindings/package.json
+1171 silly gunzTarPerm extractEntry History.md
+1172 verbose readDependencies loading dependencies from /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/bindings/package.json
+1173 silly install resolved []
+1174 verbose about to build /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/bindings
+1175 info build /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/bindings
+1176 info linkStuff bindings@1.2.1
+1177 silly linkStuff bindings@1.2.1 has /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules as its parent node_modules
+1178 verbose linkBins bindings@1.2.1
+1179 verbose linkMans bindings@1.2.1
+1180 verbose rebuildBundles bindings@1.2.1
+1181 info install bindings@1.2.1
+1182 info postinstall bindings@1.2.1
+1183 verbose unlock done using /root/.npm/_locks/bindings-da3391f5f85a1bab.lock for /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/bindings
+1184 verbose write writing to /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/debug/package.json
+1185 info preinstall debug@2.2.0
+1186 verbose readDependencies loading dependencies from /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/debug/package.json
+1187 verbose readDependencies loading dependencies from /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/debug/package.json
+1188 silly install resolved []
+1189 verbose about to build /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/debug
+1190 info build /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/debug
+1191 info linkStuff debug@2.2.0
+1192 silly linkStuff debug@2.2.0 has /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules as its parent node_modules
+1193 verbose linkBins debug@2.2.0
+1194 verbose linkMans debug@2.2.0
+1195 verbose rebuildBundles debug@2.2.0
+1196 info install debug@2.2.0
+1197 info postinstall debug@2.2.0
+1198 verbose unlock done using /root/.npm/_locks/debug-772aabb27fe3e66e.lock for /var/www/vhosts/backbone-node/api/node_modules/lame/node_modules/debug
+1199 verbose about to build /var/www/vhosts/backbone-node/api/node_modules/lame
+1200 info build /var/www/vhosts/backbone-node/api/node_modules/lame
+1201 info linkStuff lame@1.2.4
+1202 silly linkStuff lame@1.2.4 has /var/www/vhosts/backbone-node/api/node_modules as its parent node_modules
+1203 verbose linkBins lame@1.2.4
+1204 verbose linkMans lame@1.2.4
+1205 verbose rebuildBundles lame@1.2.4
+1206 verbose rebuildBundles [ 'bindings', 'debug' ]
+1207 info install lame@1.2.4
+1208 verbose unsafe-perm in lifecycle false
+1209 info lame@1.2.4 Failed to exec install script
+1210 verbose unlock done using /root/.npm/_locks/lame-2e0223a15d2580db.lock for /var/www/vhosts/backbone-node/api/node_modules/lame
+1211 verbose stack Error: lame@1.2.4 install: `node-gyp rebuild`
+1211 verbose stack Exit status 1
+1211 verbose stack     at EventEmitter.<anonymous> (/root/.nvm/versions/node/v4.4.4/lib/node_modules/npm/lib/utils/lifecycle.js:217:16)
+1211 verbose stack     at emitTwo (events.js:87:13)
+1211 verbose stack     at EventEmitter.emit (events.js:172:7)
+1211 verbose stack     at ChildProcess.<anonymous> (/root/.nvm/versions/node/v4.4.4/lib/node_modules/npm/lib/utils/spawn.js:24:14)
+1211 verbose stack     at emitTwo (events.js:87:13)
+1211 verbose stack     at ChildProcess.emit (events.js:172:7)
+1211 verbose stack     at maybeClose (internal/child_process.js:827:16)
+1211 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
+1212 verbose pkgid lame@1.2.4
+1213 verbose cwd /var/www/vhosts/backbone-node/api
+1214 error Linux 2.6.32-431.el6.x86_64
+1215 error argv "/root/.nvm/versions/node/v4.4.4/bin/node" "/root/.nvm/versions/node/v4.4.4/bin/npm" "install" "lame"
+1216 error node v4.4.4
+1217 error npm  v2.15.1
+1218 error code ELIFECYCLE
+1219 error lame@1.2.4 install: `node-gyp rebuild`
+1219 error Exit status 1
+1220 error Failed at the lame@1.2.4 install script 'node-gyp rebuild'.
+1220 error This is most likely a problem with the lame package,
+1220 error not with npm itself.
+1220 error Tell the author that this fails on your system:
+1220 error     node-gyp rebuild
+1220 error You can get information on how to open an issue for this project with:
+1220 error     npm bugs lame
+1220 error Or if that isn't available, you can get their info via:
+1220 error
+1220 error     npm owner ls lame
+1220 error There is likely additional logging output above.
+1221 verbose exit [ 1, true ]
+1222 verbose unbuild node_modules/lame
+1223 info preuninstall lame@1.2.4
+1224 info uninstall lame@1.2.4
+1225 verbose unbuild rmStuff lame@1.2.4 from /var/www/vhosts/backbone-node/api/node_modules
+1226 info postuninstall lame@1.2.4
+1227 silly gentlyRm /var/www/vhosts/backbone-node/api/node_modules/lame is being purged from base /var/www/vhosts/backbone-node/api
+1228 verbose gentlyRm don't care about contents; nuking /var/www/vhosts/backbone-node/api/node_modules/lame
+1229 silly vacuum-fs purging /var/www/vhosts/backbone-node/api/node_modules/lame
+1230 silly vacuum-fs quitting because other entries in /var/www/vhosts/backbone-node/api/node_modules
