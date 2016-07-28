@@ -20,9 +20,9 @@ function getExtension(filename) {
 }
 
 
-var audio_path = path.join(__dirname, '../', 'public/uploads/audio')
-var audio_filename = 'demo.wav';
-var outFile = audio_path + '/'+ audio_filename;
+var audioPath = path.join(__dirname, '../', 'public/uploads/audio')
+var wavRecordingFilename = 'audio_recording.wav';
+var wavRecordingFile = audioPath + '/' + wavRecordingFilename;
 
 
 /////BINARY JS//////
@@ -139,14 +139,21 @@ console.log('BinaryJS client connected');
             
             console.log('receiving file stream: ' + data.name);
        
-            //WRITE THE FILE TO THE SERVER ALSO...
-            //var file_write_stream = fs.createWriteStream(path.normalize(audio_path + "/" + data.name));
+            var fileWriter = new wav.FileWriter(wavRecordingFile, {
+            channels: 1,
+            sampleRate: 44100,
+            bitDepth: 16
+          });
+
+        //inbound_stream.pipe(fileWriter);
+        
+        //var file_write_stream = fs.createWriteStream(path.normalize(audio_path + "/" + data.name));
             //inbound_stream.pipe(file_write_stream);
     
                 console.log('sending stream to client(s):' + data.name);
        
                 inbound_stream.on('data', function(chunk) {
-                
+                    console.log(chunk);
                 //socket.broadcast.emit('audio', { buffer: chunk });
                 io.sockets.emit('audio', { buffer: chunk });
                 });
