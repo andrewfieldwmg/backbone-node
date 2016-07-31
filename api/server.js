@@ -8,6 +8,7 @@ var fs = require('fs');
 var wav = require('wav');
 var path = require("path");
 var im = require('imagemagick');
+var lame = require('lame');
 
 var socketio_app = server.use(siofu.router).listen(8080);
 
@@ -22,8 +23,9 @@ function getExtension(filename) {
 
 var audioPath = path.join(__dirname, '../', 'public/uploads/audio')
 var wavRecordingFilename = 'audio_recording.wav';
+var mp3RecordingFilename = 'test.mp3';
 var wavRecordingFile = audioPath + '/' + wavRecordingFilename;
-
+var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
 
 /////BINARY JS//////
 /*
@@ -139,29 +141,57 @@ console.log('BinaryJS client connected');
             
             console.log('receiving file stream: ' + data.name);
        
-            var fileWriter = new wav.FileWriter(wavRecordingFile, {
+       //console.log(inbound_stream);
+       
+        var fileWriter = new wav.FileWriter(wavRecordingFile, {
             channels: 1,
-            sampleRate: 44100,
+            sampleRate: 48000,
             bitDepth: 16
-          });
-
-        //inbound_stream.pipe(fileWriter);
+          })
+               
+        inbound_stream.pipe(fileWriter);
+          
         
+       //write the raw file to disk 
         //var file_write_stream = fs.createWriteStream(path.normalize(audio_path + "/" + data.name));
-            //inbound_stream.pipe(file_write_stream);
+        //inbound_stream.pipe(file_write_stream);
+        
+        
+          // create the Encoder instance 
+        /*var encoder = new lame.Encoder({
+          // input 
+          channels: 2,        // 2 channels (left and right) 
+          bitDepth: 16,       // 16-bit samples 
+          sampleRate: 44100,  // 44,100 Hz sample rate 
+         
+          // output 
+          bitRate: 128,
+          outSampleRate: 44100,
+          mode: lame.STEREO // STEREO (default), JOINTSTEREO, DUALCHANNEL or MONO 
+        });
+         
+        // raw PCM data from stdin gets piped into the encoder
+        console.log('piping raw pcm stream to encoder');
+        inbound_stream.pipe(encoder);
+         
+         
+        console.log('creating write stream from pipe');
+        // the generated MP3 file gets piped to stdout 
+        encoder.pipe(fs.createWriteStream(mp3RecordingFile));  */
+
     
-                console.log('sending stream to client(s):' + data.name);
+
+            /*console.log('sending stream to client(s):' + data.name);
        
                 inbound_stream.on('data', function(chunk) {
-                    console.log(chunk);
-                //socket.broadcast.emit('audio', { buffer: chunk });
-                io.sockets.emit('audio', { buffer: chunk });
-                });
+                //console.log(chunk);
+                socket.broadcast.emit('audio', { buffer: chunk });
+                //io.sockets.emit('audio', { buffer: chunk });
+                });*/
                       
                       
                     socket.on('stop-audio-stream', function (data) {
-                        
-        
+                          
                         inbound_stream.read(0);
                         inbound_stream.push(null);
                         inbound_stream.end();
@@ -175,6 +205,7 @@ console.log('BinaryJS client connected');
     
             
             inbound_stream.on('end', function() {
+                fileWriter.end();
                 console.log('Inbound audio stream ended: ' + data.name);
             });
     
