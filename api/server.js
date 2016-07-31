@@ -134,22 +134,22 @@ console.log('BinaryJS client connected');
     
 
     io.sockets.on('connection', function (socket) {
-        
+                    
         console.log('SocketIO client connected');
-     
+   
         ss(socket).on('file', function(inbound_stream, data) {
-            
+
             console.log('receiving file stream: ' + data.name);
        
        //console.log(inbound_stream);
        
-        var fileWriter = new wav.FileWriter(wavRecordingFile, {
-            channels: 1,
+        /*var fileWriter = new wav.FileWriter(wavRecordingFile, {
+            channels: 2,
             sampleRate: 48000,
             bitDepth: 16
           })
                
-        inbound_stream.pipe(fileWriter);
+        inbound_stream.pipe(fileWriter);*/
           
         
        //write the raw file to disk 
@@ -158,11 +158,11 @@ console.log('BinaryJS client connected');
         
         
           // create the Encoder instance 
-        /*var encoder = new lame.Encoder({
+        var encoder = new lame.Encoder({
           // input 
           channels: 2,        // 2 channels (left and right) 
           bitDepth: 16,       // 16-bit samples 
-          sampleRate: 44100,  // 44,100 Hz sample rate 
+          sampleRate: 48000,  // 44,100 Hz sample rate 
          
           // output 
           bitRate: 128,
@@ -172,18 +172,22 @@ console.log('BinaryJS client connected');
          
         // raw PCM data from stdin gets piped into the encoder
         console.log('piping raw pcm stream to encoder');
-        inbound_stream.pipe(encoder);
-         
-         
+        //inbound_stream.pipe(encoder);
+        
         console.log('creating write stream from pipe');
         // the generated MP3 file gets piped to stdout 
-        encoder.pipe(fs.createWriteStream(mp3RecordingFile));  */
-
-    
-
-            /*console.log('sending stream to client(s):' + data.name);
-       
-                inbound_stream.on('data', function(chunk) {
+        //encoder.pipe(fs.createWriteStream(mp3RecordingFile));
+ 
+        
+            console.log('sending stream to client(s):' + data.name);
+            
+                var file = fs.createReadStream(mp3RecordingFile);
+              
+                file.on('data', function(buffer) {
+                    io.sockets.emit('audio', { buffer: buffer });
+                });
+                
+                /*encoder.on('data', function(chunk) {
                 //console.log(chunk);
                 socket.broadcast.emit('audio', { buffer: chunk });
                 //io.sockets.emit('audio', { buffer: chunk });
@@ -205,7 +209,7 @@ console.log('BinaryJS client connected');
     
             
             inbound_stream.on('end', function() {
-                fileWriter.end();
+                //fileWriter.end();
                 console.log('Inbound audio stream ended: ' + data.name);
             });
     

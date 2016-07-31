@@ -64,7 +64,101 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
             return context;
         }
                 
+                
+                
+         function audioStream() {
+                
+            var socket = io.connect();
+                                
+             // HERE WE DO THE FILE UPLOAD / STREAM WITH SS   
+            socket.on('connect', function() {
+                
+              console.log('SocketIO connection to the server established');
+                                        
+               context = initiateAudioContext();
+                
+                // THIS BIT DOES NOW WORK, BUT ONLY TO ONE SOCKET!!       
+               startTime = 0;
+               ss(socket).on('audio', function(stream, data) {
+                
+                console.log('receiving audio stream via socket io stream');  
+                             
+                    stream.on('data', function(audio_buffer) {
+                              
+                        console.log(audio_buffer);
+                        
+                    //localStorage.setItem('stream_state', 'started');
+                    
+                        console.log('receiving data from audio stream...');
+                         
+                        var arrayBuffer = audio_buffer.toArrayBuffer();
+                           
+                        context.decodeAudioData(arrayBuffer, function(buffer) {
+                       
+                        if(localStorage.getItem("stream_state") === "stopped") {
+                            
+                            //context.suspend();
+                                          
+                            //var source = context.createBufferSource();
+                            //console.log('stream state stopped in storage');
+            
+                            //source.buffer = context.createBuffer(2, 1, 44100);
+                            //return false;
+                            //source.stop();
+                            //source.disconnect();                        
+                      
+                        } else {
+                            
+                                console.log('stream state started in storage');
+                                              
+                                var source = context.createBufferSource();
+                                source.buffer = buffer;
+                                 
+                                source.disconnect();
+                                source.connect(context.destination);
+                                source.start(startTime);
+        
+                                startTime += buffer.duration;                    
+                      
+                        }
+                
+       
+                           }, function (error) {
+                                   console.error("failed to decode:", error);
+                               });
+               
+                
+                
+                    });
+               
+                
+                           $('#pause').on('click', function(e) {                
+                                context.suspend();
+                            });
+                          
+                            $('#resume').on('click', function(e) {                
+                                context.resume();
+                            });
+                            
+                                       
+                        stream.on('end', function() {
+                            
+                            console.log('Audio stream ended');
+                });
+        
               
+            });
+        
+               
+        
+        });
+            
+        return socket;    
+    }
+    
+          
+          
+          
         function audioStreamSocketIo() {
                 
             var socket = io.connect();
@@ -162,10 +256,12 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
             
      });        
          
+         
                
      $('#start-file-stream').click(function(){
         $('#audio-file').click();
      });
+     
      
      
     $('#audio-file').change(function(e) {
@@ -190,7 +286,7 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
    });
     
           
-         window.onload = function init() {
+         /*window.onload = function init() {
           try {
             // webkit shim
             window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -240,7 +336,12 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
          }
          
          function startRecording() {
+            
            recorder && recorder.record();
+           recorder && recorder.getBuffer(function(buffer) {
+               console.log(buffer);
+           });
+           
            console.log('Recording...');
          }
          
@@ -282,10 +383,10 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
    $('#stop-recording').on('click', function(e) { 
       stopRecording();
       
-   });
+   });*/
       
       
-    /*$('#start-recording').on('click', function(e) {
+    $('#start-recording').on('click', function(e) {
     
     
         var socket = audioStreamSocketIo(); 
@@ -307,9 +408,22 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
                     $('#stop-recording').show();
     
                 
-                        navigator.getUserMedia({audio:true}, success, function(e) {
-                          alert('Error capturing audio.');
-                        });
+                      navigator.getUserMedia(
+                        {
+                           "audio": {
+                       "mandatory": {
+                           "googEchoCancellation": "false",
+                           "googAutoGainControl": "false",
+                           "googNoiseSuppression": "false",
+                           "googHighpassFilter": "false"
+                       },
+                       "optional": []
+                   },
+                  },
+                              success, function(e) {
+                     console.log('No live audio input: ' + e);
+                   });
+                      
                       } else alert('getUserMedia not supported in this browser.');
         
               
@@ -352,15 +466,15 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
              context = new audioContext();
              
                sampleRate = context.sampleRate;
- 
+             
                // creates a gain node
-               volume = context.createGain();
+               //volume = context.createGain();
             
                // creates an audio node from the microphone incoming stream
                audioInput = context.createMediaStreamSource(e);
             
                // connect the stream to the gain node
-               audioInput.connect(volume);
+               //audioInput.connect(volume);
          
                leftchannel = [];
                rightchannel = [];
@@ -368,7 +482,7 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
                      
                startRecording();
        
-               var bufferSize = 2048;
+               var bufferSize = 4096;
                recorder = context.createScriptProcessor(bufferSize, 2, 2);
          
                recorder.onaudioprocess = function(e){
@@ -383,8 +497,8 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
                //var sixteen_bit_left = convertoFloat32ToInt16(left);
                //var sixteen_bit_right = convertoFloat32ToInt16(right);
                
-               leftchannel.push (left);
-               rightchannel.push (right);
+               leftchannel.push (new Float32Array(left));
+               rightchannel.push (new Float32Array(right));
                recordingLength += bufferSize;
                
 
@@ -417,17 +531,17 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
                   return result;
                 }
 
-               var interleaved = interleave (leftBuffer, rightBuffer );
+               var interleaved = interleave (left, right );
             
-               console.log(interleaved);
+               //console.log(interleaved);
                
-               //stream.write(new ss.Buffer(convertoFloat32ToInt16(left)));
+               stream.write(new ss.Buffer(convertoFloat32ToInt16(interleaved)));
                //ss.createBlobReadStream(sixteen_bit_left).pipe(stream);
                 
                //window.Stream.write(convertoFloat32ToInt16(left));
              }
        
-             volume.connect(recorder)
+             audioInput.connect(recorder)
              recorder.connect(context.destination); 
            }
                
@@ -446,7 +560,7 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
           
         //});
             
-    });*/
+    });
     
     
            $('#web-worker').on('click', function(e) {

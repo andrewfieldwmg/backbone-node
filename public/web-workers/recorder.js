@@ -57,6 +57,9 @@ var Recorder = exports.Recorder = (function () {
         this.node = (this.context.createScriptProcessor || this.context.createJavaScriptNode).call(this.context, this.config.bufferLen, this.config.numChannels, this.config.numChannels);
 
         this.node.onaudioprocess = function (e) {
+            
+            console.log(e.inputBuffer.getChannelData(0));
+            
             if (!_this.recording) return;
 
             var buffer = [];
@@ -110,6 +113,8 @@ var Recorder = exports.Recorder = (function () {
                     recBuffers[channel].push(inputBuffer[channel]);
                 }
                 recLength += inputBuffer[0].length;
+                
+                
             }
 
             function exportWAV(type) {
@@ -130,6 +135,7 @@ var Recorder = exports.Recorder = (function () {
             }
 
             function getBuffer() {
+                
                 var buffers = [];
                 for (var channel = 0; channel < numChannels; channel++) {
                     buffers.push(mergeBuffers(recBuffers[channel], recLength));
