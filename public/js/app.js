@@ -88,7 +88,7 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
                 
                 } else {
                        
-                       console.log(data.buffer);
+                       //console.log(data.buffer);
 
                     context.decodeAudioData(data.buffer, function(buffer) {
          
@@ -189,9 +189,103 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
 
    });
     
-      
-      
+          
+         window.onload = function init() {
+          try {
+            // webkit shim
+            window.AudioContext = window.AudioContext || window.webkitAudioContext;
+            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
+            window.URL = window.URL || window.webkitURL;
+            
+            audio_context = new AudioContext;
+            console.log('Audio context set up.');
+            console.log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
+          } catch (e) {
+            console.log(e);
+            alert('No web audio support in this browser!');
+          }
+          
+          navigator.getUserMedia(
+                        {
+                           "audio": {
+                       "mandatory": {
+                           "googEchoCancellation": "false",
+                           "googAutoGainControl": "false",
+                           "googNoiseSuppression": "false",
+                           "googHighpassFilter": "false"
+                       },
+                       "optional": []
+                   },
+                  },
+                     startUserMedia, function(e) {
+            console.log('No live audio input: ' + e);
+          });
+   
+              
+        };
+        
+        
+         var audio_context;
+         var recorder;
+         
+         function startUserMedia(stream) {
+           var input = audio_context.createMediaStreamSource(stream);
+           console.log('Media stream created.');
+           // Uncomment if you want the audio to feedback directly
+           //input.connect(audio_context.destination);
+           //console.log('Input connected to audio context destination.');
+           
+           recorder = new Recorder(input);
+           console.log('Recorder initialised.');
+         }
+         
+         function startRecording() {
+           recorder && recorder.record();
+           console.log('Recording...');
+         }
+         
+         function stopRecording() {
+           recorder && recorder.stop();
+           console.log('Stopped recording.');
+           
+           // create WAV download link using audio data blob
+           createDownloadLink();
+           
+           recorder.clear();
+         }
+         
+         function createDownloadLink() {
+           recorder && recorder.exportWAV(function(blob) {
+             var url = URL.createObjectURL(blob);
+             var li = document.createElement('li');
+             var au = document.createElement('audio');
+             var hf = document.createElement('a');
+             
+             au.controls = true;
+             au.src = url;
+             hf.href = url;
+             hf.download = new Date().toISOString() + '.wav';
+             hf.innerHTML = hf.download;
+             li.appendChild(au);
+             li.appendChild(hf);
+             recordingslist.appendChild(li);
+           });
+         }
+         
+         
     $('#start-recording').on('click', function(e) {
+         startRecording();
+    
+    });
+    
+    
+   $('#stop-recording').on('click', function(e) { 
+      stopRecording();
+      
+   });
+      
+      
+    /*$('#start-recording').on('click', function(e) {
     
     
         var socket = audioStreamSocketIo(); 
@@ -230,6 +324,7 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
         
            function stopRecording() {
                   recording = false;
+                  socket.emit('stop-recording');
                   stream.end();
                   localStorage.setItem('stream_state', 'stopped');
             }
@@ -256,31 +351,83 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
              audioContext = window.AudioContext || window.webkitAudioContext;
              context = new audioContext();
              
-             startRecording();
+               sampleRate = context.sampleRate;
+ 
+               // creates a gain node
+               volume = context.createGain();
+            
+               // creates an audio node from the microphone incoming stream
+               audioInput = context.createMediaStreamSource(e);
+            
+               // connect the stream to the gain node
+               audioInput.connect(volume);
+         
+               leftchannel = [];
+               rightchannel = [];
+               recordingLength = 0;
+                     
+               startRecording();
        
-             // the sample rate is in context.sampleRate
-             audioInput = context.createMediaStreamSource(e);
-       
-             var bufferSize = 2048;
-             recorder = context.createScriptProcessor(bufferSize, 1, 1);
-       
-             recorder.onaudioprocess = function(e){
+               var bufferSize = 2048;
+               recorder = context.createScriptProcessor(bufferSize, 2, 2);
+         
+               recorder.onaudioprocess = function(e){
                if(!recording)  {
                 return;
                }
    
                //console.log ('recording');
                var left = e.inputBuffer.getChannelData(0);
+               var right = e.inputBuffer.getChannelData(1);
+        
+               //var sixteen_bit_left = convertoFloat32ToInt16(left);
+               //var sixteen_bit_right = convertoFloat32ToInt16(right);
                
-               //console.log(left);
+               leftchannel.push (left);
+               rightchannel.push (right);
+               recordingLength += bufferSize;
                
-               stream.write(new ss.Buffer(left));
+
+               function mergeBuffers(channelBuffer, recordingLength){
+                 var result = new Float32Array(recordingLength);
+                 var offset = 0;
+                 var lng = channelBuffer.length;
+                 for (var i = 0; i < lng; i++){
+                   var buffer = channelBuffer[i];
+                   result.set(buffer, offset);
+                   offset += buffer.length;
+                 }
+                 return result;
+               }
                
+               var leftBuffer = mergeBuffers(leftchannel, recordingLength);
+               var rightBuffer = mergeBuffers(rightchannel, recordingLength);
+               
+               function interleave(leftChannel, rightChannel){
+                  var length = leftChannel.length + rightChannel.length;
+                  var result = new Float32Array(length);
+                 
+                  var inputIndex = 0;
+                 
+                  for (var index = 0; index < length; ){
+                    result[index++] = leftChannel[inputIndex];
+                    result[index++] = rightChannel[inputIndex];
+                    inputIndex++;
+                  }
+                  return result;
+                }
+
+               var interleaved = interleave (leftBuffer, rightBuffer );
+            
+               console.log(interleaved);
+               
+               //stream.write(new ss.Buffer(convertoFloat32ToInt16(left)));
+               //ss.createBlobReadStream(sixteen_bit_left).pipe(stream);
                 
                //window.Stream.write(convertoFloat32ToInt16(left));
              }
        
-             audioInput.connect(recorder)
+             volume.connect(recorder)
              recorder.connect(context.destination); 
            }
                
@@ -299,7 +446,7 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
           
         //});
             
-    });
+    });*/
     
     
            $('#web-worker').on('click', function(e) {
