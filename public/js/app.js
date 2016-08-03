@@ -66,7 +66,7 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
                 
                 
                 
-         function audioStream() {
+         /*function audioStream() {
                 
             var socket = io.connect();
                                 
@@ -154,7 +154,7 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
         });
             
         return socket;    
-    }
+    }*/
     
           
           
@@ -182,10 +182,11 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
                 
                 } else {
                        
-                       //console.log(data.buffer);
+                     console.log(data.buffer);
 
                     context.decodeAudioData(data.buffer, function(buffer) {
          
+                     
                             var source = context.createBufferSource();
                           
                             source.buffer = buffer;
@@ -276,7 +277,7 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
             
             var stream = ss.createStream();
                  
-            ss(socket).emit('file', stream, {size: file.size, name: file.name});
+            ss(socket).emit('audio-file', stream, {size: file.size, name: file.name});
             ss.createBlobReadStream(file).pipe(stream);
             
             localStorage.setItem('stream_state', 'started');
@@ -285,6 +286,21 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
 
    });
     
+    
+   $('#play').on('click', function(e) {
+ 
+        $.when(
+               $('#stop').triggerHandler('click') /* asynchronous task */
+        ).done(function() {
+    
+            socket = audioStreamSocketIo();           
+            socket.emit('play-audio');
+                
+            localStorage.setItem('stream_state', 'started');
+        
+        });
+
+   });
           
          /*window.onload = function init() {
           try {
@@ -391,12 +407,12 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
     
         var socket = audioStreamSocketIo(); 
         //window.Stream = client.createStream();
-        
-              
-        //socket.on('connect', function() {
+     
+        socket.on('connect', function() {
             
         var stream = ss.createStream();
-        ss(socket).emit('file', stream, {name: "Audio Recording"});
+        
+        ss(socket).emit('audio-recording', stream, {name: "Audio Recording"});
                      
             if (!navigator.getUserMedia)
               navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -411,11 +427,11 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
                       navigator.getUserMedia(
                         {
                            "audio": {
-                       "mandatory": {
-                           "googEchoCancellation": "false",
-                           "googAutoGainControl": "false",
-                           "googNoiseSuppression": "false",
-                           "googHighpassFilter": "false"
+                           "mandatory": {
+                               "googEchoCancellation": "false",
+                               "googAutoGainControl": "false",
+                               "googNoiseSuppression": "false",
+                               "googHighpassFilter": "false"
                        },
                        "optional": []
                    },
@@ -438,7 +454,6 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
         
            function stopRecording() {
                   recording = false;
-                  socket.emit('stop-recording');
                   stream.end();
                   localStorage.setItem('stream_state', 'stopped');
             }
@@ -476,8 +491,8 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
                // connect the stream to the gain node
                //audioInput.connect(volume);
          
-               leftchannel = [];
-               rightchannel = [];
+               //leftchannel = [];
+               //rightchannel = [];
                recordingLength = 0;
                      
                startRecording();
@@ -497,7 +512,7 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
                //var sixteen_bit_left = convertoFloat32ToInt16(left);
                //var sixteen_bit_right = convertoFloat32ToInt16(right);
                
-               leftchannel.push (new Float32Array(left));
+               /*leftchannel.push (new Float32Array(left));
                rightchannel.push (new Float32Array(right));
                recordingLength += bufferSize;
                
@@ -515,7 +530,7 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
                }
                
                var leftBuffer = mergeBuffers(leftchannel, recordingLength);
-               var rightBuffer = mergeBuffers(rightchannel, recordingLength);
+               var rightBuffer = mergeBuffers(rightchannel, recordingLength);*/
                
                function interleave(leftChannel, rightChannel){
                   var length = leftChannel.length + rightChannel.length;
@@ -532,13 +547,10 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
                 }
 
                var interleaved = interleave (left, right );
-            
-               //console.log(interleaved);
-               
+             
                stream.write(new ss.Buffer(convertoFloat32ToInt16(interleaved)));
-               //ss.createBlobReadStream(sixteen_bit_left).pipe(stream);
-                
-               //window.Stream.write(convertoFloat32ToInt16(left));
+            
+
              }
        
              audioInput.connect(recorder)
@@ -558,21 +570,7 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
             
                 //startTime = 0;                 
           
-        //});
+        });
             
     });
-    
-    
-           $('#web-worker').on('click', function(e) {
-                     
-    
-            
-            var decodeAudioWorker = new Worker('web-workers/decodeAudioData.js');
-            
-            /*decodeAudioWorker.postMessage(data, [data]);
-            
-            decodeAudioWorker.onmessage = function(e) {
-                console.log(e.data);
-            }*/
-           });
     
