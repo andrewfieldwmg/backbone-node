@@ -1,39 +1,43 @@
-//Includes + requires
+//SERVER BASICS
 var express = require('express');
 var server = express();
 var ip = require("ip");
-var siofu = require("socketio-file-upload");
-var BinaryServer = require('binaryjs').BinaryServer;
-var fs = require('fs');
+var cluster = require('cluster');
+
+//AUDIO
 var wav = require('wav');
-var path = require("path");
-var im = require('imagemagick');
 var lame = require('lame');
+//var im = require('imagemagick');
 
-var socketio_app = server.use(siofu.router).listen(8080);
-
-var io = require('socket.io')(socketio_app);
-var ss = require('socket.io-stream');
-
+// FILE SYSTEM and STREAMS
+var fs = require('fs');
+var path = require("path");
+var mime = require('mime');
+var sanitize = require("sanitize-filename");
 var chokidar = require('chokidar');
 var growingFile = require('growing-file');
 var tailingStream = require('tailing-stream');
-
 
 function getExtension(filename) {
     return filename.split('.').pop();
 }
 
+//SOCKET IO
+var socketio_app = server.listen(8080);
+var io = require('socket.io')(socketio_app);
+var ss = require('socket.io-stream');
 
-var upload_dir = path.join(__dirname, '../', 'public/uploads');  
+//DIRS (to do: add these to a config.json)
 
+var uploadFolder = "/uploads";
+var upload_dir = path.join(__dirname, '../', 'public' + uploadFolder);  
 
 
 /////SOCKET IO//////
     io.sockets.on('connection', function (socket) {
      
          socket.on('message', function (data) {
-             console.log('Received a message!' + data.message);
+             console.log('Received a messaage!' + data.message);
              var message = data.message;
              var sender = data.sender;
              
@@ -41,17 +45,28 @@ var upload_dir = path.join(__dirname, '../', 'public/uploads');
          
          });
          
-             
-
-            //IMAGE UPLOAD USING THE OTHER LIBRARY - CAN WE REPLACE THIS WITH STANDARD SOCKET IO NOW?
-                var uploader = new siofu();
-                uploader.dir = upload_dir;
-                uploader.listen(socket);
+         
+          
+        ss(socket).on('file-upload', function(fileStream, data) {
             
-                // Do something when a file is saved:
-                uploader.on("saved", function(event){
+            var cleanName = sanitize(data.name);
+            
+             fileUploadWriteStream = fs.createWriteStream(upload_dir + "/" + cleanName);
+             fileStream.pipe(fileUploadWriteStream);
+             
+                fileStream.on('end', function() {
                     
-                    if (event.file.meta.type === "image") {
+                console.log('File successfully uploaded: ' + cleanName);
+                
+                io.sockets.emit('sent-file', { name: cleanName });
+       
+            });
+    
+    
+         });
+         
+
+                    /*if (event.file.meta.type === "image") {
                     
                             var just_filename = event.file.name.slice(0, -4);
                             var just_extension = getExtension(event.file.name);
@@ -72,11 +87,9 @@ var upload_dir = path.join(__dirname, '../', 'public/uploads');
                       
                             });
                     
-                    }
+                    }*/
                       
-                });
-        });
-   
+          });
    
         // Error handler:
         io.sockets.on("error", function(event){
@@ -93,16 +106,16 @@ var upload_dir = path.join(__dirname, '../', 'public/uploads');
     //var socketId = socket.id;
     //var clientIp = socket.request.connection.remoteAddress;
 
-    
-    
-    
+
+
     function deleteFromArray(my_array, element) {
       position = my_array.indexOf(element);
       my_array.splice(position, 1);
     }
 
 
-// AUDIO
+
+// AUDIO STREAM //////
 
     var audioPath = path.join(__dirname, '../', 'public/uploads/audio')
     var wavRecordingFilename = 'audio_recording.wav';
@@ -189,17 +202,16 @@ var upload_dir = path.join(__dirname, '../', 'public/uploads');
       }
     });
     
-    
-    
+      
     myWritable.on('finish', () => {
        //emit final part if there is data to emit
        if(buffer.length) {
            io.sockets.emit('audio', { buffer: buffer});
        }
-    });
+    });*/
    
    
-inbound_stream.pipe(encoder).pipe(myWritable);*/
+//inbound_stream.pipe(encoder).pipe(myWritable);
   
          
          
@@ -215,7 +227,7 @@ watcher.on('change', (event, path) => {
         
         console.log(stats.size);
         
-        if (stats.size > 102400) {
+        if (stats.size > 512000) {
     
             streamEncodedFile(); 
         
@@ -242,7 +254,6 @@ function streamEncodedFile() {
 }
     
        
-         
             // LOOP THROUGH SOCKET STREAM STYLE, BUT DOESN@T WORK
             
             /*for(var i = 0; i < clients.length; i++) {
@@ -267,11 +278,11 @@ function streamEncodedFile() {
       
                         socket.disconnect();
                         console.log('Client disconnected');
+                        
+                        // also need to disconnect the other person's socket, by emitting....?
                   
                     });
-                       
-
-                    
+                                       
                     
             inbound_stream.on('end', function() {
                 //fileWriter.end();
@@ -283,17 +294,16 @@ function streamEncodedFile() {
         });
         
         
-        
+/////AUDIO FILE/////
+
 ss(socket).on('audio-file', function(inbound_stream, data) {
 
         console.log('receiving file stream: ' + data.name);
         
+        var mimeType = data.type;
+        
         var senderSocketId = socket.id;
-       
-       //write the raw file to disk 
-       
-        //inbound_stream.pipe(file_write_stream);
-
+  
         var decoder = new lame.Decoder();
                   
         var encoder = new lame.Encoder({
@@ -308,54 +318,89 @@ ss(socket).on('audio-file', function(inbound_stream, data) {
           mode: lame.JOINTSTEREO // STEREO (default), JOINTSTEREO, DUALCHANNEL or MONO 
         });
          
+        //var wavWriter = new wav.Writer();
     
     // DO IT AS A DIRECT STREAM, PLUS A FILE WRITE IF NECESSARY
     
-    var mp3File = fs.createWriteStream(audioPath + '/' +  data.name);
-    
+    var audioFile = fs.createWriteStream(audioPath + '/' +  data.name);
+        
     const Writable = require('stream').Writable;
-    
-    var buffer = [];
-    var chunks = 0;
-    
-    const CHUNK_SIZE = 102400; //100kb
-    
-    const myWritable = new Writable({
-      write(chunk, encoding, callback) {
         
-        buffer.push(chunk);
-        chunks += chunk;
+        var buffer = [];
     
-         //mp3File.write(chunk);
-         
-        if(chunks.length >= CHUNK_SIZE) {
+        const CHUNK_SIZE = 102400; //100kb
         
-            for(var i = 0; i < buffer.length; i++) {
-                   
-                io.sockets.emit('audio', { buffer: buffer[i]});
+        const socketSendWritable = new Writable({
+          write(chunk, encoding, callback) {
+            
+            buffer.push(chunk);
+    
+             //audioFile.write(chunk);
+             
+             //console.log(chunk);
+             
+            if(buffer.length >= 40) {
+                
+                var bufferConcat = Buffer.concat(buffer);
+                 
+                    io.sockets.emit('audio', { buffer: bufferConcat});
+                      
+               buffer = [];
             }
-           //io.sockets.emit('audio', { buffer: chunk});
-           
-           buffer = [];
+        
+            callback();
+          }
+        });
+
+        
+      function convertoFloat32ToInt16(buffer) {
+              var l = buffer.length;
+              var buf = new Int16Array(l)
+        
+              while (l--) {
+                buf[l] = buffer[l]*0xFFFF;    //convert to 16 bit
+              }
+              return buf.buffer
+            }
+               
+        function floatTo16Bit(inputArray, startIndex){
+            var output = new Uint16Array(inputArray.length-startIndex);
+            for (var i = 0; i < inputArray.length; i++){
+                var s = Math.max(-1, Math.min(1, inputArray[i]));
+                output[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+            }
+            return output;
         }
+
+
+        const Transform = require('stream').Transform;
+          
+        const convertWritable = new Transform({
+          write(chunk, encoding, callback) {
+
+            this.push(new Buffer( chunk, 'binary' ));
+        
+            callback();
+          }
+        });
+        
+
     
-        callback();
-      }
-    });
+//inbound_stream.pipe(socketSendWritable);
 
 
+    if (mimeType === 'audio/wav') {
+        
+      inbound_stream.pipe(encoder).pipe(socketSendWritable);
+      
+    } else if (mimeType === 'audio/mp3') {
+        
+      inbound_stream.pipe(socketSendWritable);
+      
+    }
 
-    /*myWritable.on('finish', () => {
-       //emit final part if there is data to emit
-       if(buffer.length) {
-           io.sockets.emit('audio', { buffer: buffer});
-       }
-    });*/
-       
-   
-    inbound_stream.pipe(myWritable);
-         
- 
+  
+    
             // LOOP THROUGH SOCKET STREAM STYLE, BUT DOESN@T WORK
             
             /*for(var i = 0; i < clients.length; i++) {
@@ -400,7 +445,7 @@ ss(socket).on('audio-file', function(inbound_stream, data) {
      
             socket.on('disconnect', function() {
               deleteFromArray(clients, socket);
-              //console.log(socket.id + ' disconnected');
+              console.log('client disconnected');
             });
       
           
@@ -423,9 +468,27 @@ ss(socket).on('audio-file', function(inbound_stream, data) {
 
 
 
-
 /////GENERAL API TRAFFIC/////
 
 server.get('/api', function (req, res) {
   res.send('Welcome to the Node API!');
 });
+
+
+server.get('/api/download', function (req, res) {
+    
+   var requestedFile = req.query.file;
+   
+   var file = upload_dir + "/" + requestedFile;
+
+  var filename = path.basename(file);
+  var mimetype = mime.lookup(file);
+
+  res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+  res.setHeader('Content-type', mimetype);
+
+  var filestream = fs.createReadStream(file);
+  filestream.pipe(res);
+  
+});
+

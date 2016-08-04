@@ -25,20 +25,33 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
         });
         
 
-        var uploader = new SocketIOFileUpload(socket);
-         document.getElementById("submit-image").addEventListener("click", uploader.prompt, false);
-         
-        uploader.addEventListener("start", function(event){
-            event.file.meta.type = "image";
-        });
-                    
-                    
+        
+              
+               
+     $('#send-file').click(function(){
+        $('#file').click();
+     });
+     
+     
+    $('#file').change(function(e) {
+    
+            var socket = io.connect();          
+            var file = e.target.files[0];
+             
+            var stream = ss.createStream();
+                 
+            ss(socket).emit('file-upload', stream, {size: file.size, name: file.name, type: file.type});
+            ss.createBlobReadStream(file).pipe(stream);
+
+      });
+    
                     
         //RECEIVING
         
         socket.on('message', function (data) {
            $('#message-results').append('<li class="list-group-item">Message from ' + data.sender + ': <strong>' + data.message + '</strong></li>')
         });
+        
         
         socket.on("image", function(data) {
             var src = data.src;
@@ -47,13 +60,29 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
     
     
         //NOT USED YET
-        socket.on("download", function(data) {
-            var url = data.url;
-            $('#download-iframe').attr('src', data.url);
+        socket.on("sent-file", function(data) {
+         console.log("receiving sent file");
+         
+            var savedName = data.name;
+            
+            $('#download-iframe').attr('src', '/api/download?file=' + savedName);
         });
               
         
-                      
+        
+        /////AUDIO/////
+ 
+
+         function convertoFloat32ToInt16(buffer) {
+           var l = buffer.length;
+           var buf = new Int16Array(l)
+     
+           while (l--) {
+             buf[l] = buffer[l]*0xFFFF;    //convert to 16 bit
+           }
+           return buf.buffer
+         }
+         
         function initiateAudioContext() {
             
             audioContext = window.AudioContext || window.webkitAudioContext;        
@@ -158,7 +187,6 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
     
           
           
-          
         function audioStreamSocketIo() {
                 
             var socket = io.connect();
@@ -182,8 +210,8 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
                 
                 } else {
                        
-                     console.log(data.buffer);
-
+                     //console.log(data.buffer);
+                  
                     context.decodeAudioData(data.buffer, function(buffer) {
          
                      
@@ -257,12 +285,37 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
             
      });        
          
-         
+
+     
+     var theWavDataInFloat32;
+
+   /*function floatTo16Bit(inputArray, startIndex){
+       var output = new Uint16Array(inputArray.length-startIndex);
+       for (var i = 0; i < inputArray.length; i++){
+           var s = Math.max(-1, Math.min(1, inputArray[i]));
+           output[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+       }
+       return output;
+   }
+   
+   // This is passed in an unsigned 16-bit integer array. It is converted to a 32-bit float array.
+   // The first startIndex items are skipped, and only 'length' number of items is converted.
+   function int16ToFloat32(inputArray, startIndex, length) {
+       var output = new Float32Array(inputArray.length-startIndex);
+       for (var i = startIndex; i < length; i++) {
+           var int = inputArray[i];
+           // If the high bit is on, then it is a negative number, and actually counts backwards.
+           var float = (int >= 0x8000) ? -(0x10000 - int) / 0x8000 : int / 0x7FFF;
+           output[i] = float;
+       }
+       return output;
+   }*/
+
+              
                
      $('#start-file-stream').click(function(){
         $('#audio-file').click();
      });
-     
      
      
     $('#audio-file').change(function(e) {
@@ -274,12 +327,13 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
     
             socket = audioStreamSocketIo();           
             var file = e.target.files[0];
+       
             
             var stream = ss.createStream();
                  
-            ss(socket).emit('audio-file', stream, {size: file.size, name: file.name});
+            ss(socket).emit('audio-file', stream, {size: file.size, name: file.name, type: file.type});
             ss.createBlobReadStream(file).pipe(stream);
-            
+
             localStorage.setItem('stream_state', 'started');
         
         });
@@ -449,6 +503,9 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
                 console.log('window start rec');
                 recording = true;
                 localStorage.setItem('stream_state', 'started');
+               
+                $('#start-recording').hide();
+                $('#stop-recording').show();
             }
             
         
@@ -557,16 +614,7 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
              recorder.connect(context.destination); 
            }
                
-        
-            function convertoFloat32ToInt16(buffer) {
-              var l = buffer.length;
-              var buf = new Int16Array(l)
-        
-              while (l--) {
-                buf[l] = buffer[l]*0xFFFF;    //convert to 16 bit
-              }
-              return buf.buffer
-            }
+
             
                 //startTime = 0;                 
           
