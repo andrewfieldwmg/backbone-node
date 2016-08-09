@@ -1,0 +1,17 @@
+{
+  "name": "backbone-node",
+  "homepage": "https://github.com/andrewfieldwmg/backbone-node",
+  "authors": [
+    "Andrew Field <andyfield83@gmail.com>"
+  ],
+  "description": "Fun stuff",
+  "main": "index.html",
+  "keywords": [
+    "fun"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "waveform-data": "^1.5.1"
+  }
+}

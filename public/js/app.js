@@ -1,71 +1,231 @@
+    // Opera 8.0+
+var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+    // Firefox 1.0+
+var isFirefox = typeof InstallTrigger !== 'undefined';
+    // At least Safari 3+: "[object HTMLElementConstructor]"
+var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+    // Internet Explorer 6-11
+var isIE = /*@cc_on!@*/false || !!document.documentMode;
+    // Edge 20+
+var isEdge = !isIE && !!window.StyleMedia;
+    // Chrome 1+
+var isChrome = !!window.chrome && !!window.chrome.webstore;
+    // Blink engine detection
+var isBlink = (isChrome || isOpera) && !!window.CSS;
+
+if (!isChrome && !isFirefox) {
+    //alert('Sorry, this application only works with the latest versions of Google Chrome.');
+    $('body').addClass('disabled');
+    $('#message-results').append('<li class="list-group-item"><strong>Sorry, this application only works with the latest versions of Google Chrome.</strong></li>')
+}
+
 var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID = Math.random()
 
-             
-        var socket = io.connect();
-                              
-        //socket.on('connect', function() {       
-        //    console.log("Socket IO connected");
-        //});
+var time = new Date(new Date().getTime()).toLocaleTimeString();
+            
+        var playSound = (function beep() {
+            var snd = new Audio("data:audio/wav;base64,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qJrx4KOQjahZxWbcZgztj2c49nKmkId44S71j0c8eV9yDK6uPRzx5X18eDvjvQ6yKo9ZSS6l//8elePK/Lf//IInrOF/FvDoADYAGBMGb7FtErm5MXMlmPAJQVgWta7Zx2go+8xJ0UiCb8LHHdftWyLJE0QIAIsI+UbXu67dZMjmgDGCGl1H+vpF4NSDckSIkk7Vd+sxEhBQMRU8j/12UIRhzSaUdQ+rQU5kGeFxm+hb1oh6pWWmv3uvmReDl0UnvtapVaIzo1jZbf/pD6ElLqSX+rUmOQNpJFa/r+sa4e/pBlAABoAAAAA3CUgShLdGIxsY7AUABPRrgCABdDuQ5GC7DqPQCgbbJUAoRSUj+NIEig0YfyWUho1VBBBA//uQZB4ABZx5zfMakeAAAAmwAAAAF5F3P0w9GtAAACfAAAAAwLhMDmAYWMgVEG1U0FIGCBgXBXAtfMH10000EEEEEECUBYln03TTTdNBDZopopYvrTTdNa325mImNg3TTPV9q3pmY0xoO6bv3r00y+IDGid/9aaaZTGMuj9mpu9Mpio1dXrr5HERTZSmqU36A3CumzN/9Robv/Xx4v9ijkSRSNLQhAWumap82WRSBUqXStV/YcS+XVLnSS+WLDroqArFkMEsAS+eWmrUzrO0oEmE40RlMZ5+ODIkAyKAGUwZ3mVKmcamcJnMW26MRPgUw6j+LkhyHGVGYjSUUKNpuJUQoOIAyDvEyG8S5yfK6dhZc0Tx1KI/gviKL6qvvFs1+bWtaz58uUNnryq6kt5RzOCkPWlVqVX2a/EEBUdU1KrXLf40GoiiFXK///qpoiDXrOgqDR38JB0bw7SoL+ZB9o1RCkQjQ2CBYZKd/+VJxZRRZlqSkKiws0WFxUyCwsKiMy7hUVFhIaCrNQsKkTIsLivwKKigsj8XYlwt/WKi2N4d//uQRCSAAjURNIHpMZBGYiaQPSYyAAABLAAAAAAAACWAAAAApUF/Mg+0aohSIRobBAsMlO//Kk4soosy1JSFRYWaLC4qZBYWFRGZdwqKiwkNBVmoWFSJkWFxX4FFRQWR+LsS4W/rFRb/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////VEFHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU291bmRib3kuZGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjAwNGh0dHA6Ly93d3cuc291bmRib3kuZGUAAAAAAAAAACU=");  
+            return function() {     
+                snd.play(); 
+            }
+        })();
+            
+        function initSocketIo() {
+            var socket = io.connect();
+            return socket;
+        }
         
+        function scrollToBottom() {
+            $('.scrollable').scrollTop($('.scrollable')[0].scrollHeight);
+        }
+        
+        function getSocketCss(socketIndex) {
+            
+            if (socketIndex === 0) {
+                var liClass = "list-group-item-success";
+            } else if (socketIndex === 1) {
+                var liClass = "list-group-item-warning";
+            }
+            
+            return liClass;
+        }
+        
+        window.onload = function() {
+         //initSocketIo();
+        };
+
+   
+        socket = initSocketIo();
+        
+                
+        socket.on('connect', function() {       
+            console.log("Socket IO connected");
+        });
+        
+        socket.on('socket-info', function(data) {
+            var socketIndex = data.socketindex;
+            
+            localStorage.setItem('socketindex', socketIndex);
+     
+        });
         
         socket.on('disconnect', function(){
-           console.log('SocketIO connection to the server terminated');
-                 
+           console.log('SocketIO connection to the server terminated');    
         });
         
         //SENDING
         
+        function usernameIsSet() {
+            
+                $('#message-text').attr('placeholder', 'What do you want to say, ' + localStorage.getItem("username") + '?');
+                $('.application-body').show();
+                $('#username-form').hide();
+        }
+        
+        
+        $(document).on('ready', function() {
+            
+            if(localStorage.getItem("username")) {
+                    usernameIsSet();
+            
+            }
+        });
+        
+        
+        $('#submit-username').on('click', function(e) {
+            
+            console.log('submit username');
+            e.preventDefault();
+            var username = $('#username').val();
+            
+            socket.emit('username', { sender: tabID, username: username });
+            
+            localStorage.setItem('username', username);
+            
+            usernameIsSet();
+        });
+             
+             
         $('#submit-message').on('click', function(e) {
             
             console.log('submit message');
             e.preventDefault();
-            var message = $('#message-text').val();                   
-            socket.emit('message', { sender: tabID, message: message });
+            var message = $('#message-text').val();
+            
+            socket.emit('message', { sender: tabID, username: localStorage.getItem("username"), message: message });
+            
             $('#message-text').val("");
         });
         
-
-        
-              
-               
-     $('#send-file').click(function(){
-        $('#file').click();
-     });
+          
+         $('#send-file').click(function(){
+            $('#file').click();
+         });
+         
      
-     
-    $('#file').change(function(e) {
-    
-            var socket = io.connect();          
-            var file = e.target.files[0];
-             
-            var stream = ss.createStream();
+         $('#file').change(function(e) {
+         
+                 //var socket = io.connect();          
+                 var file = e.target.files[0];
+                  
+                 var stream = ss.createStream();
+                      
+                 ss(socket).emit('file-upload', stream, { username: localStorage.getItem("username"), sender: tabID, username: localStorage.getItem("username"), size: file.size, name: file.name, type: file.type});
+                 ss.createBlobReadStream(file).pipe(stream);
                  
-            ss(socket).emit('file-upload', stream, {size: file.size, name: file.name, type: file.type});
-            ss.createBlobReadStream(file).pipe(stream);
-
-      });
+                 $('#message-results').append('<li class="list-group-item list-group-item-info"><strong>' + time + '</strong> Sending file: <strong>' + file.name + '</strong></li>')
+     
+           });
     
+                    
                     
         //RECEIVING
         
         socket.on('message', function (data) {
-           $('#message-results').append('<li class="list-group-item">Message from ' + data.sender + ': <strong>' + data.message + '</strong></li>')
+
+            var socketIndex = data.socketindex;
+            var socketCss = getSocketCss(socketIndex);
+    
+           $('#message-results').append('<li class="list-group-item ' + socketCss + '"><strong>' + time + '</strong> Message from ' + data.username + ': <strong>' + data.message + '</strong></li>')
+            
+            scrollToBottom();
+            playSound();
         });
-        
-        
-        socket.on("image", function(data) {
-            var src = data.src;
-            $('#image-results').append('<img class="img-fluid" src="' + src + '" style="padding: 10px">');
-        });
+           
+         
+         socket.on("stop-audio-stream", function(data) {
+            
+            console.log('socket received from server: stop audio stream');
+            
+             if(localStorage.getItem("stream_state") !== "stopped") {
+                
+                $('#stop').trigger('click');
+                    console.log('stream state started, so triggered stop button');
+             } else {
+                    console.log('stream state already stopped, so didnt trigger stop button');
+             }
+             
+            /*localStorage.setItem('stream_state', 'stopped');
+                                          
+               audioContext.close().then(function() {
+                 
+                   console.log('close promise resolved');
+                   $('#message-results').append('<li class="list-group-item">Inbound stream stopped</li>')
+
+               });*/
+            
+         });
     
     
-        //NOT USED YET
+    
+        socket.on("audio-file-incoming", function(data) {
+            
+            var socketIndex = data.socketindex;
+            var socketCss = getSocketCss(socketIndex);
+            
+            audioStreamSocketIo(socket);
+            
+            //$('#listen').trigger('click');
+        
+                $('#message-results').append('<li class="list-group-item ' + socketCss + '"><strong>' + time + '</strong> Inbound stream loading from ' + data.username + ': <strong>' + data.name + '</strong></li>')
+                    
+                localStorage.setItem('stream_state', 'started');
+                
+                scrollToBottom();
+                playSound();
+            
+         });
+        
+        
+        socket.on("sent-file-incoming", function(data) {
+            
+            var socketIndex = data.socketindex;
+            var socketCss = getSocketCss(socketIndex);
+            
+            $('#message-results').append('<li class="list-group-item ' + socketCss + '"><strong>' + time + '</strong> File transfer incoming from ' + data.username + ': <strong>' + data.name + '</strong> (loading...)</li>')
+    
+            scrollToBottom();
+            playSound();
+            
+         });
+    
+    
+ 
         socket.on("sent-file", function(data) {
+            
          console.log("receiving sent file");
+         
+           var socketIndex = data.socketindex;
+            var socketCss = getSocketCss(socketIndex);
+         
+         $('#message-results').append('<li class="list-group-item ' + socketCss + '"><strong>' + time + '</strong> File transfer succesfully received from ' + data.username + ': <strong>' + data.name + '</strong></li>')
          
             var savedName = data.name;
             
             $('#download-iframe').attr('src', '/api/download?file=' + savedName);
+            
+            scrollToBottom();
+            playSound();
         });
               
         
@@ -187,60 +347,145 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
     
           
           
-        function audioStreamSocketIo() {
-                
-            var socket = io.connect();
-                                
-             // HERE WE DO THE FILE UPLOAD / STREAM WITH SS   
-            socket.on('connect', function() {
+        function audioStreamSocketIo(socket) {
+         
+            
+              console.log("audioStreamSocketIo");
+              
+             // HERE WE DO THE FILE UPLOAD / STREAM WITH SS
+             
+            //socket.on('connect', function() {
                 
               console.log('SocketIO connection to the server established');
-         
-                // THIS BIT DOES NOW WORK, BUT ONLY TO ONE SOCKET!!       
- 
-                context = initiateAudioContext();
 
-                startTime = 0;   
+              
+                audioContext = initiateAudioContext();
+
+                startTime = 0;
+                
+                var delayTime = 0;
+                var init = 0;
+                var audioStack = [];
+                var nextTime = 0;
+                
+                              
+               /*function createCanvas ( w, h ) {
+                   var newCanvas = document.createElement('canvas');
+                   newCanvas.width  = w;     newCanvas.height = h;
+                   return newCanvas;
+               };
+               
+                            
+               var canvasWidth = 512, canvasHeight = 120 ;
+               var newCanvas = createCanvas (canvasWidth, canvasHeight);
+               var context = null;
+               
+               document.body.appendChild(newCanvas);
+               context = newCanvas.getContext('2d');*/
+       
                 socket.on("audio", function(data) {
        
                 //console.log('receiving audio stream via socket io stream');  
+       
+                        
                 if(localStorage.getItem("stream_state") === "stopped") {
                             
                     return;
                 
                 } else {
-                       
+               
                      //console.log(data.buffer);
                   
-                    context.decodeAudioData(data.buffer, function(buffer) {
-         
-                     
-                            var source = context.createBufferSource();
+                    audioContext.decodeAudioData(data.buffer, function(buffer) {
+                  
+                        audioStack.push(buffer);
+                        
+                        if ((init!=0) || (audioStack.length > 1)) { // make sure we put at least 10 chunks in the buffer before starting
+                            init++;
+                            scheduleBuffers();
+                        }
                           
-                            source.buffer = buffer;
-                            source.connect(context.destination);
+                           /*var source = audioContext.createBufferSource();
+                         
+                            console.log(buff.duration);
+                         
+                           source.buffer = buff;
+                           source.connect(audioContext.destination);
+                           
+                           source.start();
+   
+                           startTime += buff.duration;*/
                             
-                            source.start(startTime);
-    
-                            startTime += buffer.duration;
-                   
-                
+                            
+                           //renderWaveform(buff);
+                                              
+                           // MUSIC DISPLAY
+                           /*function renderWaveform(buff) {
+                              
+                              var leftChannel = buff.getChannelData(0); // Float32Array describing left channel     
+                              var lineOpacity = canvasWidth / leftChannel.length ;      
+                              context.save();
+                              context.fillStyle = '#222';
+                              context.fillRect(0, 0, canvasWidth,canvasHeight);
+                              context.strokeStyle = '#121';
+                              context.globalCompositeOperation = 'lighter';
+                              context.translate(0, canvasHeight / 2);
+                              context.globalAlpha = 0.06 ; // lineOpacity ;
+                              
+                              for (var i = 0; i < leftChannel.length; i++) {
+                                  // on which line do we get ?
+                                  var x = Math.floor (canvasWidth * i / leftChannel.length) ;
+                                  var y = leftChannel[i] * canvasHeight / 2 ;
+                                  context.beginPath();
+                                  context.moveTo(x , 0);
+                                  context.lineTo(x+1, y);
+                                  context.stroke();
+                              }
+                              
+                              context.restore();
+                              console.log('done');
+                              
+                           }*/
+
+
                             }, function (error) {
                                 console.error("failed to decode:", error);
                             });
+                    
                 
                         $('#pause').show();
-                 }
+                  
+                       
+                    }  
+                    
+                });
+                    
+             
+            
+                 function scheduleBuffers() {
+                    while ( audioStack.length) {
+                        var buffer = audioStack.shift();
+                        var source = audioContext.createBufferSource();
+                        source.buffer = buffer;
+                        source.connect(audioContext.destination);
+                        if (nextTime == 0)
+                            nextTime = audioContext.currentTime;  /// add 50ms latency to work well across systems - tune this if you like
+                        source.start(nextTime);
+                        nextTime += source.buffer.duration; // Make the next buffer wait the length of the last buffer before being played
+                    };
+                }
+                                 
                  
                           $('#pause').on('click', function(e) {                
-                                context.suspend();
+                                audioContext.suspend();
                                 
                                 $('#pause').hide();
                                 $('#resume').show();
                             });
                           
+                          
                             $('#resume').on('click', function(e) {                
-                                context.resume();
+                                audioContext.resume();
                                 
                                 $('#resume').hide();
                                 $('#pause').show();
@@ -248,27 +493,32 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
                             });
                   
                            
-                    });
+                  
                                                     
                             
-                    $('#stop').on('click', function(e) {
+                        $('#stop').on('click', function(e) {
                       
+                            console.log('stop clicked');
+                            
                           e.stopPropagation();
-                          
-                           socket.emit('stop-audio-stream');                       
+                      
+                           socket.emit('stop-audio-stream');
+                           
+                           //$('#message-results').append('<li class="list-group-item">Outbound stream stopped</li>')
                              
                            localStorage.setItem('stream_state', 'stopped');
                                                          
-                              context.close().then(function() {
+                              audioContext.close().then(function() {
                                 
+                                    //audioStreamSocketIo(socket);
                                   console.log('close promise resolved');
 
                               });
                    
-                    });
+                        });
                   
       
-                });
+                //});
             
             
             return socket;    
@@ -277,17 +527,22 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
                
     $('#listen').on('click', function(e) {
         
+        console.log('listen clicked');
+        
+        //audioStreamSocketIo(socket); 
+        
         $.when(
-               $('#stop').triggerHandler('click') /* asynchronous task */
+               $('#stop').triggerHandler('click')
         ).done(function() {
-                    audioStreamSocketIo(); 
+                    audioStreamSocketIo(socket); 
         });
             
      });        
          
 
      
-     var theWavDataInFloat32;
+     //var theWavDataInFloat32;
+
 
    /*function floatTo16Bit(inputArray, startIndex){
        var output = new Uint16Array(inputArray.length-startIndex);
@@ -314,47 +569,46 @@ var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID =
               
                
      $('#start-file-stream').click(function(){
-        $('#audio-file').click();
+              
+        $.when(
+               $('#stop').triggerHandler('click')
+        ).done(function() {
+                $('#audio-file').click();
+        });   
+               
      });
+     
      
      
     $('#audio-file').change(function(e) {
     
-        $.when(
-               $('#stop').triggerHandler('click') /* asynchronous task */
-        ).done(function() {
-   
-    
-            socket = audioStreamSocketIo();           
-            var file = e.target.files[0];
-       
+            console.log('audio file changed');
             
-            var stream = ss.createStream();
-                 
-            ss(socket).emit('audio-file', stream, {size: file.size, name: file.name, type: file.type});
-            ss.createBlobReadStream(file).pipe(stream);
-
-            localStorage.setItem('stream_state', 'started');
+        //$.when(
         
-        });
+               //$('#stop').triggerHandler('click')
+               
+        //).done(function() {
+   
+               //audioStreamSocketIo(socket);
+         
+         var file = e.target.files[0];
+         
+        var stream = ss.createStream();
+             
+        ss(socket).emit('audio-file', stream, { username: localStorage.getItem("username"), sender: tabID, size: file.size, name: file.name, type: file.type});
+        ss.createBlobReadStream(file).pipe(stream);
+
+        localStorage.setItem('stream_state', 'started');
+        
+        $('#message-results').append('<li class="list-group-item list-group-item-info"><strong>' + time + '</strong> Broadcasting stream: <strong>' + file.name + '</strong></li>')
+
+   
+        //});
 
    });
     
-    
-   $('#play').on('click', function(e) {
- 
-        $.when(
-               $('#stop').triggerHandler('click') /* asynchronous task */
-        ).done(function() {
-    
-            socket = audioStreamSocketIo();           
-            socket.emit('play-audio');
-                
-            localStorage.setItem('stream_state', 'started');
-        
-        });
 
-   });
           
          /*window.onload = function init() {
           try {

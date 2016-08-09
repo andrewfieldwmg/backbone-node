@@ -3,7 +3,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Magento WebSocket Testing</title>
+    <title>listentome.io</title>
     
         <!-- Bootstrap -->
     <link href="/css/bootstrap.css" rel="stylesheet">
@@ -15,6 +15,18 @@
                 margin-bottom:8px;
                 margin-top:8px;
             }
+            
+            .disabled {
+            pointer-events: none;
+            opacity: 0.4;
+            }
+            
+            .scrollable {
+                max-height: 300px;
+                overflow-y:auto;  
+            }
+            
+      
         </style>
 </head>
 
@@ -26,6 +38,21 @@
     <div class="row">
         
         <div class="col-sm-12">
+           
+        <p>          
+            <form id="username-form" class="form" action="">                   
+               <div class="input-group input-group-lg">
+                 <input type="text" class="form-control" id="username" placeholder="First things first - what's your name?">
+                 <span class="input-group-btn">
+                   <button class="btn btn-primary" id="submit-username" type="submit">Submit</button>
+                 </span>
+               </div>
+           </form>
+        
+        </p>
+         
+         
+        <div class="application-body" style="display: none">
             
         <p>
                 
@@ -41,17 +68,17 @@
         </p>
         
         <p>
-           <div class="btn-group-vertical button-wrapper">
+           <div class="btn-group-horizontal button-wrapper">
             
-            <input id="file" type="file" style="display: none"/>
-            <button class="btn btn-primary" id="send-file" type="submit">Send File</button>
-                
-            <button class="btn btn-primary" id="start-recording" type="submit">Record Audio</button>
+            <button class="btn btn-primary" id="start-recording" type="submit">Record Live Audio</button>
             <button class="btn btn-primary" id="stop-recording" type="submit" style="display: none">Stop Recording</button>
                 
             <input id="audio-file" type="file" accept="audio/mp3, audio/wav" style="display: none"/>
             <button class="btn btn-primary" id="start-file-stream">Stream MP3 or WAV</button>
-                
+              
+            <input id="file" type="file" style="display: none"/>
+            <button class="btn btn-primary" id="send-file" type="submit">Send File</button>
+                        
             <button class="btn btn-primary" id="listen">Listen to Others</button>          
                <button class="btn btn-primary" id="pause" style="display: none">Pause</button>
                <button class="btn btn-primary" id="resume" style="display: none">Resume</button>
@@ -63,13 +90,11 @@
        </p>
             
             <p>
-                <ul class="list-group" id="message-results"></ul>
+                
+                <ul class="list-group scrollable" id="message-results"></ul>
             </p>
             
-            <p>
-                <div id="image-results"></div>
-            </p>
-            
+
             <iframe name="download-iframe" id="download-iframe" width="1" height="1" frameborder="0" src=""></iframe>
             
         <!--<audio id="audio" controls="controls">
@@ -78,9 +103,13 @@
 
           <ul id="recordingslist"></ul>
           
+          
+                    </div>     
+                </div>
+            </div>
         </div>
-        </div>
-        </div>
+    
+    
     
         <!-- JavaScript -->
         <script src="/vendor/jquery-2.0.3.min.js"></script>
@@ -95,8 +124,8 @@
         <script src="/vendor/siofu/client.js"></script>
         <script src="/vendor/socket.io-stream.js"></script>
         
-        <script src="/vendor/browserify/audiobuffer-to-wav.js"></script>
-        
+        <script src="/bower_components/waveform-data/dist/waveform-data.js"></script>
+
         <!--<script src="web-workers/recorder.js"></script>-->
           
         <script src="/js/app.js"></script>

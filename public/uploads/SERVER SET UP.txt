@@ -1,0 +1,93 @@
+CENTOS:
+
+DEVICE=eth0
+BOOTPROTO=none
+ONBOOT=yes
+NETWORK=192.168.56.0
+NETMASK=255.255.255.0
+IPADDR=192.168.56.20
+USERCTL=yes
+
+
+DEVICE=eth1
+BOOTPROTO=dhcp
+ONBOOT=yes
+
+CENTOS7:
+
+BOOTPROTO="static"
+IPADDR="192.168.56.20"
+NETMASK="255.255.255.0"
+GATEWAY="192.168.56.0"
+NAME="enp0s3"
+UUID="f9adf8e2-09f3-4ab2-a14c-38a3efbad590"
+DEVICE="enp0s3"
+ONBOOT="yes"
+
+DEVICE="enp0s8"
+NAME="enp0s8"
+BOOTPROTO="dhcp"
+NM_CONTROLLED="no"
+ONBOOT="yes"
+TYPE="Ethernet"
+DEFROUTE="yes"
+PEERDNS="yes"
+PEERROUTES="yes"
+IPV4_FAILURE_FATAL="yes"
+IPV6INIT="yes"
+IPV6_AUTOCONF="yes"
+IPV6_DEFROUTE="yes"
+IPV6_PEERDNS="yes"
+IPV6_PEERROUTES="yes"
+IPV6_FAILURE_FATAL="no"
+
+
+UBUNTU:
+
+INSTALL:
+
+
+set up hostname and user account
+select minimal utils and open ssh
+
+DO NOT INSTALL WITHOUT NETWORKING!
+
+Virtual Box config:
+
+1: Host Only (Virtual Box Adapter)
+2: NAT
+
+Virtual Box Adapter:
+
+IP: 192.168.0.1
+
+UBUNTU NETWORK CONFIG:
+
+auto eth0
+iface eth0 inet static
+address 192.168.56.20
+netmask 255.255.255.0
+gateway 192.168.56.0
+
+auto eth1
+iface eth1 inet dhcp
+
+Check ifconfig that ips are set up etc
+reboot networking
+ifup etc
+
+may need to restart
+
+SSH:
+
+set up ssh to allow root password
+
+reboot / start sshd
+turn off firewall
+may need reboot etc
+set up root passwd in ubuntu
+
+
+SFTP:
+
+Should work but may need to search for ftp / sftp install shit, and root user shit etc.

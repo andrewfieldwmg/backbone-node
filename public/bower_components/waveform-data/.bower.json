@@ -1,0 +1,27 @@
+{
+  "name": "waveform-data",
+  "version": "1.5.1",
+  "main": "dist/waveform-data.min.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "data",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "audio-context": "juliangruber/audio-context#~0.1.0"
+  },
+  "homepage": "https://github.com/bbcrd/waveform-data.js",
+  "_release": "1.5.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.5.1",
+    "commit": "41b3dcbfeedf685dd6d6ff58b10349e02c44cbaf"
+  },
+  "_source": "https://github.com/bbcrd/waveform-data.js.git",
+  "_target": "^1.5.1",
+  "_originalSource": "waveform-data",
+  "_direct": true
+}
