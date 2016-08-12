@@ -7,6 +7,10 @@ var cluster = require('cluster');
 //AUDIO
 var wav = require('wav');
 var lame = require('lame');
+var sox = require('sox');
+var SoxCommand = require('sox-audio');
+var ogg = require('ogg');
+
 //var im = require('imagemagick');
 
 // FILE SYSTEM and STREAMS
@@ -14,9 +18,9 @@ var fs = require('fs');
 var path = require("path");
 var mime = require('mime');
 var sanitize = require("sanitize-filename");
-var chokidar = require('chokidar');
-var growingFile = require('growing-file');
-var tailingStream = require('tailing-stream');
+//var chokidar = require('chokidar');
+//var growingFile = require('growing-file');
+//var tailingStream = require('tailing-stream');
 
 function getExtension(filename) {
     return filename.split('.').pop();
@@ -35,14 +39,20 @@ var upload_dir = path.join(__dirname, '../', 'public' + uploadFolder);
 var audioPath = path.join(__dirname, '../', 'public/uploads/audio')
 var wavRecordingFilename = 'audio_recording.wav';
 var mp3RecordingFilename = 'test.mp3';
+
 var wavRecordingFile = audioPath + '/' + wavRecordingFilename;
 var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
 
-
+var testWav =  audioPath + '/test.wav';
+var testLowWav =  audioPath + '/testlow.wav';
+var testmp3 = audioPath + '/test.mp3';
+ 
+ 
     function deleteFromArray(my_array, element) {
       position = my_array.indexOf(element);
       my_array.splice(position, 1);
     }
+    
     
     var clients = [];
 
@@ -53,14 +63,11 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
             clients.push(socket.id);
             
             var socketIndex = clients.indexOf(socket.id);
-            
-            console.log(socketIndex);
-            
+  
             socket.emit('socket-info', { socketindex: socketIndex });
             
             console.log('SocketIO client connected: ' + socket.id);
-            
-            
+                 
              socket.on('message', function (data) {
                 
                  console.log('Received a message!' + data.message);
@@ -84,7 +91,7 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
                 socket.broadcast.emit('sent-file-incoming', { username: data.username, socketindex: socketIndex, sender: data.sender, name: data.name });
                 
                 var cleanName = sanitize(data.name);
-                
+     
                  fileUploadWriteStream = fs.createWriteStream(upload_dir + "/" + cleanName);
                  fileStream.pipe(fileUploadWriteStream);
                  
@@ -92,7 +99,8 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
                         
                     console.log('File successfully uploaded: ' + cleanName);
                     
-                    socket.broadcast.emit('sent-file', { username: data.username, socketindex: socketIndex, sender: data.sender, name: cleanName });
+                    //socket.broadcast.emit('sent-file', { username: data.username, socketindex: socketIndex, sender: data.sender, name: cleanName });
+                    io.sockets.emit('sent-file', { username: data.username, socketindex: socketIndex, sender: data.sender, name: cleanName });
            
                 });
         
@@ -106,14 +114,13 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
             
                 console.log('receiving file stream: ' + data.name);
                 
-                    var socketIndex = clients.indexOf(socket.id);
-                    
-                    //socket.broadcast.emit('audio-file-incoming', { sender: data.sender, name: data.name});
-                    io.sockets.emit('audio-file-incoming', { socketindex: socketIndex, username: data.username, sender: data.sender, name: data.name});
-                        
-                    var mimeType = data.type;
-                    
+                    var socketIndex = clients.indexOf(socket.id);          
+                    var mimeType = data.type;             
                     var senderSocketId = socket.id;
+                    
+                    //socket.broadcast.emit('audio-file-incoming', { audioType: mimeType, socketindex: socketIndex, username: data.username, sender: data.sender, name: data.name});
+                    io.sockets.emit('audio-file-incoming', { audioType: mimeType, socketindex: socketIndex, username: data.username, sender: data.sender, name: data.name});
+                 
               
                     var decoder = new lame.Decoder();
                               
@@ -124,7 +131,7 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
                       sampleRate: 44100,  // 44,100 Hz sample rate 
                      
                       // output 
-                      bitRate: 128,
+                      bitRate: 96,
                       outSampleRate: 44100,
                       mode: lame.JOINTSTEREO // STEREO (default), JOINTSTEREO, DUALCHANNEL or MONO 
                     });
@@ -138,20 +145,14 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
                 const Writable = require('stream').Writable;
                     
                     var buffer = [];
-                    
-                    const CHUNK_SIZE = 102400; //100kb
-                    
-                    const socketSendWritable = new Writable({
+             
+                    const socketSendWritableMp3 = new Writable({
                         
                       write(chunk, encoding, callback) {
                         
                         buffer.push(chunk);
 
                          //console.log(buffer.length);
-                        
-                        // TODO:
-                        //need to move buffer.length down bit by bit to find the sweet spot
-                        // between smooth playback and latency
             
                         if(buffer.length >= 40) {
                             
@@ -167,29 +168,55 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
                       }
                     
                     });
+                    
             
-            
-                    const Transform = require('stream').Transform;
-                      
-                    const convertWritable = new Transform({
+                const socketSendWritablePcm = new Writable({
+                        
                       write(chunk, encoding, callback) {
-            
-                        this.push(new Buffer( chunk, 'binary' ));
+                        
+                        buffer.push(chunk);
+                        
+                        if(buffer.length >= 200) {
+                            
+                            var bufferConcat = Buffer.concat(buffer);
+                             
+                                 //socket.broadcast.emit('pcm-audio', { buffer: bufferConcat});
+                                 io.sockets.emit('pcm-audio', { buffer: bufferConcat});
+                                  
+                           buffer = [];
+                        }
+                   
                     
                         callback();
                       }
+                    
                     });
                     
             
                 if (mimeType === 'audio/wav') {
                     
-                  //inbound_stream.pipe(rawAudioFile);
-                  inbound_stream.pipe(encoder).pipe(socketSendWritable);
+                    /*var command = SoxCommand();
+                    
+                    command.input(inbound_stream)
+                        .inputSampleRate('44.1k')
+                        .inputEncoding('signed')
+                        .inputChannels(2)
+                        .inputFileType('wav')
+                        .output(socketSendWritablePcm)
+                        .outputBits(16)
+                        .outputFileType('raw')
+                        .outputSampleRate('44100');
+                     
+                    command.run();*/
+                    
+                    console.log('audio/wav');
+                    inbound_stream.pipe(socketSendWritablePcm);
+                  //inbound_stream.pipe(socketSendWritablePcm);
                   
                 } else if (mimeType === 'audio/mp3') {
-                    
+                    console.log('audio/mp3');
                   //inbound_stream.pipe(rawAudioFile);
-                  inbound_stream.pipe(socketSendWritable);
+                  inbound_stream.pipe(socketSendWritableMp3);
                 }
                 
                  console.log('sending stream to client(s): '  + data.name);
@@ -205,8 +232,8 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
                             inbound_stream.end();
                             inbound_stream.destroy();
                             
-                            socketSendWritable.end();
-                        
+                            socketSendWritablePcm.end();
+                            socketSendWritableMp3.end();
                             //socket.disconnect();
 
                         });
@@ -239,7 +266,36 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
 
                 });
     
-        
+       
+                //var buffer = [];
+                
+                socket.on('play-pcm', function(data) {
+                    
+                  console.log('play pcm server');
+                    
+                  var wavStream = fs.createReadStream(testWav);
+                  
+                    wavStream.on('data', function(chunk) {
+                        //console.log(chunk);             
+                        buffer.push(chunk);
+                        
+                        //if(buffer.length >= 200) {
+          
+                            //var bufferConcat = Buffer.concat(buffer);
+                             
+                                 //socket.broadcast.emit('audio', { buffer: bufferConcat});
+                                 io.sockets.emit('pcm-audio', { buffer: chunk});
+                                  
+                           //buffer = [];
+                        //}
+                        
+                        
+                    
+                    });
+
+                });
+                
+                
     });
 
 
@@ -263,10 +319,10 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
     });
 
 
-    
+    //FILE TRANSFER//
     server.get('/api/download', function (req, res) {
         
-       var requestedFile = req.query.file;
+       var requestedFile = decodeURIComponent(req.query.file);
        
        var file = upload_dir + "/" + requestedFile;
     
