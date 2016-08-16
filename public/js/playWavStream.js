@@ -7,6 +7,8 @@ console.log('PLAY PCM STREAM FUNCTION CALLED');
     nextTime = 0;
     audioBufferStack = [];
     
+    console.log(audioBufferStack.length);
+    
     socket.on("pcm-audio", function(streamData) {
             
             
@@ -42,16 +44,20 @@ console.log('PLAY PCM STREAM FUNCTION CALLED');
                           
                 audioBufferStack.push(audioBuffer);
                 
-                console.log(audioBufferStack);
+                //console.log(audioBufferStack);
                 
                 if (audioBufferStack.length >= 1) {
-                        playBuffers(audioBufferStack);
+                        playBuffers();
                 }
                 
         });
     
     
                 function playBuffers() {
+                        
+                        console.log('play buffer');
+                        
+                        console.log(audioBufferStack.length);
                         
                         while (audioBufferStack.length) {
                                 
@@ -72,8 +78,8 @@ console.log('PLAY PCM STREAM FUNCTION CALLED');
                                 source.start(nextTime);
                                 nextTime += source.buffer.duration;
                                 
-                                console.log('next time: ' + nextTime);
-                                console.log('context current time: ' + audioContext.currentTime);
+                                //console.log('next time: ' + nextTime);
+                                //console.log('context current time: ' + audioContext.currentTime);
                 
                         }
                 }

@@ -1,41 +1,12 @@
-   
-         function convertoFloat32ToInt16(buffer) {
-        
-           var l = buffer.length;
-           var buf = new Int16Array(l)
-     
-           while (l--) {
-             buf[l] = buffer[l]*0xFFFF;    //convert to 16 bit
-           }
-           return buf.buffer
-         }
-         
-        function initiateAudioContext() {
-            
-            audioContext = window.AudioContext || window.webkitAudioContext;        
-
-            context = new audioContext();
-            console.log("init new audio context");
-  
-            return context;
-        }
-               
-               
-                  
-    //$('#start-recording').on('click', function(e) {
-    
-    function startLiveStream(socket) {
+function startLiveStream(socket) {
         
     console.log('start recording function activated');
-    
-        //var socket = audioStreamSocketIo(); 
-        //window.Stream = client.createStream();
-     
+  
         //socket.on('connect', function() {
             
         var stream = ss.createStream();
         
-        ss(socket).emit('audio-file', stream, {username: localStorage.getItem("username"), sender: tabID, name: "Live Stream", type: "audio/wav"});
+        ss(socket).emit('audio-file', stream, {username: localStorage.getItem("username"), sender: tabID, name: "Live Stream", type: "audio/wav/stream"});
                      
             if (!navigator.getUserMedia)
               navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -59,28 +30,33 @@
                        "optional": []
                    },
                   },
-                              success, function(e) {
+                  
+                  
+                  success, function(e) {
                      console.log('No live audio input: ' + e);
                    });
+                      
                       
                       } else alert('getUserMedia not supported in this browser.');
         
               
             var recording = false;
         
+        
             function startRecording() {
+              
                 console.log('window start rec');
                 recording = true;
                 localStorage.setItem('streamState', 'started');
-               
-                $('#start-recording').hide();
-                $('#stop-recording').show();
+              
             }
             
         
            function stopRecording() {
+            
                   recording = false;
                   stream.end();
+                  
                   localStorage.setItem('streamState', 'stopped');
             }
                 
@@ -93,29 +69,26 @@
                 console.log('Recording stopped');
 
                 stopRecording();
-                
-                $('#start-recording').show();
-                $('#stop-recording').hide();
- 
+  
             });
             
 
         
            function success(e) {
             
-             audioContext = window.AudioContext || window.webkitAudioContext;
-             context = new audioContext();
+            context = initiateAudioContext();
              
                sampleRate = context.sampleRate;
              
                // creates a gain node
-               //volume = context.createGain();
-            
+               volume = context.createGain();
+               volume.gain.value = 0.5;
+               
                // creates an audio node from the microphone incoming stream
                audioInput = context.createMediaStreamSource(e);
             
                // connect the stream to the gain node
-               //audioInput.connect(volume);
+               audioInput.connect(volume);
          
                //leftchannel = [];
                //rightchannel = [];
@@ -127,13 +100,15 @@
                recorder = context.createScriptProcessor(bufferSize, 2, 2);
          
                recorder.onaudioprocess = function(e){
-               if(!recording)  {
-                return;
-               }
+                
+                  if(!recording)  {
+                   return;
+                  }
    
                //console.log ('recording');
                var left = e.inputBuffer.getChannelData(0);
                var right = e.inputBuffer.getChannelData(1);
+        
         
                //var sixteen_bit_left = convertoFloat32ToInt16(left);
                //var sixteen_bit_right = convertoFloat32ToInt16(right);
@@ -142,7 +117,7 @@
                rightchannel.push (new Float32Array(right));
                recordingLength += bufferSize;
                
-
+               
                function mergeBuffers(channelBuffer, recordingLength){
                  var result = new Float32Array(recordingLength);
                  var offset = 0;
@@ -172,14 +147,17 @@
                   return result;
                 }
 
+                
                var interleaved = interleave (left, right );
-             
-               stream.write(new ss.Buffer(convertoFloat32ToInt16(interleaved)));
-            
+               var int16Interleaved = convertoFloat32ToInt16(interleaved);
+               //console.log(int16Interleaved);
+               
+              stream.write(new ss.Buffer(int16Interleaved));
+
 
              }
-       
-             audioInput.connect(recorder)
+   
+             volume.connect(recorder)
              recorder.connect(context.destination); 
            }
                
@@ -187,8 +165,5 @@
     }       
                 //startTime = 0;                 
           
-        //});
+//});
         
-            
-    //});
-    

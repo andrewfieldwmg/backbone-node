@@ -41,9 +41,9 @@
     
     function getSocketCss(socketIndex) {
         
-        if (socketIndex === 0) {
+        if (socketIndex == 0) {
             var liClass = "list-group-item-success";
-        } else if (socketIndex === 1) {
+        } else if (socketIndex == 1) {
             var liClass = "list-group-item-warning";
         }
         

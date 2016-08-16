@@ -5,12 +5,18 @@ var ip = require("ip");
 var cluster = require('cluster');
 
 //AUDIO
-var wav = require('wav');
-var lame = require('lame');
-var sox = require('sox');
-var SoxCommand = require('sox-audio');
-var ogg = require('ogg');
+//var wav = require('node-wav');
+//var lame = require('lame');
+//var sox = require('sox');
+//var soxStream = require('sox-stream')
 
+var SoxCommand = require('sox-audio');
+
+//var ogg = require('ogg');
+//var wavArrayBuffer = require('wav-arraybuffer');
+//var wavHeader = require("waveheader");
+//var ffmpegTranscoder = require('stream-transcoder');
+//var piedPiper = require('pied-piper');
 //var im = require('imagemagick');
 
 // FILE SYSTEM and STREAMS
@@ -18,6 +24,7 @@ var fs = require('fs');
 var path = require("path");
 var mime = require('mime');
 var sanitize = require("sanitize-filename");
+
 //var chokidar = require('chokidar');
 //var growingFile = require('growing-file');
 //var tailingStream = require('tailing-stream');
@@ -36,35 +43,41 @@ var ss = require('socket.io-stream');
 var uploadFolder = "/uploads";
 var upload_dir = path.join(__dirname, '../', 'public' + uploadFolder);  
     
-var audioPath = path.join(__dirname, '../', 'public/uploads/audio')
-var wavRecordingFilename = 'audio_recording.wav';
-var mp3RecordingFilename = 'test.mp3';
+var audioPath = path.join(__dirname, '../', 'public/uploads/audio');
+var wavRecordingFilename = 'liveStream.wav';
+var mp3RecordingFilename = 'liveStream.mp3';
 
 var wavRecordingFile = audioPath + '/' + wavRecordingFilename;
 var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
 
-var testWav =  audioPath + '/test.wav';
-var testLowWav =  audioPath + '/testlow.wav';
-var testmp3 = audioPath + '/test.mp3';
- 
- 
+
     function deleteFromArray(my_array, element) {
       position = my_array.indexOf(element);
       my_array.splice(position, 1);
     }
     
     
-    var clients = [];
-
-    io.sockets.on('connection', function (socket) {
+    var connectedSocketIds = [];
+    var connectedUsernames = [];
     
-        var clientIp = socket.request.connection.remoteAddress;
+    io.sockets.on('connection', function (socket) {
         
-            clients.push(socket.id);
+            var handshake = socket.handshake;
+            var username = handshake.query.username;
             
-            var socketIndex = clients.indexOf(socket.id);
+            connectedSocketIds.push(socket.id);
+            connectedUsernames.push(username);
+            
+            var clientIp = socket.request.connection.remoteAddress;
+         
+            var socketIndex = connectedSocketIds.indexOf(socket.id);
   
-            socket.emit('socket-info', { socketindex: socketIndex });
+            socket.emit('socket-info', { socketIndex: socketIndex, socketId: socket.id });
+            
+            var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
+            
+            io.sockets.emit('connected-clients', {connectedSocketIds: JSON.stringify(connectedSocketIds), connectedUsernames: JSON.stringify(uniqueUsernameArray) });
+            
             
             console.log('SocketIO client connected: ' + socket.id);
                  
@@ -76,7 +89,7 @@ var testmp3 = audioPath + '/test.mp3';
                  var sender = data.sender;
                  var username = data.username;
                  
-                var socketIndex = clients.indexOf(socket.id);
+                var socketIndex = connectedSocketIds.indexOf(socket.id);
                     
                  //socket.broadcast.emit('message', { message: message, sender: sender });
                 io.sockets.emit('message', { socketindex: socketIndex, message: message, sender: sender, username: username });
@@ -86,7 +99,7 @@ var testmp3 = audioPath + '/test.mp3';
               
             ss(socket).on('file-upload', function(fileStream, data) {
                 
-                var socketIndex = clients.indexOf(socket.id);
+                var socketIndex = connectedSocketIds.indexOf(socket.id);
                 
                 socket.broadcast.emit('sent-file-incoming', { username: data.username, socketindex: socketIndex, sender: data.sender, name: data.name });
                 
@@ -99,8 +112,8 @@ var testmp3 = audioPath + '/test.mp3';
                         
                     console.log('File successfully uploaded: ' + cleanName);
                     
-                    //socket.broadcast.emit('sent-file', { username: data.username, socketindex: socketIndex, sender: data.sender, name: cleanName });
-                    io.sockets.emit('sent-file', { username: data.username, socketindex: socketIndex, sender: data.sender, name: cleanName });
+                    socket.broadcast.emit('sent-file', { username: data.username, socketindex: socketIndex, sender: data.sender, name: cleanName });
+                    //io.sockets.emit('sent-file', { username: data.username, socketindex: socketIndex, sender: data.sender, name: cleanName });
            
                 });
         
@@ -114,15 +127,15 @@ var testmp3 = audioPath + '/test.mp3';
             
                 console.log('receiving file stream: ' + data.name);
                 
-                    var socketIndex = clients.indexOf(socket.id);          
+                    var socketIndex = connectedSocketIds.indexOf(socket.id);          
                     var mimeType = data.type;             
                     var senderSocketId = socket.id;
                     
                     //socket.broadcast.emit('audio-file-incoming', { audioType: mimeType, socketindex: socketIndex, username: data.username, sender: data.sender, name: data.name});
                     io.sockets.emit('audio-file-incoming', { audioType: mimeType, socketindex: socketIndex, username: data.username, sender: data.sender, name: data.name});
                  
-              
-                    var decoder = new lame.Decoder();
+                            
+                    /*var decoder = new lame.Decoder();
                               
                     var encoder = new lame.Encoder({
                       // input 
@@ -131,17 +144,12 @@ var testmp3 = audioPath + '/test.mp3';
                       sampleRate: 44100,  // 44,100 Hz sample rate 
                      
                       // output 
-                      bitRate: 96,
+                      bitRate: 128,
                       outSampleRate: 44100,
-                      mode: lame.JOINTSTEREO // STEREO (default), JOINTSTEREO, DUALCHANNEL or MONO 
-                    });
+                      mode: lame.STEREO // STEREO (default), JOINTSTEREO, DUALCHANNEL or MONO 
+                    });*/
                      
-                
-                // DO IT AS A DIRECT STREAM, PLUS A FILE WRITE IF NECESSARY
-                
-                var rawAudioFile = fs.createWriteStream(audioPath + '/' +  data.name);
-                //var convertedMp3File = fs.createWriteStream(audioPath + '/' +  data.name.slice(0, -4) + '.mp3');
-                
+      
                 const Writable = require('stream').Writable;
                     
                     var buffer = [];
@@ -152,9 +160,9 @@ var testmp3 = audioPath + '/test.mp3';
                         
                         buffer.push(chunk);
 
-                         //console.log(buffer.length);
+                         //console.log(chunk);
             
-                        if(buffer.length >= 40) {
+                        if(buffer.length >= 50) {
                             
                             var bufferConcat = Buffer.concat(buffer);
                              
@@ -169,64 +177,69 @@ var testmp3 = audioPath + '/test.mp3';
                     
                     });
                     
+                  
+            const Transform = require('stream').Transform;
+              
+            const transformWav = new Transform({
+              write(chunk, encoding, callback) {
+             
+                this.push(new Buffer( chunk, 'binary' ));
             
-                const socketSendWritablePcm = new Writable({
-                        
-                      write(chunk, encoding, callback) {
-                        
-                        buffer.push(chunk);
-                        
-                        if(buffer.length >= 200) {
-                            
-                            var bufferConcat = Buffer.concat(buffer);
-                             
-                                 //socket.broadcast.emit('pcm-audio', { buffer: bufferConcat});
-                                 io.sockets.emit('pcm-audio', { buffer: bufferConcat});
-                                  
-                           buffer = [];
-                        }
-                   
-                    
-                        callback();
-                      }
-                    
-                    });
-                    
+                callback();
+              }
+            });
             
-                if (mimeType === 'audio/wav') {
-                    
-                    /*var command = SoxCommand();
+
+              if (mimeType === 'audio/wav/stream') {
+                
+                console.log('audio/wav/stream');
+           
+                    var command = SoxCommand();
                     
                     command.input(inbound_stream)
-                        .inputSampleRate('44.1k')
+                        .inputFileType('raw')
+                        .inputSampleRate('88.2k')
                         .inputEncoding('signed')
-                        .inputChannels(2)
-                        .inputFileType('wav')
-                        .output(socketSendWritablePcm)
+                        .inputBits(16)
+                        .output(socketSendWritableMp3)
                         .outputBits(16)
-                        .outputFileType('raw')
-                        .outputSampleRate('44100');
-                     
-                    command.run();*/
+                        .outputFileType('mp3')
+                        .outputSampleRate('44.1k')
+                        .outputBitRate('128')
                     
+                    command.run();
+      
+                } else if (mimeType === 'audio/wav') {                 
+                                     
                     console.log('audio/wav');
-                    inbound_stream.pipe(socketSendWritablePcm);
-                  //inbound_stream.pipe(socketSendWritablePcm);
+                    
+                  var command = SoxCommand();
+                    
+                    command.input(inbound_stream)
+                        .inputFileType('wav')
+                        .output(socketSendWritableMp3)
+                        .outputBits(16)
+                        .outputFileType('mp3')
+                        .outputSampleRate('44.1k')
+                        .outputBitRate('128');
+                     
+                    command.run();
                   
                 } else if (mimeType === 'audio/mp3') {
+                    
                     console.log('audio/mp3');
-                  //inbound_stream.pipe(rawAudioFile);
-                  inbound_stream.pipe(socketSendWritableMp3);
+                    
+                    inbound_stream.pipe(socketSendWritableMp3);
+                  
                 }
+                
                 
                  console.log('sending stream to client(s): '  + data.name);
                             
                         socket.on('stop-audio-stream', function (data) {
                               
                             console.log('Stopping stream from stop message INSIDE stream');  
-                            
-                            //io.sockets.emit('stop-audio-stream');
-                            
+           
                             inbound_stream.read(0);
                             inbound_stream.push(null);
                             inbound_stream.end();
@@ -234,6 +247,9 @@ var testmp3 = audioPath + '/test.mp3';
                             
                             socketSendWritablePcm.end();
                             socketSendWritableMp3.end();
+
+                            pcmBuffer = [];
+                            
                             //socket.disconnect();
 
                         });
@@ -252,49 +268,28 @@ var testmp3 = audioPath + '/test.mp3';
          
                 socket.on('disconnect', function() {
                     
-                  deleteFromArray(clients, socket.id);
+                  var handshake = socket.handshake;
+                  var username = handshake.query.username;
+
+                  deleteFromArray(connectedSocketIds, socket.id);
+                  deleteFromArray(connectedUsernames, username);
+                  
                   console.log('client disconnected');
+                  
+                  io.sockets.emit('connected-clients', {connectedSocketIds: JSON.stringify(connectedSocketIds), connectedUsernames: JSON.stringify(connectedUsernames) });
                   
                 });
                
-               
-               
+                         
                  socket.on('stop-audio-stream', function (data) {
 
                     console.log('Stopping stream from stop message OUTSIDE stream');   
+                    
                     io.sockets.emit('stop-audio-stream');
 
                 });
     
-       
-                //var buffer = [];
-                
-                socket.on('play-pcm', function(data) {
-                    
-                  console.log('play pcm server');
-                    
-                  var wavStream = fs.createReadStream(testWav);
-                  
-                    wavStream.on('data', function(chunk) {
-                        //console.log(chunk);             
-                        buffer.push(chunk);
-                        
-                        //if(buffer.length >= 200) {
-          
-                            //var bufferConcat = Buffer.concat(buffer);
-                             
-                                 //socket.broadcast.emit('audio', { buffer: bufferConcat});
-                                 io.sockets.emit('pcm-audio', { buffer: chunk});
-                                  
-                           //buffer = [];
-                        //}
-                        
-                        
-                    
-                    });
-
-                });
-                
+        
                 
     });
 
@@ -308,7 +303,6 @@ var testmp3 = audioPath + '/test.mp3';
     
     io.sockets.on('disconnect',function(){
           console.log('SocketIO client disconnected');
-
     });
         
         

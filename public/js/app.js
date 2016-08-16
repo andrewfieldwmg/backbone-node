@@ -28,8 +28,8 @@ $(document).on('ready', function() {
     }
     
     $('body').tooltip({
-    selector: '[data-toggle=tooltip]',
-    'placement' : 'bottom'
+        selector: '[data-toggle=tooltip]',
+        'placement' : 'bottom'
     });
     
 });
@@ -37,24 +37,30 @@ $(document).on('ready', function() {
 
 function initSocketIo() {
 
-        var socket = io.connect();
+        var socket = io.connect({query: "username="+localStorage.getItem("username")});
+            
             
          socket.on('connect', function() {       
              console.log("Socket IO connected");
          });
          
+         
          socket.on('socket-info', function(data) {
-             var socketIndex = data.socketindex;
-             
-             localStorage.setItem('socketindex', socketIndex);
-      
+            
+             var socketIndex = data.socketIndex;
+              var socketId = data.socketId;
+              
+             localStorage.setItem('socketIndex', socketIndex);
+             localStorage.setItem('socketId', socketId);
          });
+         
          
          socket.on('disconnect', function(){
             console.log('SocketIO connection to the server terminated');    
          });
         
-            socket.on('connect_failed', function(){
+        
+        socket.on('connect_failed', function() {
             console.log('Connection Failed');
             
         });
@@ -146,7 +152,11 @@ var MainAppView = Backbone.View.extend({
    
         
             var self = this;
-                
+            
+            socket.on('connected-clients', function(data) {
+                self.connectedClientsUpdated(data);
+            });
+            
              socket.on('message', function (data) {
                  self.socketMessageReceived(data);
              });
@@ -192,6 +202,30 @@ var MainAppView = Backbone.View.extend({
     "click #start-recording": "startLiveStream",
     "click #listen" : "listenToStreams"
     
+    },
+    
+    connectedClientsUpdated: function(data) {
+        
+            $('#connected-clients').html('');
+            
+            var connectedSocketIds = JSON.parse(data.connectedSocketIds);
+            var connectedUsernames = JSON.parse(data.connectedUsernames);
+            
+            var socketId = localStorage.getItem("socketId").toString();
+            var socketIndex = connectedSocketIds.indexOf(socketId);
+                
+            var socketCss = getSocketCss(socketIndex);
+        
+            for(i = 0; i < connectedUsernames.length; i++) {
+                
+                if(connectedUsernames[i] == localStorage.getItem("username")) {
+                   $('#connected-clients').append('<li class="list-group-item list-group-item-info"><strong>You</strong> are connected</li>');  
+                } else {
+                    $('#connected-clients').append('<li class="list-group-item list-group-item-info"><strong> ' + connectedUsernames[i] + '</strong> is connected</li>');  
+                }
+                
+                
+            }
     },
     
     submitMessage: function(e) {
@@ -253,12 +287,12 @@ var MainAppView = Backbone.View.extend({
          
         var stream = ss.createStream();
              
-        ss(socket).emit('audio-file', stream, { username: localStorage.getItem("username"), sender: tabID, size: file.size, name: file.name, type: file.type});
+        ss(socket).emit('audio-file', stream, { liveStream: "false", username: localStorage.getItem("username"), sender: tabID, size: file.size, name: file.name, type: file.type});
         ss.createBlobReadStream(file).pipe(stream);
 
         localStorage.setItem('', 'started');
         
-        //$('#message-results').append('<li class="list-group-item list-group-item-info"><strong>' + time + '</strong> Broadcasting stream: <strong>' + file.name + '</strong></li>')
+        $('#message-results').append('<li class="list-group-item list-group-item-info"><strong>' + time + '</strong> Broadcasting stream: <strong>' + file.name + '</strong></li>')
 
         //});
         
@@ -329,10 +363,18 @@ var MainAppView = Backbone.View.extend({
         var socketCss = getSocketCss(socketIndex);
         var audioType = data.audioType;
         
-        if (audioType === 'audio/wav') {
+        if (audioType === 'audio/wav/stream') {
+            
             //playPcmStream(socket);
-             playMp3Stream(socket);
+            playMp3Stream(socket);
+             
+        } else if (audioType === 'audio/wav') {
+            
+            //playPcmStream(socket);
+            playMp3Stream(socket);
+             
         } else if (audioType === 'audio/mp3') {
+            
             playMp3Stream(socket);
         }
         
@@ -354,6 +396,7 @@ var MainAppView = Backbone.View.extend({
     startLiveStream: function(data) {
         
         console.log('start live stream backbone function clicked');
+        $('#message-results').append('<li class="list-group-item list-group-item-info"><strong>' + time + '</strong> Broadcasting live stream </li>');
         
         startLiveStream(socket);
 
@@ -401,15 +444,3 @@ var MainAppView = Backbone.View.extend({
  
       
 });
-
-
-            
-$('#play-pcm').on('click', function(e) {
-    console.log('play pcm clicked');
-     
-    socket.emit('play-pcm');
-    playPcmStream(socket);
-  
-});
-
-
