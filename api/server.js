@@ -79,6 +79,12 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
             io.sockets.emit('connected-clients', {connectedSocketIds: JSON.stringify(connectedSocketIds), connectedUsernames: JSON.stringify(uniqueUsernameArray) });
             
             
+            socket.on('set-volume', function (data) {
+              
+               socket.emit('set-volume', { newVolume: data.newVolume}); 
+            });
+            
+                
             console.log('SocketIO client connected: ' + socket.id);
                  
              socket.on('message', function (data) {
@@ -237,7 +243,10 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
                  console.log('sending stream to client(s): '  + data.name);
                             
                         socket.on('stop-audio-stream', function (data) {
-                              
+                            
+                            var proc = require('child_process').spawn('sox');
+                            proc.kill('SIGINT');
+                 
                             console.log('Stopping stream from stop message INSIDE stream');  
            
                             inbound_stream.read(0);
@@ -245,10 +254,9 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
                             inbound_stream.end();
                             inbound_stream.destroy();
                             
-                            socketSendWritablePcm.end();
                             socketSendWritableMp3.end();
 
-                            pcmBuffer = [];
+                            buffer = [];
                             
                             //socket.disconnect();
 
@@ -267,6 +275,9 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
                  
          
                 socket.on('disconnect', function() {
+                    
+                 var proc = require('child_process').spawn('sox');
+                 proc.kill('SIGINT');
                     
                   var handshake = socket.handshake;
                   var username = handshake.query.username;

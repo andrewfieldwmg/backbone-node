@@ -20,7 +20,6 @@ $(document).on('ready', function() {
     
         if(localStorage.getItem("username")) {
                 new MainAppView({noSocket: false});
-                
         } else {
                 new UsernameFormView({noSocket: false});
         }
@@ -32,18 +31,17 @@ $(document).on('ready', function() {
         'placement' : 'bottom'
     });
     
+
 });
 
 
 function initSocketIo() {
 
         var socket = io.connect({query: "username="+localStorage.getItem("username")});
-            
-            
+                
          socket.on('connect', function() {       
              console.log("Socket IO connected");
          });
-         
          
          socket.on('socket-info', function(data) {
             
@@ -125,12 +123,33 @@ var AudioPlayerView = Backbone.View.extend({
             this.options = options;
             this.render();
             
+        var audioContext = this.options.audioContext;
+        
+        
+        
+        var volumeSlider = $('#ex1').slider();
+        
+        volumeSlider.on('slideStop', function() {
+           var newVolume = volumeSlider.slider('getValue');
+           
+           socket.emit('set-volume', { newVolume: newVolume });
+           
+           localStorage.setItem('streamVolume', newVolume);
+           
+        });
+    
             
     },
     
     render: function(){
+                                    
+        if(localStorage.getItem("streamVolume")) {
+          var volumeToUse = localStorage.getItem("streamVolume");
+        } else {
+          var volumeToUse = 1;
+        }
         
-       var parameters = {streamName : this.options.streamName}; 
+        var parameters = {streamName : this.options.streamName, streamVolume : volumeToUse}; 
        var compiledTemplate = _.template( $("#audio_player_template").html(), parameters);
        this.$el.html( compiledTemplate );
         
@@ -219,9 +238,9 @@ var MainAppView = Backbone.View.extend({
             for(i = 0; i < connectedUsernames.length; i++) {
                 
                 if(connectedUsernames[i] == localStorage.getItem("username")) {
-                   $('#connected-clients').append('<li class="list-group-item list-group-item-info"><strong>You</strong> are connected</li>');  
+                   $('#connected-clients').append('<li class="list-group-item connected-client-list"><strong>You</strong> are connected</li>');  
                 } else {
-                    $('#connected-clients').append('<li class="list-group-item list-group-item-info"><strong> ' + connectedUsernames[i] + '</strong> is connected</li>');  
+                    $('#connected-clients').append('<li class="list-group-item connected-client-list"><strong> ' + connectedUsernames[i] + '</strong> is connected</li>');  
                 }
                 
                 
@@ -290,7 +309,7 @@ var MainAppView = Backbone.View.extend({
         ss(socket).emit('audio-file', stream, { liveStream: "false", username: localStorage.getItem("username"), sender: tabID, size: file.size, name: file.name, type: file.type});
         ss.createBlobReadStream(file).pipe(stream);
 
-        localStorage.setItem('', 'started');
+        localStorage.setItem('streamState', '');
         
         $('#message-results').append('<li class="list-group-item list-group-item-info"><strong>' + time + '</strong> Broadcasting stream: <strong>' + file.name + '</strong></li>')
 
@@ -366,25 +385,32 @@ var MainAppView = Backbone.View.extend({
         if (audioType === 'audio/wav/stream') {
             
             //playPcmStream(socket);
-            playMp3Stream(socket);
+            var audioContext = playMp3Stream(socket);
              
         } else if (audioType === 'audio/wav') {
             
             //playPcmStream(socket);
-            playMp3Stream(socket);
+            var audioContext = playMp3Stream(socket);
              
         } else if (audioType === 'audio/mp3') {
             
-            playMp3Stream(socket);
+            var audioContext = playMp3Stream(socket);
         }
         
         
         //$('#listen').trigger('click');
-    
+                if(data.username == localStorage.getItem("username")) {
+                   var streamAuthor = "You";
+                } else {
+                    var streamAuthor = data.username;
+                }
+                
             $('#message-results')
-            .append('<li class="list-group-item ' + socketCss + '" data-stream-name="' + data.name + '"><strong>' + time + '</strong> Inbound stream loading from ' + data.username + ': <strong>' + data.name + '</strong></li>')
+            .append('<li class="list-group-item ' + socketCss + '" data-stream-name="' + data.name + '"><strong>' + time + '</strong> ' +
+                    'Audio stream loading from ' + streamAuthor + ': <strong>' + data.name + '</strong> ' +
+                    '<i class="fa fa-refresh fa-spin" title="Loading..." aria-hidden="true" data-id=""></i></li>');
              
-             new AudioPlayerView({streamName : data.name});
+             new AudioPlayerView({streamName : data.name, audioContext: audioContext});
                     
             localStorage.setItem('streamState', 'started');
             
@@ -398,6 +424,7 @@ var MainAppView = Backbone.View.extend({
         console.log('start live stream backbone function clicked');
         $('#message-results').append('<li class="list-group-item list-group-item-info"><strong>' + time + '</strong> Broadcasting live stream </li>');
         
+        scrollToBottom();
         startLiveStream(socket);
 
     },

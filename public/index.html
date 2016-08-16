@@ -11,7 +11,7 @@
     <link href="/css/font-awesome.css" rel="stylesheet">
     <link href="/css/audioPlayerStyles.css" rel="stylesheet">
     <link href="/css/appStyles.css" rel="stylesheet">
-
+    <link href="/css/bootstrap-slider.css" rel="stylesheet">
 </head>
 
     <body>
@@ -37,7 +37,7 @@
         <p>
         <div class="audio-player" style="border-radius: 5px">
             
-            <h2><%= streamName %></h2>
+            <h2><%= streamName %> <i class="fa fa-refresh fa-spin" title="Loading..." aria-hidden="true" data-id=""></i></h2>
              
                 <div id="mep_0" class="mejs-container svg mejs-audio" style="width: 450px; height: 70px;">
                 <div class="mejs-inner">
@@ -62,9 +62,15 @@
                         
                         <div class="mejs-button mejs-volume-button mejs-mute">
                         <button type="button" aria-controls="mep_0" title="Mute Toggle" aria-label="Mute Toggle"></button></div>
-                        <div class="mejs-horizontal-volume-slider mejs-mute"><div class="mejs-horizontal-volume-total"></div>
-                    <div class="mejs-horizontal-volume-current" style="width: 96px;"></div>
-                    <div class="mejs-horizontal-volume-handle" style="left: 90px;"></div></div></div><div class="mejs-clear">
+                
+                <div class="mejs-horizontal-volume-slider mejs-mute">
+                    
+                    <div class="mejs-horizontal-volume-current"></div>
+                    <div class="mejs-horizontal-volume-handle" id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="<%= streamVolume %>"></div>
+                </div></div>
+                
+                <div class="mejs-clear">
+
                     </div>
                 </div>
                 </div>
@@ -82,7 +88,7 @@
                    <div class="input-group input-group-lg">
                      <input type="text" class="form-control" id="username" placeholder="First things first - what's your name?">
                      <span class="input-group-btn">
-                       <button class="btn btn-primary" id="submit-username" type="submit">Submit</button>
+                       <button class="btn btn-primary" id="submit-username" type="submit">Go!</button>
                      </span>
                    </div>
                </form>
@@ -100,7 +106,7 @@
                <div class="input-group input-group-lg">
                  <input type="text" class="form-control" id="message-text" placeholder="What do you want to say, <%= username %>?">
                  <span class="input-group-btn">
-                   <button class="btn btn-primary" id="submit-message" type="submit">Submit</button>
+                   <button class="btn btn-primary" id="submit-message" type="submit">Go!</button>
                  </span>
                </div>
            </form>
@@ -153,10 +159,12 @@
                       
         <br>
              <p>
-                <ul class="list-group scrollable" id="connected-clients"></ul>
+                <h2>Who's online?</h2>
+                <ul class="list-group" id="connected-clients"></ul>
             </p>
          
             <p>
+               
                 <ul class="list-group scrollable" id="message-results"></ul>
             </p>
         </div>
@@ -179,6 +187,8 @@
         
         <script src="/js/tether.min.js"></script>
         <script src="/vendor/bootstrap.js"></script>
+        <script src="/vendor/bootstrap-slider.js"></script>
+        
         <!--<script src="/vendor/jquery-ui.js"></script>-->
         
         <script src="/socket.io/socket.io.js"></script>
@@ -187,13 +197,15 @@
         
         <!--<script src="/bower_components/waveform-data/dist/waveform-data.js"></script>
         <script src="web-workers/recorder.js"></script>-->
-                  
+ 
+        
         <script src="/js/util.js"></script>
         <script src="/js/resampler.js"></script>
         <script src="/js/playMp3Stream.js"></script>
         <script src="/js/playWavStream.js"></script>
         <script src="/js/recordStream.js"></script> 
         <script src="/js/app.js"></script>
+        
 
     </body>
 </html>

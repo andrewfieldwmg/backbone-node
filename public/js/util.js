@@ -1,6 +1,7 @@
     var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID = Math.random()
 
     var time = new Date(new Date().getTime()).toLocaleTimeString();
+    var time = time.substr(0, time.length -3);
             
     function isWebkit() {
     // Opera 8.0+
@@ -45,6 +46,10 @@
             var liClass = "list-group-item-success";
         } else if (socketIndex == 1) {
             var liClass = "list-group-item-warning";
+        } else if (socketIndex == 2) {
+            var liClass = "list-group-item-info";
+        } else if (socketIndex == 3) {
+            var liClass = "list-group-item-danger";
         }
         
         return liClass;

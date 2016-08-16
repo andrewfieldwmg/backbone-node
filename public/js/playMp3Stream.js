@@ -25,7 +25,7 @@ function playMp3Stream(socket) {
          document.body.appendChild(newCanvas);
          context = newCanvas.getContext('2d');*/
 
-              
+         
           socket.on("audio", function(data) {
  
           console.log('receiving audio stream via socket io stream');  
@@ -35,11 +35,28 @@ function playMp3Stream(socket) {
               return;
           
           } else {
-         
+                         
+                  var gainNode = audioContext.createGain();
+                                      
+                  if(localStorage.getItem("streamVolume")) {
+                    var volumeToUse = localStorage.getItem("streamVolume");
+                  } else {
+                    var volumeToUse = 1;
+                  }
+            
+                  gainNode.gain.value = volumeToUse;
+                            
+                  socket.on('set-volume', function (data) {
+                      console.log(data.newVolume);
+                       gainNode.gain.value = data.newVolume;
+                  });
+                    
+                    
                //console.log(data.buffer);
             
               audioContext.decodeAudioData(data.buffer, function(buffer) {
-            
+
+          
                   //bufDuration += buffer.duration;
               
                   //console.log(buffer);
@@ -51,7 +68,7 @@ function playMp3Stream(socket) {
                   if ((init!=0) || (audioStack.length >= 2)) { // make sure we put at least 10 chunks in the buffer before starting
                       init++;
                        //console.log('audiostack length at start: ' + audioStack.length);
-                       scheduleBuffers();
+                       scheduleBuffers(gainNode);
                      
                   }
                     
@@ -112,29 +129,39 @@ function playMp3Stream(socket) {
           });
               
        
-          //i = 0;
-           function scheduleBuffers() {
-            console.log('schedule buffer');
+          i = 0;
+           function scheduleBuffers(gainNode) {
             
+            console.log('schedule buffer');
+         
               while (audioStack.length) {
                 
-                //i++;
+                i++;
                 
                 //console.log(i);
                  var source = audioContext.createBufferSource();
                           
-                  //var buffer = audioStack[i];
+                
                   var buffer = audioStack.shift();
                   
                   source.buffer = buffer;
-                  source.connect(audioContext.destination);
+                        
+                  source.connect(gainNode); 
+                  gainNode.connect(audioContext.destination);
+                 
                   
                   if (nextTime == 0)
                       nextTime = audioContext.currentTime + 0.05;  /// add 50ms latency to work well across systems - tune this if you like
                       
                   //$('.mejs-time-handle').css('margin-left', nextTime / 100);
                   source.start(nextTime);
-                   
+                  
+                  if((audioContext.state == "running") && (i >= 2)) {
+                    
+                      $('.fa-refresh').hide();
+                      
+                  }
+                  
                   //$('.mejs-time-handle').css('margin-left', nextTime);
                   nextTime += source.buffer.duration; // Make the next buffer wait the length of the last buffer before being played
   
@@ -193,6 +220,11 @@ function playMp3Stream(socket) {
 
           //});
       
-      
-      return socket;    
+        /*return {
+          "socket":socket,
+          "audioContext":audioContext
+         }*/
+        
+       return audioContext;  
+      //return socket;    
   }

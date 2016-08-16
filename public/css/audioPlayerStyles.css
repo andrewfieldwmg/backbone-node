@@ -180,7 +180,7 @@ a:hover { text-decoration: underline; }
 
 div.audio-player {
   position: relative;
-  width: 450px;
+  width: 600px;
   height: 70px;
   margin: 0 auto;
   background: #4c4e5a;
@@ -216,7 +216,7 @@ div.audio-player {
   width: 34px;
   height: 34px;
   top: 32px;
-  left: 216px;
+  left: 292px;
   background: transparent url('playpause.png') 0 0 no-repeat;
 }
 .mejs-controls .mejs-pause button { background-position: 0 -35px; }
