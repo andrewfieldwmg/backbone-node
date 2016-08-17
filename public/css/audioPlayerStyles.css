@@ -16,7 +16,7 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 html { overflow-y: scroll; }
 body { 
   background: #f0f0f0; 
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
   color: #313131;
   font-size: 62.5%; 
   line-height: 1; 
@@ -86,7 +86,7 @@ img { border: 0; max-width: 100%; }
 
 /** typography **/
 h1 {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
   font-size: 2.5em;
   line-height: 1.5em;
   letter-spacing: -0.05em;
@@ -124,7 +124,7 @@ h1 > span {
 
 
 h2 {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
   font-size: 2.1em;
   line-height: 1.4em;
   letter-spacing: normal;
@@ -180,7 +180,7 @@ a:hover { text-decoration: underline; }
 
 div.audio-player {
   position: relative;
-  width: 600px;
+  /*width: 600px;*/
   height: 70px;
   margin: 0 auto;
   background: #4c4e5a;
@@ -197,12 +197,19 @@ div.audio-player {
   position: absolute;
   top: 7px;
   left: 10px;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
   font-weight: bold;
   font-size: 16px;
   color: #ececec;
   text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
 }
+
+
+/* Smartphones (portrait) ----------- */
+@media only screen and (min-width : 0px) and (max-width : 320px) {
+    .audio-player h2 { font-size: 1em; }
+}
+
 
 /* play/pause control */
 .mejs-controls .mejs-button button {
@@ -213,10 +220,14 @@ div.audio-player {
 }
 
 .mejs-controls .mejs-play button, .mejs-controls .mejs-pause button {
+  top: 32px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
   width: 34px;
   height: 34px;
-  top: 32px;
-  left: 292px;
+  /*top: 32px;
+  left: 292px;*/
   background: transparent url('playpause.png') 0 0 no-repeat;
 }
 .mejs-controls .mejs-pause button { background-position: 0 -35px; }
@@ -354,7 +365,7 @@ div.audio-player {
   display: block;
   left: 0;
   top: 4px;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
   font-size: 10px;
   font-weight: bold;
   color: #666;

@@ -1,0 +1,47 @@
+var AudioPlayerView = Backbone.View.extend({
+    
+    el: $("#audio_player_container"),
+           
+    initialize: function(options){
+        
+            console.log('new audio player view');
+            
+            this.options = options;
+            this.render();
+            
+        var audioContext = this.options.audioContext;
+          
+        var volumeSlider = $('#ex1').slider();
+        
+        volumeSlider.on('slideStop', function() {
+           var newVolume = volumeSlider.slider('getValue');
+           
+           socket.emit('set-volume', { newVolume: newVolume });
+           
+           localStorage.setItem('streamVolume', newVolume);
+           
+        });
+    
+            
+    },
+    
+    render: function(){
+                                    
+        if(localStorage.getItem("streamVolume")) {
+          var volumeToUse = localStorage.getItem("streamVolume");
+        } else {
+          var volumeToUse = 1;
+        }
+        
+        var parameters = {streamName : this.options.streamName, streamVolume : volumeToUse}; 
+       var compiledTemplate = _.template( $("#audio_player_template").html(), parameters);
+       this.$el.html( compiledTemplate );
+        
+    },
+
+    events: {
+   
+    }
+   
+});
+     

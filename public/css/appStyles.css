@@ -1,4 +1,10 @@
 
+html *
+{
+font-family: 'Trocchi', serif;
+}
+
+
 .button-wrapper .btn {
     margin-bottom:8px;
     margin-top:8px;
@@ -21,9 +27,48 @@ opacity: 0.4;
    font-size: 1.5em; 
 }
 
-.action-icon {
-    font-size: 150px;
-    transition: all .2s ease-in-ease-out;
+
+
+/* Smartphones (portrait) ----------- */
+@media only screen and (min-width : 0px) and (max-width : 320px) {
+    .action-icon { font-size: 5em; }
+    #message-text { font-size: 1.3em; }
+    #username { font-size: 0.8em; }
+   
+}
+
+
+/* Smartphones (landscape) ----------- */
+@media only screen and (min-width : 321px) and (max-width : 768px) {
+    .action-icon { font-size: 6em; }
+    #message-text { font-size: 1.5em; }
+    #username { font-size: 1.5em; }
+ 
+}
+
+
+/* iPads  */
+@media only screen and (min-width : 768px) and (max-width : 1024px) {
+    .action-icon { font-size: 10em; }
+    #message-text { font-size: 2em; }
+    #username { font-size: 2em; }
+}
+
+
+/* Desktops and laptops ----------- */
+@media only screen  and (min-width : 1024px) and (max-width : 1824px) {
+    .action-icon { font-size: 15em; }
+    #message-text { font-size: 2.5em; }
+    #username { font-size: 2.5em; }
+  
+}
+
+/* Large screens ----------- */
+@media only screen and (min-width : 1824px) {
+    .action-icon { font-size: 18em; }
+    #message-text { font-size: 3em; }
+    #username { font-size: 3em; }
+
 }
 
 .action-icon:hover {

@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "main": "server.js",
+  "main": "app.js",
   "dependencies": {
     "audiobuffer-to-wav": "^1.0.0",
     "binaryjs": "^0.2.1",
