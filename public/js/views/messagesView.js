@@ -206,7 +206,7 @@ var MessagesView = Backbone.View.extend({
             $('#message-results').append(listItemView.render());
             
 
-             new AudioPlayerView({streamName : data.name, audioContext: audioContext});
+            new AudioPlayerView({streamName : data.name, audioContext: audioContext});
                     
             localStorage.setItem('streamState', 'started');
             

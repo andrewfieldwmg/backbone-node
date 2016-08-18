@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "driver": "mysql",
+    "user": "root",
+    "database": "listentome",
+    "password": "Melon10283"
+  },
+ 
+  "production": {
+    "driver": "mysql",
+    "user": "root",
+    "database": "listentome",
+    "password": "Melon10283"
+  }
+}

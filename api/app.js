@@ -1,17 +1,34 @@
 //SERVER BASICS
 var express = require('express');
-var server = express();
+var bodyParser = require('body-parser');
+
+//SOCKET IO
+var socketApp = express();
+var socketio_app = socketApp.listen(8080);
+var io = require('socket.io')(socketio_app);
+var ss = require('socket.io-stream');
+
+//API
+var apiApp = express();
+apiApp.use(bodyParser());
+apiApp.use(bodyParser.urlencoded({
+  extended: true
+}));
+apiApp.listen(3000);
+var env = apiApp.get('env') == 'development' ? 'dev' : apiApp.get('env');
+var port = process.env.PORT || 80;
+
+//DB and UTILS
+var Sequelize = require('sequelize');
 var ip = require("ip");
 var cluster = require('cluster');
 
 //AUDIO
+var SoxCommand = require('sox-audio');
 //var wav = require('node-wav');
 //var lame = require('lame');
 //var sox = require('sox');
 //var soxStream = require('sox-stream')
-
-var SoxCommand = require('sox-audio');
-
 //var ogg = require('ogg');
 //var wavArrayBuffer = require('wav-arraybuffer');
 //var wavHeader = require("waveheader");
@@ -33,12 +50,8 @@ function getExtension(filename) {
     return filename.split('.').pop();
 }
 
-//SOCKET IO
-var socketio_app = server.listen(8080);
-var io = require('socket.io')(socketio_app);
-var ss = require('socket.io-stream');
 
-//DIRS (to do: add these to a config.json)
+//DIRS and FILE VARS (to do: add these to a config.json)
 
 var uploadFolder = "/uploads";
 var upload_dir = path.join(__dirname, '../', 'public' + uploadFolder);  
@@ -56,6 +69,7 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
       my_array.splice(position, 1);
     }
     
+    ///SOCKET IO BELOW THIS POINT///
     
     var connectedSocketIds = [];
     var connectedUsernames = [];
@@ -179,13 +193,11 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
                   write(chunk, encoding, callback) {
                     
                     buffer.push(chunk);
-
                      //console.log(chunk);
         
-                    if(buffer.length >= 50) {
+                    if(buffer.length >= 40) {
                         
                         var bufferConcat = Buffer.concat(buffer);
-                         
                              //socket.broadcast.emit('audio', { buffer: bufferConcat});
                              io.sockets.emit('audio', { buffer: bufferConcat});
                               
@@ -197,7 +209,7 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
                 
                 });
                     
-                  
+            //not using this right now, but could come in handy!      
             const Transform = require('stream').Transform;
               
             const transformWav = new Transform({
@@ -252,7 +264,7 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
                   
                 }
                 
-                
+              
                  console.log('sending stream to client(s): '  + data.name);
                             
                         socket.on('stop-audio-stream', function (data) {
@@ -323,19 +335,17 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
     
     
     io.sockets.on('disconnect',function(){
-          console.log('SocketIO client disconnected');
+          console.log('SocketIO client disconnected - all sockets');
     });
         
         
-    /////GENERAL API TRAFFIC/////
+        
+        
+    /////////////REST API BELOW THIS POINT////////////////
     
-    server.get('/api', function (req, res) {
-      res.send('Welcome to the Node API!');
-    });
-
 
     //FILE TRANSFER//
-    server.get('/api/download', function (req, res) {
+    apiApp.get('/api/download', function (req, res) {
         
         var requestedFile = decodeURIComponent(req.query.file);
        
@@ -350,4 +360,172 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
         var filestream = fs.createReadStream(file);
         filestream.pipe(res);
       
+    });
+
+
+    // IMPORT MODELS
+    // =============================================================================
+    
+    // db config
+    var env = "dev";
+    var config = require('./database.json')[env];
+    var password = config.password ? config.password : null;
+    
+    // initialize database connection
+    var sequelize = new Sequelize(
+            config.database,
+            config.user,
+            config.password,
+            {
+                    logging: console.log,
+                    define: {
+                            timestamps: false
+                    }
+            }
+    );
+    
+    var crypto = require('crypto');
+    var DataTypes = require("sequelize");
+    
+    var User = sequelize.define('users', {
+        username: DataTypes.STRING
+      }, {
+        
+        instanceMethods: {
+                
+                retrieveAll: function(onSuccess, onError) {
+                    User.findAll({}, {raw: true})
+                            .success(onSuccess).error(onError);	
+                },
+              
+                retrieveById: function(user_id, onSuccess, onError) {
+                    User.find({where: {id: user_id}}, {raw: true})
+                            .success(onSuccess).error(onError);	
+                },
+              
+                add: function(onSuccess, onError) {
+                    var username = this.username;
+                    /*var password = this.password;
+                    
+                    var shasum = crypto.createHash('sha1');
+                    shasum.update(password);
+                    password = shasum.digest('hex');*/
+                    
+                    User.build({ username: username })
+                            .save().success(onSuccess).error(onError);
+                },
+               
+                updateById: function(user_id, onSuccess, onError) {
+                      
+                    var id = user_id;
+   
+                    var username = this.username;
+
+                    /*var password = this.password;
+                    
+                    var shasum = crypto.createHash('sha1');
+                    shasum.update(password);
+                    password = shasum.digest('hex');*/
+                                            
+                     User.update({ username: username}, {id: id} )
+                            .success(onSuccess).error(onError);
+                },
+               
+                removeById: function(user_id, onSuccess, onError) {
+                    User.destroy({id: user_id}).success(onSuccess).error(onError);	
+                }
+
+        }
+      });
+    
+    // IMPORT ROUTES
+    // =============================================================================
+    
+      //var router = express.Router();
+     //router.route('/api/users');
+    
+    // on routes that end in /users
+    // ----------------------------------------------------
+    
+    apiApp.post('/api/users', function (req, res) {
+
+        console.log('user post');
+        console.log(req.body);
+        
+        var user = User.build();
+	var username = req.body.username; //bodyParser does the magic
+	
+	var user = User.build({ username: username });
+
+	user.add(function(success){
+		res.json({ message: "User created!" });
+	},
+	function(err) {
+		res.send(err);
+	});
+    });
+    
+    // get all the users (accessed at GET http://localhost:8080/api/users)
+    apiApp.get('/api/users', function (req, res) {
+            var user = User.build();
+            
+            user.retrieveAll(function(users) {
+                    if (users) {				
+                      res.json(users);
+                    } else {
+                      res.send(401, "User not found");
+                    }
+              }, function(error) {
+                    res.send("User not found");
+              });
+    });
+    
+
+    apiApp.put('/api/users/:user_id', function (req, res) {
+    // update a user (accessed at PUT http://localhost:8080/api/users/:user_id)
+        console.log(req.params.user_id);
+            var user = User.build();	
+              
+            user.username = req.body.username;
+            
+            user.updateById(req.params.user_id, function(success) {
+                    console.log(success);
+                    if (success) {	
+                            res.json({ message: 'User updated!' });
+                    } else {
+                      res.send(401, "User not found");
+                    }
+              }, function(error) {
+                    res.send("User not found");
+              });
+    });
+    
+    // get a user by id(accessed at GET http://localhost:8080/api/users/:user_id)
+    apiApp.get('/api/users/:user_id', function (req, res) {
+            var user = User.build();
+            
+            user.retrieveById(req.params.user_id, function(users) {
+                    if (users) {				
+                      res.json(users);
+                    } else {
+                      res.send(401, "User not found");
+                    }
+              }, function(error) {
+                    res.send("User not found");
+              });
+    });
+    
+    // delete a user by id (accessed at DELETE http://localhost:8080/api/users/:user_id)
+    apiApp.delete('/api/users/:user_id', function (req, res) {
+            var user = User.build();
+            
+            user.removeById(req.params.user_id, function(users) {
+                    if (users) {				
+                      res.json({ message: 'User removed!' });
+                    } else {
+                      res.send(401, "User not found");
+                    }
+              }, function(error) {
+                    res.send("User not found");
+              });
     });

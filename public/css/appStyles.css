@@ -4,6 +4,9 @@ html *
 font-family: 'Trocchi', serif;
 }
 
+.audio-player {
+    width: 50%;
+}
 
 .button-wrapper .btn {
     margin-bottom:8px;
