@@ -5,7 +5,7 @@ font-family: 'Trocchi', serif;
 }
 
 .audio-player {
-    width: 50%;
+    width: 60%;
 }
 
 .button-wrapper .btn {
@@ -30,6 +30,11 @@ opacity: 0.4;
    font-size: 1.5em; 
 }
 
+/* Smartphones (portrait) ----------- */
+@media only screen and (min-width : 0px) and (max-width : 600px) {
+    #volume-controls {display: none; }
+   
+}
 
 
 /* Smartphones (portrait) ----------- */
@@ -37,7 +42,6 @@ opacity: 0.4;
     .action-icon { font-size: 5em; }
     #message-text { font-size: 1.3em; }
     #username { font-size: 0.8em; }
-   
 }
 
 

@@ -3,7 +3,7 @@ var MessagesView = Backbone.View.extend({
     el: $("#messages_container"),
            
     initialize: function(){
-   
+
             var self = this;
    
              socket.on('message', function (data) {
@@ -27,13 +27,16 @@ var MessagesView = Backbone.View.extend({
               });
       
          
-            this.render();
+            //this.render();
         
         
     },
     
     render: function() {
-             
+           
+        console.log('MessagesView rendered');
+                 
+        localStorage.setItem('messagesViewLoaded', "true");
         //new AudioPlayerView({streamName: "No stream loaded"});
         
         var parameters = {username: localStorage.getItem("username")};
@@ -212,6 +215,54 @@ var MessagesView = Backbone.View.extend({
             
             scrollToBottom();
             //playSound();
+
+    },
+    
+    remove: function() {
+    
+        localStorage.setItem("messagesViewLoaded", "false");
+        
+        console.log('MessagesView removed');
+        
+        var self = this;
+        socket.off('message');
+        socket.off('sent-file-incoming');
+        socket.off('sent-file');
+        socket.off('file-transfer-finished');
+        socket.off('audio-file-incoming');
+       
+        
+       this.$el.empty().off(); 
+        this.stopListening();
+        //return this;
+        //Backbone.View.prototype.remove.call(this);
+    
+    },
+    
+    
+    hide: function() {
+
+        // COMPLETELY UNBIND THE VIEW
+        //this.undelegateEvents();
+    
+        //this.$el.removeData().unbind(); 
+    
+        // Remove view from DOM
+        this.$el.hide(); 
+        //Backbone.View.prototype.remove.call(this);
+
+    },
+        
+    show: function() {
+
+        // COMPLETELY UNBIND THE VIEW
+        //this.undelegateEvents();
+    
+        //this.$el.removeData().unbind(); 
+    
+        // Remove view from DOM
+        this.$el.show();  
+        //Backbone.View.prototype.remove.call(this);
 
     }
     

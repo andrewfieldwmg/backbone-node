@@ -1,6 +1,13 @@
-//SERVER BASICS
+//CONFIG
+var config = require('./config');
+
+//EXPRESS
 var express = require('express');
-var bodyParser = require('body-parser');
+
+//START THE API
+var api = express();
+module.exports.api = api;
+require("./api.js");
 
 //SOCKET IO
 var socketApp = express();
@@ -8,33 +15,11 @@ var socketio_app = socketApp.listen(8080);
 var io = require('socket.io')(socketio_app);
 var ss = require('socket.io-stream');
 
-//API
-var apiApp = express();
-apiApp.use(bodyParser());
-apiApp.use(bodyParser.urlencoded({
-  extended: true
-}));
-apiApp.listen(3000);
-var env = apiApp.get('env') == 'development' ? 'dev' : apiApp.get('env');
-var port = process.env.PORT || 80;
-
-//DB and UTILS
-var Sequelize = require('sequelize');
+//UTILS
 var ip = require("ip");
-var cluster = require('cluster');
 
 //AUDIO
 var SoxCommand = require('sox-audio');
-//var wav = require('node-wav');
-//var lame = require('lame');
-//var sox = require('sox');
-//var soxStream = require('sox-stream')
-//var ogg = require('ogg');
-//var wavArrayBuffer = require('wav-arraybuffer');
-//var wavHeader = require("waveheader");
-//var ffmpegTranscoder = require('stream-transcoder');
-//var piedPiper = require('pied-piper');
-//var im = require('imagemagick');
 
 // FILE SYSTEM and STREAMS
 var fs = require('fs');
@@ -42,68 +27,108 @@ var path = require("path");
 var mime = require('mime');
 var sanitize = require("sanitize-filename");
 
-//var chokidar = require('chokidar');
-//var growingFile = require('growing-file');
-//var tailingStream = require('tailing-stream');
-
 function getExtension(filename) {
     return filename.split('.').pop();
 }
 
+//DB MODELS//
+var User = require("./models/user.js");
+var Message = require("./models/message.js");
 
 //DIRS and FILE VARS (to do: add these to a config.json)
 
-var uploadFolder = "/uploads";
-var upload_dir = path.join(__dirname, '../', 'public' + uploadFolder);  
-var audioPath = path.join(upload_dir + '/audio');
-
+var audioPath = path.join(config.filePaths.uploadDir + '/audio');
 var wavRecordingFilename = 'liveStream.wav';
 var mp3RecordingFilename = 'liveStream.mp3';
-
 var wavRecordingFile = audioPath + '/' + wavRecordingFilename;
 var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
 
 
-    function deleteFromArray(my_array, element) {
-      position = my_array.indexOf(element);
-      my_array.splice(position, 1);
-    }
-    
+function deleteFromArray(my_array, element) {
+  position = my_array.indexOf(element);
+  my_array.splice(position, 1);
+}
+  
+  
     ///SOCKET IO BELOW THIS POINT///
     
     var connectedSocketIds = [];
     var connectedUsernames = [];
+    var connectedUserIds = [];
     
     io.sockets.on('connection', function (socket) {
                
         connectedSocketIds.push(socket.id);
-    
+             
+        var clientIp = socket.request.connection.remoteAddress;
+        var socketIndex = connectedSocketIds.indexOf(socket.id);
+
         var handshake = socket.handshake;
         var username = handshake.query.username;
-        
-        if(username !== "null") {
-              connectedUsernames.push(username);
+        var userId = handshake.query.userId;
+
+        if(userId !== "null" && username !== "null") {
+
+        //if the user has an ID and a username
+        //that means he's "registered" his "account" before
+        //so only update his socket id
+              
+                connectedUsernames.push(username);
+                //console.log(connectedUsernames);
+                var user = User.build();	
+                  
+                user.socketId = socket.id;
+                user.status = "online";
+                //user.username = username;
+            
+                user.updateById(userId, function(success) {
+          
+                    if (success) {
+                        
+                            socket.emit('socket-info', { socketIndex: socketIndex, socketId: socket.id, userId: userId });
+                            var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
+                            io.sockets.emit('connected-clients', {connectedSocketIds: JSON.stringify(connectedSocketIds), connectedUsernames: JSON.stringify(uniqueUsernameArray) });
+                             console.log('User updated!');
+                    
+                    } else {
+                            console.log("User not found");
+                            
+                    }
+              }, function(error) {
+                
+              });
+                    
         }
-               
-        socket.on('new-username', function (data) {
-            console.log(connectedSocketIds);
-            connectedUsernames.push(data.username);
-            var uniqueUsernameArray = Array.from(new Set(connectedUsernames));     
-            io.sockets.emit('connected-clients', {connectedSocketIds: JSON.stringify(connectedSocketIds), connectedUsernames: JSON.stringify(uniqueUsernameArray) });      
-        });
-    
-         var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
          
-        var clientIp = socket.request.connection.remoteAddress;
-     
-        var socketIndex = connectedSocketIds.indexOf(socket.id);
+         //user is NEW, so needs a new "account"...
+         
+        socket.on('new-username', function (data) {
             
-            //SEND SOCKET INFO BACK TO THE NEW JOINER//
-            socket.emit('socket-info', { socketIndex: socketIndex, socketId: socket.id });
-     
-            //SEND UPDATED LIST OF ALL SOCKETS TO ALL//
-            io.sockets.emit('connected-clients', {connectedSocketIds: JSON.stringify(connectedSocketIds), connectedUsernames: JSON.stringify(uniqueUsernameArray) });
+            var user = User.build({
+                                  username: data.username,
+                                  socketId: socket.id,
+                                  status: "online"
+                                  });
             
+            user.add(function(success) {
+                
+                console.log("New socket user created!");          
+                socket.emit('socket-info', { socketIndex: socketIndex, socketId: socket.id, userId: success.id });
+                connectedUsernames.push(data.username);
+                var uniqueUsernameArray = Array.from(new Set(connectedUsernames));     
+                io.sockets.emit('connected-clients', {connectedSocketIds: JSON.stringify(connectedSocketIds), connectedUsernames: JSON.stringify(uniqueUsernameArray) });      
+            
+            },
+            
+            function(err) {
+                
+                console.log("New socket user could NOT be created!");
+                
+            });
+              
+        
+        });
+
             socket.on('set-volume', function (data) {
                socket.emit('set-volume', { newVolume: data.newVolume}); 
             });
@@ -115,17 +140,39 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
                 
                  console.log('Received a message!' + data.message);
                  
-                 var message = data.message;
-                 var sender = data.sender;
-                 var username = data.username;
-                 
+                var message = data.message;
+                var username = data.username;
                 var socketIndex = connectedSocketIds.indexOf(socket.id);
-                    
-                 //socket.broadcast.emit('message', { message: message, sender: sender });
-                io.sockets.emit('message', { socketindex: socketIndex, message: message, sender: sender, username: username });
+                
+                var message = Message.build({
+                                    message: data.message,
+                                    userId: data.userId,
+                                    socketId: socket.id,
+                                    roomId: null,
+                                    roomName: null
+                                    });
+              
+              message.add(function(success) {
+                
+                    console.log("New message written to database");              
+                   //socket.broadcast.emit('message', { message: message, sender: sender });
+                  
+                  io.sockets.emit('message', {
+                        socketindex: socketIndex,
+                        message: data.message,
+                        username: username,
+                        userId: data.userId
+                    });
+                
+                },
+                function(err) {
+                    console.log("New message NOT written to database");
+                });
+
              
              });
                  
+              
               
             ss(socket).on('file-upload', function(fileStream, data) {
                 
@@ -135,7 +182,7 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
                 
                 var cleanName = sanitize(data.name);
      
-                 fileUploadWriteStream = fs.createWriteStream(upload_dir + "/" + cleanName);
+                 fileUploadWriteStream = fs.createWriteStream(config.filePaths.uploadDir + "/" + cleanName);
                  fileStream.pipe(fileUploadWriteStream);
                  
                     fileStream.on('end', function() {
@@ -299,18 +346,41 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
          
                 socket.on('disconnect', function() {
                         
-                     var proc = require('child_process').spawn('sox');
-                     proc.kill('SIGINT');
+                    var proc = require('child_process').spawn('sox');
+                    proc.kill('SIGINT');
                         
-                      var handshake = socket.handshake;
-                      var username = handshake.query.username;
-    
+                    var handshake = socket.handshake;
+                    var username = handshake.query.username;
+                    var userId = handshake.query.userId;
+                    
                       deleteFromArray(connectedSocketIds, socket.id);
                       deleteFromArray(connectedUsernames, username);
                       
                       console.log('client disconnected');
                       
-                      io.sockets.emit('connected-clients', {connectedSocketIds: JSON.stringify(connectedSocketIds), connectedUsernames: JSON.stringify(connectedUsernames) });
+                            var user = User.build();	
+                  
+                            user.socketId = socket.id;
+                            user.status = "offline";
+                            //user.username = username;
+                        
+                            user.updateById(userId, function(success) {
+   
+                                if (success) {
+                                    
+                                        socket.emit('socket-info', { socketIndex: socketIndex, socketId: socket.id, userId: userId });
+                                        var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
+                                        io.sockets.emit('connected-clients', {connectedSocketIds: JSON.stringify(connectedSocketIds), connectedUsernames: JSON.stringify(uniqueUsernameArray) });
+                                         console.log('User updated!');
+                               
+                                } else {
+                                        console.log("User not found");
+                                }
+                                
+                          }, function(error) {
+                            
+                          });
+                
                       
                 });
                    
@@ -323,7 +393,6 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
 
                 });
     
-        
                 
     });
 
@@ -338,194 +407,3 @@ var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
           console.log('SocketIO client disconnected - all sockets');
     });
         
-        
-        
-        
-    /////////////REST API BELOW THIS POINT////////////////
-    
-
-    //FILE TRANSFER//
-    apiApp.get('/api/download', function (req, res) {
-        
-        var requestedFile = decodeURIComponent(req.query.file);
-       
-        var file = upload_dir + "/" + requestedFile;
-    
-        var filename = path.basename(file);
-        var mimetype = mime.lookup(file);
-    
-        res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-        res.setHeader('Content-type', mimetype);
-    
-        var filestream = fs.createReadStream(file);
-        filestream.pipe(res);
-      
-    });
-
-
-    // IMPORT MODELS
-    // =============================================================================
-    
-    // db config
-    var env = "dev";
-    var config = require('./database.json')[env];
-    var password = config.password ? config.password : null;
-    
-    // initialize database connection
-    var sequelize = new Sequelize(
-            config.database,
-            config.user,
-            config.password,
-            {
-                    logging: console.log,
-                    define: {
-                            timestamps: false
-                    }
-            }
-    );
-    
-    var crypto = require('crypto');
-    var DataTypes = require("sequelize");
-    
-    var User = sequelize.define('users', {
-        username: DataTypes.STRING
-      }, {
-        
-        instanceMethods: {
-                
-                retrieveAll: function(onSuccess, onError) {
-                    User.findAll({}, {raw: true})
-                            .success(onSuccess).error(onError);	
-                },
-              
-                retrieveById: function(user_id, onSuccess, onError) {
-                    User.find({where: {id: user_id}}, {raw: true})
-                            .success(onSuccess).error(onError);	
-                },
-              
-                add: function(onSuccess, onError) {
-                    var username = this.username;
-                    /*var password = this.password;
-                    
-                    var shasum = crypto.createHash('sha1');
-                    shasum.update(password);
-                    password = shasum.digest('hex');*/
-                    
-                    User.build({ username: username })
-                            .save().success(onSuccess).error(onError);
-                },
-               
-                updateById: function(user_id, onSuccess, onError) {
-                      
-                    var id = user_id;
-   
-                    var username = this.username;
-
-                    /*var password = this.password;
-                    
-                    var shasum = crypto.createHash('sha1');
-                    shasum.update(password);
-                    password = shasum.digest('hex');*/
-                                            
-                     User.update({ username: username}, {id: id} )
-                            .success(onSuccess).error(onError);
-                },
-               
-                removeById: function(user_id, onSuccess, onError) {
-                    User.destroy({id: user_id}).success(onSuccess).error(onError);	
-                }
-
-        }
-      });
-    
-    // IMPORT ROUTES
-    // =============================================================================
-    
-      //var router = express.Router();
-     //router.route('/api/users');
-    
-    // on routes that end in /users
-    // ----------------------------------------------------
-    
-    apiApp.post('/api/users', function (req, res) {
-
-        console.log('user post');
-        console.log(req.body);
-        
-        var user = User.build();
-	var username = req.body.username; //bodyParser does the magic
-	
-	var user = User.build({ username: username });
-
-	user.add(function(success){
-		res.json({ message: "User created!" });
-	},
-	function(err) {
-		res.send(err);
-	});
-    });
-    
-    // get all the users (accessed at GET http://localhost:8080/api/users)
-    apiApp.get('/api/users', function (req, res) {
-            var user = User.build();
-            
-            user.retrieveAll(function(users) {
-                    if (users) {				
-                      res.json(users);
-                    } else {
-                      res.send(401, "User not found");
-                    }
-              }, function(error) {
-                    res.send("User not found");
-              });
-    });
-    
-
-    apiApp.put('/api/users/:user_id', function (req, res) {
-    // update a user (accessed at PUT http://localhost:8080/api/users/:user_id)
-        console.log(req.params.user_id);
-            var user = User.build();	
-              
-            user.username = req.body.username;
-            
-            user.updateById(req.params.user_id, function(success) {
-                    console.log(success);
-                    if (success) {	
-                            res.json({ message: 'User updated!' });
-                    } else {
-                      res.send(401, "User not found");
-                    }
-              }, function(error) {
-                    res.send("User not found");
-              });
-    });
-    
-    // get a user by id(accessed at GET http://localhost:8080/api/users/:user_id)
-    apiApp.get('/api/users/:user_id', function (req, res) {
-            var user = User.build();
-            
-            user.retrieveById(req.params.user_id, function(users) {
-                    if (users) {				
-                      res.json(users);
-                    } else {
-                      res.send(401, "User not found");
-                    }
-              }, function(error) {
-                    res.send("User not found");
-              });
-    });
-    
-    // delete a user by id (accessed at DELETE http://localhost:8080/api/users/:user_id)
-    apiApp.delete('/api/users/:user_id', function (req, res) {
-            var user = User.build();
-            
-            user.removeById(req.params.user_id, function(users) {
-                    if (users) {				
-                      res.json({ message: 'User removed!' });
-                    } else {
-                      res.send(401, "User not found");
-                    }
-              }, function(error) {
-                    res.send("User not found");
-              });
-    });

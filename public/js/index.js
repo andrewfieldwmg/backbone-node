@@ -22,16 +22,20 @@ $(document).on('ready', function() {
     if (typeof io !== "undefined" && isWebkit && initiateAudioContext) {
     
         socket = initSocketIo();
-    
+        
+        localStorage.setItem('messageFormViewLoaded', "false");
+        localStorage.setItem('messagesViewLoaded', "false");
+        localStorage.setItem('appControlsViewLoaded', "false");
+                
         if(localStorage.getItem("username")) {
-            
-                new MessageFormView();
-                new AppControlsView();
+     
                 new ConnectedClientsView();
-                new MessagesView();
+                //new MessageFormView();
+                //new AppControlsView();
+                //new MessagesView();
                 
         } else {
-            
+                
                 new UsernameFormView();
                 
         }
@@ -49,7 +53,7 @@ $(document).on('ready', function() {
 
 function initSocketIo() {
 
-        var socket = io.connect({query: "username="+localStorage.getItem("username")});
+        var socket = io.connect({query: "username="+localStorage.getItem("username") + "&userId="+localStorage.getItem("userId") });
                 
          socket.on('connect', function() {       
              console.log("Socket IO connected");
@@ -59,9 +63,11 @@ function initSocketIo() {
             
              var socketIndex = data.socketIndex;
               var socketId = data.socketId;
+              var userId = data.userId;
               
              localStorage.setItem('socketIndex', socketIndex);
              localStorage.setItem('socketId', socketId);
+             localStorage.setItem('userId', userId);
          });
          
          

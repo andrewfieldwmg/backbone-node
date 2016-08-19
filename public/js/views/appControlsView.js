@@ -10,16 +10,16 @@ var AppControlsView = Backbone.View.extend({
             
              socket.on("stop-audio-stream", function(data) {
                  self.socketStopAudioStream(data); 
-              });
+              });          
              
-             
-            this.render();
+            //this.render();
             
     },
     
     render: function(){
         
-       this.$el.html( this.template );
+        localStorage.setItem("appControlsViewLoaded", "true");
+        this.$el.html( this.template );
         
     },
 
@@ -183,6 +183,43 @@ var AppControlsView = Backbone.View.extend({
                $('#message-results').append('<li class="list-group-item">Inbound stream stopped</li>')
     
            });*/
+
+    },
+
+    
+    remove: function() {
+        
+        localStorage.setItem("appControlsViewLoaded", "false");
+        
+        socket.off("stop-audio-stream");
+           
+        this.$el.empty().off(); 
+        this.stopListening();
+    },
+    
+    hide: function() {
+
+        // COMPLETELY UNBIND THE VIEW
+        //this.undelegateEvents();
+    
+        //this.$el.removeData().unbind(); 
+    
+        // Remove view from DOM
+        this.$el.hide(); 
+        //Backbone.View.prototype.remove.call(this);
+
+    },
+        
+    show: function() {
+
+        // COMPLETELY UNBIND THE VIEW
+        //this.undelegateEvents();
+    
+        //this.$el.removeData().unbind(); 
+    
+        // Remove view from DOM
+        this.$el.show();  
+        //Backbone.View.prototype.remove.call(this);
 
     }
       

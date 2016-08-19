@@ -26,17 +26,18 @@ var UsernameFormView = Backbone.View.extend({
         console.log('submit username');
         e.preventDefault();
         var username = $('#username').val();
+        var socketId = localStorage.getItem("socketId");
         
-        socket.emit('new-username', { sender: tabID, username: username });
+        socket.emit('new-username', { sender: tabID, socketId: socketId, username: username });
         
         localStorage.setItem('username', username);
          
         this.remove();
          
-        new MessageFormView();
-        new AppControlsView();
+        //new MessageFormView();
+        //new AppControlsView();
         new ConnectedClientsView();
-        new MessagesView();
+        //new MessagesView();
     }
     
    
