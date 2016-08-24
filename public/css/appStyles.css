@@ -116,3 +116,15 @@ opacity: 0.4;
 	float: left;
     }
 }
+
+.w-100 {
+    width: 100%;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.disabled {
+    cursor: not-allowed;
+}

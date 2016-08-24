@@ -16,6 +16,11 @@ var DataTypes = require("sequelize");
                     User.findAll({}, {raw: true})
                             .success(onSuccess).error(onError);	
                 },
+                
+                findAllWhere: function(user_id, onSuccess, onError) {
+                    User.findAll({where: {id: user_id }})
+                       .success(onSuccess).error(onError);
+                },
               
                 retrieveById: function(user_id, onSuccess, onError) {
                     User.find({where: {id: user_id}}, {raw: true})
@@ -40,6 +45,15 @@ var DataTypes = require("sequelize");
                      var status = this.status;
                                             
                      User.update({ socketId: socketId, status: status }, {id: id} )
+                            .success(onSuccess).error(onError);
+                },
+                
+                updateBySocketId: function(socketId, onSuccess, onError) {
+                      
+                    var username = this.username;
+                     var status = this.status;
+                                            
+                     User.update({ status: status }, {socketId: socketId} )
                             .success(onSuccess).error(onError);
                 },
                

@@ -14,9 +14,34 @@ var AppControlsView = Backbone.View.extend({
              
             //this.render();
             
+                this.render = _.wrap(this.render, function(render) {
+                           this.beforeRender();
+                           render();						
+                           //this.afterRender();
+                   });						
+                   
+
+        this.render();
+        
+    },
+  
+    render: function(){
+
+        return this;
+    
     },
     
-    render: function(){
+    beforeRender: function () {
+        
+        this.undelegateEvents();
+	this.$el.removeData().unbind();
+        
+        //this.$el.empty().off(); 
+        //this.stopListening();
+        
+    },
+    
+    afterRender: function(){
         
         localStorage.setItem("appControlsViewLoaded", "true");
         this.$el.html( this.template );

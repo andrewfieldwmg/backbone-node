@@ -2,37 +2,52 @@ $(document).on('ready', function() {
 
     if (typeof io === "undefined") {
         
-        //console.log('websocket server not running');
+        console.log('websocket server not running');
         $('#socket_not_loaded').show();
-               
+        return;       
     }
         
-    if (!isWebkit) {
+
+    if (!isWebkit || isMobileOrTablet()) {
             
         $('#wrong_browser').show();
-    
+        return;
     }
     
     if (!initiateAudioContext) {
             
         $('#no_audiocontext').show();
-    
+        return;
     }
     
-    if (typeof io !== "undefined" && isWebkit && initiateAudioContext) {
+    if (typeof io !== "undefined" && isWebkit  && !isMobileOrTablet() && initiateAudioContext) {
     
         socket = initSocketIo();
         
-        localStorage.setItem('messageFormViewLoaded', "false");
-        localStorage.setItem('messagesViewLoaded', "false");
-        localStorage.setItem('appControlsViewLoaded', "false");
-                
+        //localStorage.clear();
+        
+        localStorage.setItem("roomsViewLoaded", "false");
+        localStorage.setItem("roomsModalViewLoaded", "false");
+        localStorage.setItem("acceptInvitationViewLoaded", "false");         
+        localStorage.setItem("messageFormViewLoaded", "false");
+        localStorage.setItem("messagesViewLoaded", "false");
+        localStorage.setItem("appControlsViewLoaded", "false");
+        localStorage.setItem("clientsInRoomViewLoaded", "false");
+        localStorage.setItem("streamState", "stopped");
+        localStorage.setItem("activeRoomId", "");
+        localStorage.setItem("activeRoomName", "");
+        
+        
         if(localStorage.getItem("username")) {
      
-                new ConnectedClientsView();
-                //new MessageFormView();
-                //new AppControlsView();
-                //new MessagesView();
+                var connectedClientsView = new ConnectedClientsView();
+                connectedClientsView.afterRender();
+       
+                if (localStorage.getItem("roomName")) {
+                    
+                    var roomsView = new RoomsView();
+                    roomsView.afterRender();
+                }
                 
         } else {
                 
@@ -53,7 +68,12 @@ $(document).on('ready', function() {
 
 function initSocketIo() {
 
-        var socket = io.connect({query: "username="+localStorage.getItem("username") + "&userId="+localStorage.getItem("userId") });
+        var queryString = "username="+localStorage.getItem("username") +
+                                "&userId="+localStorage.getItem("userId") +
+                                "&roomIds="+localStorage.getItem("roomIds") +
+                                "&roomName="+localStorage.getItem("roomName");
+                                
+        var socket = io.connect({query: queryString});
                 
          socket.on('connect', function() {       
              console.log("Socket IO connected");
@@ -61,13 +81,14 @@ function initSocketIo() {
          
          socket.on('socket-info', function(data) {
             
-             var socketIndex = data.socketIndex;
-              var socketId = data.socketId;
-              var userId = data.userId;
+            var socketIndex = data.socketIndex;
+            var socketId = data.socketId;
+            var userId = data.userId;
               
-             localStorage.setItem('socketIndex', socketIndex);
-             localStorage.setItem('socketId', socketId);
-             localStorage.setItem('userId', userId);
+            localStorage.setItem('socketIndex', socketIndex);
+            localStorage.setItem('socketId', socketId);
+            localStorage.setItem('userId', userId);
+            
          });
          
          
@@ -77,8 +98,7 @@ function initSocketIo() {
         
         
         socket.on('connect_failed', function() {
-            console.log('Connection Failed');
-            
+            console.log('Connection Failed');  
         });
     
  

@@ -53,32 +53,33 @@
                         <div class="mejs-controls">
                             <div class="mejs-button mejs-playpause-button mejs-pause">
                     <button type="button" aria-controls="mep_0" title="Play/Pause" aria-label="Play/Pause"></button></div>
-                            
-<!--<div class="mejs-time-rail" style="width: 0px;">
-<span class="mejs-time-total" style="width: 0px;">
-    <span class="mejs-time-buffering" style="display: none;"></span>
-<span class="mejs-time-loaded" style="width: 380px;"></span>
-<span class="mejs-time-current" style="width: 5px;"></span>
-<span class="mejs-time-handle" style="left: -5px;"></span>
-<span class="mejs-time-float" style="display: none; left: 4px;">
-    <span class="mejs-time-float-current">00:00</span>
-    <span class="mejs-time-float-corner"></span></span></span
-</div>-->
-   
-<div id="volume-controls">                           
-    <div class="mejs-button mejs-volume-button mejs-mute">
-    <button type="button" aria-controls="mep_0" title="Mute Toggle" aria-label="Mute Toggle">
-    </button>
-    </div>
-                        
-    <div class="mejs-horizontal-volume-slider mejs-mute">                  
-    <div class="mejs-horizontal-volume-handle" id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="<%= streamVolume %>"> 
-    </div>
-</div>                    
+                                                        
+                            <!--<div class="mejs-time-rail" style="width: 0px;">
+                            <span class="mejs-time-total" style="width: 0px;">
+                                <span class="mejs-time-buffering" style="display: none;"></span>
+                            <span class="mejs-time-loaded" style="width: 380px;"></span>
+                            <span class="mejs-time-current" style="width: 5px;"></span>
+                            <span class="mejs-time-handle" style="left: -5px;"></span>
+                            <span class="mejs-time-float" style="display: none; left: 4px;">
+                                <span class="mejs-time-float-current">00:00</span>
+                                <span class="mejs-time-float-corner"></span></span></span
+                            </div>-->
+                               
+                            <div id="volume-controls">                           
+                                <div class="mejs-button mejs-volume-button mejs-mute">
+                                <button type="button" aria-controls="mep_0" title="Mute Toggle" aria-label="Mute Toggle">
+                                </button>
+                                </div>
+                                                    
+                                <div class="mejs-horizontal-volume-slider mejs-mute">                  
+                                <div class="mejs-horizontal-volume-handle" id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="<%= streamVolume %>"> 
+                                </div>
+                            </div>                    
                     
-                        </div></div>
+                        </div>
                     
-                  
+                        </div>
+                    
                     </div>
                     </div>
                 </div>
@@ -99,12 +100,29 @@
                    </div>
                </form>
               </p>
+            <hr>
         </script>
         
         
-        <div id="message_form_container"></div>
+        <div id="clients_in_room_container"></div>
      
-        <script type="text/template" id="message_form_template">
+        <script type="text/template" id="clients_in_room_template">  
+            <p>
+                <h1><em>Room</em>: <strong><%= roomName %></strong></h1>
+            </p>
+            
+            <p>
+                <!--<h2>Who's in this room?</h2>-->
+                <ul class="list-group" id="clients-in-room"></ul>
+            </p>
+            <hr>
+        </script>
+                                
+                         
+        <div id="message_form_container"></div>
+        
+            <script type="text/template" id="message_form_template">
+                          
             <p>        
                 <form class="form" action="">                   
                    <div class="input-group input-group-lg">
@@ -115,9 +133,10 @@
                    </div>
                 </form>
             </p>
+            <hr>
         </script>
-        
-        
+            
+            
         <div id="app_controls_container"></div>
         
         <script type="text/template" id="app_controls_template">
@@ -149,11 +168,13 @@
                           
                </div>
            </p>
+            
+        <hr>
         </script>
         
         
-        <div class="col-xs-12">       
-                
+        <div class="col-xs-12">    
+            
         <div id="connected_clients_container"></div>
         
             <script type="text/template" id="connected_clients_template">
@@ -161,28 +182,143 @@
                     <h2>Who's online?</h2>
                     <ul class="list-group" id="connected-clients"></ul>
                 </p>
+                 <hr>
             </script>
 
-             
+
+            <script type="text/template" id="user_list_item_template">
+                <li class="list-group-item <%= cssClass %>" data-user-id="<%= userId %>"><strong><%= time %></strong> <%= contentFromUsername %> <strong><%= contentName %></strong>
+                <i class="fa fa-plus pull-right <%= actionIconsClass %>" data-toggle="tooltip" title="Create Room" aria-hidden="true" data-user-name="<%= userName %>" data-user-id="<%= userId %>"></i>
+                </li>
+           </script>
+            
+            <div id="rooms_modal_container"></div>
+            
+            <script type="text/template" id="rooms_modal_template">
+                <div class="modal fade rooms-modal">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                          <h1 class="modal-title"><%= modalHeaderContent %></h1>
+                        </div>
+                        <div class="modal-body">
+    
+                        <form id="create-room-with-user-form" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>" class="form  <%= textInputClass %>" action="">                   
+                           <div class="input-group input-group-lg w-100">
+                             <input type="text" class="form-control create-room-from-users-name <%= textInputClass %>" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>" placeholder="What do you want to call your room?">
+                            <h1>
+                                <span class="create-room-from-users-result" style="display: none"></span>
+                            </h1>
+                           </div>
+                  
+                        </div>
+                        
+                        <div class="modal-footer">
+                          <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+                          <button type="submit" class="btn btn-primary" id="create-room-from-users" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>">Go!</button>
+                          </form>
+            
+                        </div>
+                      </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                  </div><!-- /.modal -->
+            </script>
+            
+            
+            <div id="invitation_modal_container"></div>
+            
+            <script type="text/template" id="invitation_modal_template">
+                <div class="modal fade invitation-modal">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" id="close-invitation-modal" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                          <h1 class="modal-title">Invitation to <strong><%= invitationTo %></strong></h1>
+                        </div>
+                        <div class="modal-body">
+                    
+                            <h1><strong><%=invitedByUsername %></strong> would like to connect!<br>Do you accept?</h1>
+                        
+                        </div>
+                        
+                        <div class="modal-footer">
+                          <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+                          <button type="submit" class="btn btn-primary" id="accept-room-invitation" data-join-room-id="<%= joinRoomId %>">Go!</button>
+                                   
+                        </div>
+                      </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                  </div><!-- /.modal -->
+            </script>
+            
+                   
+              
             <div id="messages_container"></div>
              
-             
             <script type="text/template" id="messages_template">
+  
                 <p>
-                    <ul class="list-group scrollable" id="message-results"></ul>
+                    <h2>Feedback</h2>
+                </p>
+                      
+                <p>
+                    <ul class="list-group scrollable" id="message-results">
+                        <li class="list-group-item small feedback-placeholder"><em>Feedback will appear here!</em></li>
+                    </ul>
                 </p>
             </script>
             
+            <div id="rooms_container"></div>
+        
+            <script type="text/template" id="rooms_template">
+                 <p>
+                    <h2 id="rooms-list-header">Your Rooms</h2>
+                    <ul class="list-group" id="available-rooms"></ul>
+                    <!--<i class="fa fa-plus action-icon" data-toggle="tooltip" title="Create Room" id="open-create-room-form" aria-hidden="true"></i>-->
+                </p> 
+            </script>
+       
             
+            <div id="rooms_form_container"></div>
+            
+            <script type="text/template" id="rooms_form_template">
+                 <p>
+                    <form id="create-room-form" class="form" action="">                   
+                       <div class="input-group input-group-lg">
+                         <input type="text" class="form-control" id="new-room-name" placeholder="What do you want to call your room?">
+                         <span class="input-group-btn">
+                           <button class="btn btn-primary" id="create-room" type="submit">Go!</button>
+                         </span>
+                       </div>
+                   </form>
+                    </p>
+            </script>
+          
+                   
            <script type="text/template" id="list_item_template">
                 <li class="list-group-item <%= cssClass %>"><strong><%= time %></strong> <%= contentFromUsername %> <strong><%= contentName %></strong>
                 <i class="fa fa-refresh fa-spin <%= loaderClass %>" title="Loading..." aria-hidden="true" data-id=""></i>
                 </li>
            </script>
            
+              
+            <script type="text/template" id="room_list_item_template">
+                <li class="list-group-item <%= cssClass %>">
+                <span class="<%= linkClass %>" data-toggle="tooltip" title="Enter Room" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>"><strong><%= roomName %></strong></span>
+                <i class="fa fa-rocket pull-right <%= linkClass %>" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>" data-toggle="tooltip" title="Enter Room" aria-hidden="true"></i>
+                </li>
+            </script>
+           
         </div>
 
+
             <iframe name="download-iframe" id="download-iframe" width="1" height="1" frameborder="0" src=""></iframe>
+
 
             </div>
         </div>
@@ -217,10 +353,17 @@
         <!-- BACKBONE VIEWS -->
         <script src="/js/views/usernameFormView.js"></script>
         <script src="/js/views/audioPlayerView.js"></script>
+        <script src="/js/views/userListItemView.js"></script>
+        <script src="/js/views/connectedClientsView.js"></script>
+        <script src="/js/views/clientsInRoomView.js"></script>
+        <script src="/js/views/roomsFormView.js"></script>
+        <script src="/js/views/roomsView.js"></script>
+        <script src="/js/views/roomListItemView.js"></script>
+        <script src="/js/views/roomsModalView.js"></script>
+        <script src="/js/views/acceptInvitationModalView.js"></script>
         <script src="/js/views/messageFormView.js"></script>
         <script src="/js/views/appControlsView.js"></script>
         <script src="/js/views/listItemView.js"></script>
-        <script src="/js/views/connectedClientsView.js"></script>
         <script src="/js/views/messagesView.js"></script>
         
     </body>

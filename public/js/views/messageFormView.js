@@ -2,17 +2,46 @@ var MessageFormView = Backbone.View.extend({
     
     el: $("#message_form_container"),
            
-    initialize: function(){
+    initialize: function(options){
 
+            this.options = options;
             
-            //this.render();
+            this.render = _.wrap(this.render, function(render) {
+                       this.beforeRender();
+                       render();						
+                       //this.afterRender();
+               });						
+               
+
+        this.render();
+        
+    },
+  
+    render: function(){
+
+        return this;
+    
     },
     
-    render: function(){
+    beforeRender: function () {
+        
+        this.undelegateEvents();
+	this.$el.removeData().unbind();
+        
+        //this.$el.empty().off(); 
+        //this.stopListening();
+        
+    },
+    
+    afterRender: function(){
                 
         localStorage.setItem('messageFormViewLoaded', "true");
             
-        var parameters = {username: localStorage.getItem("username")};
+        var parameters = {
+            username: localStorage.getItem("username"),
+            roomName: localStorage.getItem("activeRoomName")
+            };
+            
         var compiledTemplate = _.template( $("#message_form_template").html(), parameters);
         this.$el.html( compiledTemplate );
         

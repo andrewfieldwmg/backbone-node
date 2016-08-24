@@ -36,8 +36,17 @@ var UsernameFormView = Backbone.View.extend({
          
         //new MessageFormView();
         //new AppControlsView();
-        new ConnectedClientsView();
         //new MessagesView();
+        
+        var connectedClientsView = new ConnectedClientsView();
+        connectedClientsView.afterRender();
+
+        if (localStorage.getItem("roomName")) {
+            
+            var roomsView = new RoomsView();
+            roomsView.afterRender();
+        }
+        
     }
     
    

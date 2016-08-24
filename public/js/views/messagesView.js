@@ -26,13 +26,36 @@ var MessagesView = Backbone.View.extend({
                  self.socketAudioStreamIncoming(data); 
               });
       
-         
-            //this.render();
+    
+                this.render = _.wrap(this.render, function(render) {
+                           this.beforeRender();
+                           render();						
+                           //this.afterRender();
+                   });						
+                   
+
+        this.render();
         
+    },
+  
+    render: function(){
+
+        return this;
+    
+    },
+    
+    beforeRender: function () {
+        
+        this.undelegateEvents();
+	this.$el.removeData().unbind();
+        
+        //this.$el.empty().off(); 
+        //this.stopListening();
         
     },
     
-    render: function() {
+    
+    afterRender: function() {
            
         console.log('MessagesView rendered');
                  
@@ -47,7 +70,6 @@ var MessagesView = Backbone.View.extend({
 
     events: {
    
-
     
     },
     
@@ -55,6 +77,8 @@ var MessagesView = Backbone.View.extend({
     socketMessageReceived: function(data) {
          
          console.log('message received');
+         
+         $('.feedback-placeholder').hide();
          
         var socketIndex = data.socketindex;
         

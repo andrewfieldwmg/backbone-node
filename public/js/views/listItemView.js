@@ -4,6 +4,7 @@ var ListItemView = Backbone.View.extend({
            
     initialize: function(options){
                 
+            //console.log('list item view init');
             this.options = options;
             //this.render();
 

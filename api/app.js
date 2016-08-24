@@ -5,9 +5,9 @@ var config = require('./config');
 var express = require('express');
 
 //START THE API
-var api = express();
-module.exports.api = api;
-require("./api.js");
+//var api = express();
+//module.exports.api = api;
+//require("./api.js");
 
 //SOCKET IO
 var socketApp = express();
@@ -34,6 +34,7 @@ function getExtension(filename) {
 //DB MODELS//
 var User = require("./models/user.js");
 var Message = require("./models/message.js");
+var Room = require("./models/room.js");
 
 //DIRS and FILE VARS (to do: add these to a config.json)
 
@@ -50,12 +51,17 @@ function deleteFromArray(my_array, element) {
 }
   
   
+const flatten = arr => arr.reduce(
+ (a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
+);
+ 
+  
     ///SOCKET IO BELOW THIS POINT///
     
     var connectedSocketIds = [];
     var connectedUsernames = [];
     var connectedUserIds = [];
-    
+
     io.sockets.on('connection', function (socket) {
                
         connectedSocketIds.push(socket.id);
@@ -66,40 +72,10 @@ function deleteFromArray(my_array, element) {
         var handshake = socket.handshake;
         var username = handshake.query.username;
         var userId = handshake.query.userId;
+        var roomIds = handshake.query.roomIds;
+        var roomName = handshake.query.roomName;
 
-        if(userId !== "null" && username !== "null") {
 
-        //if the user has an ID and a username
-        //that means he's "registered" his "account" before
-        //so only update his socket id
-              
-                connectedUsernames.push(username);
-                //console.log(connectedUsernames);
-                var user = User.build();	
-                  
-                user.socketId = socket.id;
-                user.status = "online";
-                //user.username = username;
-            
-                user.updateById(userId, function(success) {
-          
-                    if (success) {
-                        
-                            socket.emit('socket-info', { socketIndex: socketIndex, socketId: socket.id, userId: userId });
-                            var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
-                            io.sockets.emit('connected-clients', {connectedSocketIds: JSON.stringify(connectedSocketIds), connectedUsernames: JSON.stringify(uniqueUsernameArray) });
-                             console.log('User updated!');
-                    
-                    } else {
-                            console.log("User not found");
-                            
-                    }
-              }, function(error) {
-                
-              });
-                    
-        }
-         
          //user is NEW, so needs a new "account"...
          
         socket.on('new-username', function (data) {
@@ -112,12 +88,56 @@ function deleteFromArray(my_array, element) {
             
             user.add(function(success) {
                 
-                console.log("New socket user created!");          
+                //console.log("New socket user created!");
+                
                 socket.emit('socket-info', { socketIndex: socketIndex, socketId: socket.id, userId: success.id });
+                
                 connectedUsernames.push(data.username);
-                var uniqueUsernameArray = Array.from(new Set(connectedUsernames));     
-                io.sockets.emit('connected-clients', {connectedSocketIds: JSON.stringify(connectedSocketIds), connectedUsernames: JSON.stringify(uniqueUsernameArray) });      
+                connectedUserIds.push(success.id);
+                
+                socket.userId = success.id;
+       
+                var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
+                
+                user.retrieveAll(function(users) {
+                    
+                        if (users) {
+                        
+                            io.sockets.emit('connected-clients', {
+                            connectedUsers: JSON.stringify(users)
+                            });
+                            
+                        } else {
+                          //res.send(401, "User not found");
+                        }
+                  }, function(error) {
+                        //res.send("User not found");
+                  });
+                
             
+                /*io.sockets.emit('connected-clients', {
+                    connectedSocketIds: JSON.stringify(connectedSocketIds),
+                    connectedUsernames: JSON.stringify(uniqueUsernameArray),
+                    connectedUserIds: JSON.stringify(connectedUserIds)
+                    }); */     
+                                
+                        /*var room = Room.build();
+                                
+                        room.retrieveAll(function(rooms) {
+                            
+                             if (rooms) {
+                                                
+                               io.sockets.emit('available-rooms', {availableRooms: JSON.stringify(rooms) });      
+                             
+                             } else {
+                                
+                               //console.log("No rooms found!");
+                             }
+                             
+                       }, function(error) {
+                            
+                       });*/
+                        
             },
             
             function(err) {
@@ -128,17 +148,596 @@ function deleteFromArray(my_array, element) {
               
         
         });
+        
+        
+        
+        function updateConnectedClientsInRoom(roomIds, roomName) {
+                                                
+                var room = Room.build();
+                
+                room.findAllWhere(JSON.parse(roomIds), function(rooms) {
+                   
+                    if (rooms) {
 
+                        usersInRoomArray = [];     
+                        for(i = 0; i < rooms.length; i++) {
+                           usersInRoomArray.push(JSON.parse(rooms[i].usersInRoom)); 
+                        }
+                        
+                        var uniqueFlatUsersInRoomArray = Array.from(new Set(flatten(usersInRoomArray)));
+                        console.log(uniqueFlatUsersInRoomArray);
+                        
+                       var user = User.build();
+
+                        user.findAllWhere(uniqueFlatUsersInRoomArray, function(users) {
+                            
+                            if (users) {
+                            
+                              var joinedRoomArray = JSON.parse(roomName);
+
+                                        for(i = 0; i < joinedRoomArray.length; i++) {
+
+                    console.log('emitting clients IN ROOM to: ' + joinedRoomArray[i] + '-' + JSON.stringify(users));
+                                             
+                                             io.to(joinedRoomArray[i]).emit('connected-clients-in-room', {
+                                                          usersInRoom: JSON.stringify(users)
+                                             });
+                                        }
+
+                                    
+                                    } else {
+                                      //res.send(401, "User not found");
+                                    }
+                                    
+                              }, function(error) {
+                                    //res.send("User not found");
+                              });
+           
+      
+                            } else {
+                              //res.send(401, "User not found");
+                            }
+                            
+                            
+                      }, function(error) {
+                            //res.send("User not found");
+                      });
+                
+                                    
+        }
+        
+        
+        
+    if(userId !== "null" && username !== "null") {
+
+            console.log('already registered');
+            
+        //if the user has an ID and a username
+        //that means he's "registered" his "account" before
+        //so we only must update his socket id
+        
+        console.log(roomName);
+    
+            if(roomName !== "null") {
+                
+                console.log('roomname is not null');
+             // then the user hs been in at least one room before
+             // so we re-join him to them - thus persisting the application state
+             // across page reloads and sessions
+
+                socketRoomNamesArray = [];    
+                var joinedRoomArray = JSON.parse(roomName);
+               
+                for(i = 0; i < joinedRoomArray.length; i++) {
+                
+                     socket.join(joinedRoomArray[i]);
+                    console.log('socket joined: ' + joinedRoomArray[i]);
+                    socketRoomNamesArray.push(joinedRoomArray[i]);
+                }
+                
+                socket.roomNames = Array.from(new Set(flatten(socketRoomNamesArray)));
+            
+            } else {
+                 console.log('roomname is null');
+            }
+            
+            
+            if(roomIds !== "null") {
+                
+                console.log('roomids is not null');
+             // then the user hs been in at least one room before
+             // so we re-join him to them - thus persisting the application state
+             // across page reloads and sessions
+
+                socketRoomIdsArray = [];    
+                var joinedRoomIdsArray = JSON.parse(roomIds);
+               
+                for(i = 0; i < joinedRoomIdsArray.length; i++) {
+                
+                    socketRoomIdsArray.push(joinedRoomIdsArray[i]);
+                }
+                
+                socket.roomIds = Array.from(new Set(flatten(socketRoomIdsArray)));
+            
+            } else {
+                 console.log('roomids is null');
+            }
+
+            
+                socket.userId = userId;
+            
+                
+                
+                //console.log(socket);
+                
+                //push the user into the active user arrays         
+                connectedUsernames.push(username);
+                connectedUserIds.push(userId);
+                
+                var user = User.build();	
+                  
+                user.socketId = socket.id;
+                user.status = "online";
+                //user.username = username;
+            
+                user.updateById(userId, function(success) {
+          
+                    if (success) {
+                        
+                            socket.emit('socket-info', { socketIndex: socketIndex, socketId: socket.id, userId: userId });
+                            
+                            var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
+                            
+                            //console.log('emit connected clients');
+                            
+                                user.retrieveAll(function(users) {
+                
+                                if (users) {
+                        
+                                    io.sockets.emit('connected-clients', {
+                                    connectedUsers: JSON.stringify(users)
+                                    });
+                                                                
+                                   
+                                   if(roomIds !== "null" && roomName !== "null") {
+                                    
+                                    console.log('room ids:' + roomIds);
+                                        
+                                    updateConnectedClientsInRoom(roomIds, roomName);
+                                                                                   
+                                                     
+                                   }
+     
+                      
+                            } else {
+                              //res.send(401, "User not found");
+                            }
+                            
+                  }, function(error) {
+                    //res.send("User not found");
+                 });
+        
+                            
+                                var room = Room.build();
+                                
+                                room.retrieveAll(function(rooms) {
+                                    
+                                     if (rooms) {
+                                        
+                                        var roomArray = [];
+                                        
+                                        for(i = 0; i < rooms.length; i++) {
+                                            
+                                            if (JSON.parse(rooms[i].usersInRoom).indexOf(userId) != -1 ) {
+                                               roomArray.push(rooms[i]);
+                                            }
+                                            
+                                            var uniqueRoomArray = Array.from(new Set(roomArray));
+                                            
+                                            //console.log(uniqueRoomArray);
+                                            
+                                             io.to(rooms[i].name).emit('available-rooms', {availableRooms: JSON.stringify(roomArray) });
+                                        
+                                        }
+                                        
+                                        var roomArray = [];
+
+                                     } else {
+                                       console.log("No rooms found!");
+                                     }
+                                     
+                               }, function(error) {
+                                    
+                               });
+                               
+                                    
+                    } else {
+                        
+                            console.log("User not found");
+                            
+                    }
+                    
+              }, function(error) {
+                
+              });
+     
+        }
+
+        
+        
+        var usersInRoom = [];
+        socket.on('create-new-room', function (data) {
+            
+            usersInRoom.push(data.createdByUserId);
+            usersInRoom.push(data.askedUserId);
+            
+            //console.log('create-new-room');
+            
+            var room = Room.build({
+                                  name: data.name,
+                                  createdByUserId: data.createdByUserId,
+                                  usersInRoom: JSON.stringify(usersInRoom)
+                                  });
+            
+            room.add(function(success) {
+                
+                //console.log("New room created!");
+  
+                room.retrieveAll(function(rooms) {
+                        if (rooms) {				
+                          io.sockets.emit('available-rooms', {availableRooms: JSON.stringify(rooms) });      
+                        } else {
+                          //res.send(401, "User not found");
+                        }
+                  }, function(error) {
+                        //res.send("User not found");
+                  });
+                
+                 
+            },
+            
+            function(err) {
+                
+                console.log("New room could NOT be created!");
+                
+            });
+              
+        
+        });
+
+        
+                        
+ 
+        socket.on('create-room-and-invite-user-in', function (data) {
+            
+            var usersInRoom = [];    
+            usersInRoom.push(data.createdByUserId);
+            //usersInRoom.push(data.targetUserId);
+            
+            //console.log('create-room-and-invite-user-in');
+            
+            //console.log(JSON.stringify(usersInRoom));
+
+            var room = Room.build({
+                                  name: data.name,
+                                  createdByUserId: data.createdByUserId,
+                                  usersInRoom: JSON.stringify(usersInRoom)
+                                  });
+            
+            room.add(function(success) {
+     
+                socket.join(data.name);
+                //console.log(socket);
+                
+                socketRoomIdsArray = [];
+                if (typeof socket.roomIds === "undefined") {
+                    console.log('socket roomids undefined');
+                    socketRoomIdsArray.push(success.id);
+                } else {
+                    console.log('socket roomids NOT undefined');
+                    socketRoomIdsArray.push(socket.roomIds);
+                    socketRoomIdsArray.push(success.id);
+                }
+                
+                socket.roomIds = Array.from(new Set(flatten(socketRoomIdsArray)));
+                
+                console.log(socket.roomIds);
+                
+                socketRoomNamesArray = [];
+                if (typeof socket.roomNames === "undefined") {
+                    console.log('socket roomnames undefined');
+                    socketRoomNamesArray.push(data.name);
+                } else {
+                    console.log('socket roomnames NOT undefined');
+                    socketRoomNamesArray.push(socket.roomNames);
+                    socketRoomNamesArray.push(data.name);
+                }
+                
+                socket.roomNames = Array.from(new Set(flatten(socketRoomNamesArray)));
+                
+                console.log(socket.roomNames);
+                
+                socket.emit('joined-room-await-others', {
+                    roomName: data.name,
+                    roomId: success.id,
+                    targetUsername: data.targetUsername
+                    });
+                
+                
+                var user = User.build();
+                
+                user.retrieveById(data.targetUserId, function(users) {
+                        
+                        if (users) {
+console.log('sending invitation to userid ' + users.id + ' on socketid ' + users.socketId);
+                            io.to(users.socketId).emit('room-invitation', {
+                                                      roomName: data.name,
+                                                       roomId: success.id,
+                                                       invitedByUserId: data.createdByUserId,
+                                                       invitedByUsername: data.createdByUsername
+                                                       });
+                        } else {
+                          //res.send(401, "User not found");
+                        }
+                  }, function(error) {
+                        //res.send("User not found");
+                  });
+       
+                
+                //console.log("New room created!");
+                                
+                    /*room.retrieveAll(function(rooms) {
+                        
+                         if (rooms) {
+                            
+                            var roomArray = [];
+                            
+                            for(i = 0; i < rooms.length; i++) {
+                                
+                                if (JSON.parse(rooms[i].usersInRoom).indexOf(createdByUserId) != -1 ) {
+                                   roomArray.push(rooms[i]);
+                                }
+                                
+                                var uniqueRoomArray = Array.from(new Set(roomArray));
+                                
+                                //console.log(uniqueRoomArray);
+                                
+                                 io.to(rooms[i].name).emit('available-rooms', {availableRooms: JSON.stringify(roomArray) });
+                            
+                            }
+                            
+                            var roomArray = [];
+
+                         } else {
+                           console.log("No rooms found!");
+                         }
+                         
+                   }, function(error) {
+                        
+                 });*/
+                
+                             
+            var usersInRoom = [];
+            
+            },
+            
+            function(err) {
+                
+                console.log("New room could NOT be created!");
+                            
+                var usersInRoom = [];
+            
+            });
+              
+        
+        });
+        
+         
+        socket.on('join-room', function (data) {
+            
+        //console.log("join rooms");
+     
+                var room = Room.build();
+                
+                room.retrieveById(data.joiningRoomId, function(roomsOne) {
+                        
+                        if (roomsOne) {				
+                          
+                          usersInRoom = JSON.parse(roomsOne.usersInRoom);
+                          usersInRoom.push(data.joinerUserId.toString());
+                          
+                          var uniqueUsersInRoom = Array.from(new Set(usersInRoom));
+                        
+                        room.usersInRoom = JSON.stringify(uniqueUsersInRoom);
+                        room.name = roomsOne.name;
+                        
+                        room.updateById(data.joiningRoomId, function(success) {
+                                
+                                if (success) {
+                                    //console.log(success);
+                                    
+                                    socket.join(roomsOne.name);
+                                    
+                                     socketRoomIdsArray = [];
+                                    if (typeof socket.roomIds === "undefined") {
+                                        console.log('socket roomids undefined');
+                                        socketRoomIdsArray.push(data.joiningRoomId);
+                                    } else {
+                                        console.log('socket roomids NOT undefined');
+                                        socketRoomIdsArray.push(socket.roomIds);
+                                        socketRoomIdsArray.push(data.joiningRoomId);
+                                    }
+                                    
+                                    socket.roomIds = Array.from(new Set(flatten(socketRoomIdsArray)));
+                                    
+                                    console.log(socket.roomIds);
+                                    
+                                    socketRoomNamesArray = [];
+                                    if (typeof socket.roomNames === "undefined") {
+                                        console.log('socket roomnames undefined');
+                                        socketRoomNamesArray.push(roomsOne.name);
+                                    } else {
+                                        console.log('socket roomnames NOT undefined');
+                                        socketRoomNamesArray.push(socket.roomNames);
+                                        socketRoomNamesArray.push(roomsOne.name);
+                                    }
+                                    
+                                    socket.roomNames = Array.from(new Set(flatten(socketRoomNamesArray)));
+                                    
+                                    console.log(socket.roomNames);
+                                 
+       
+                                    io.to(roomsOne.name).emit('room-ready', {
+                                        roomId: data.joiningRoomId,
+                                        roomName: roomsOne.name,
+                                        usersInRoom: room.usersInRoom
+                                        
+                                        } );
+                                    
+                                        room.retrieveAll(function(roomsTwo) {
+                                            
+                                            if (roomsTwo) {
+                                                
+                                                var roomArray = [];
+                                                for(i = 0; i < roomsTwo.length; i++) {
+                                                    
+                                                    roomArray.push(roomsTwo[i]);
+                                                    
+                                                    //console.log(roomArray);
+                                                    //console.log('emitting available-rooms: ' + JSON.stringify(roomArray));
+                                                    
+                                                    // io.to(roomsTwo.name).emit('available-rooms', {availableRooms: JSON.stringify(roomArray) });
+                                                }
+
+                                              //io.sockets.emit('available-rooms', {availableRooms: JSON.stringify(rooms) });      
+                                            } else {
+                                              //res.send(401, "User not found");
+                                            }
+                                      }, function(error) {
+                                            //res.send("User not found");
+                                      });
+                                        
+                                        //res.json({ message: 'User updated!' });
+                                } else {
+                                  //res.send(401, "User not found");
+                                }
+                                
+                          }, function(error) {
+                                //res.send("User not found");
+                          });
+                
+                
+                        } else {
+                          //res.send(401, "User not found");
+                        }
+                        
+                  }, function(error) {
+                        //res.send("User not found");
+                  });
+                 
+        });
+        
+        
+        //userIdsInRoomArray = [];
+        //usernamesInRoomArray = [];
+         
+        usersArray = [];
+        
+        socket.on('enter-room', function (data) {
+
+         
+         //console.log('enter-room');
+         
+            var roomId = data.roomId;
+       
+            var room = Room.build();
+            
+            room.retrieveById(roomId, function(rooms) {
+                
+                    if (rooms) {
+                        
+                        var usersInRoom = JSON.parse(rooms.usersInRoom);
+      
+                            var user = User.build();
+       
+                               user.findAllWhere(usersInRoom, function(users) {
+                                       
+                                       if (users) {
+              
+                                                console.log('emitting room clients: ' + JSON.stringify(users));
+                                                
+                                                io.to(rooms.name).emit('connected-clients-in-room', {
+                                                    usersInRoom: JSON.stringify(users)
+                                               });
+                                  
+                                       } else {
+                                         //res.send(401, "User not found");
+                                       }
+                                       
+                                 }, function(error) {
+                                       //res.send("User not found");
+                                 });
+    
+               
+            
+                        room.retrieveAll(function(roomsTwo) {
+                                                    
+                                if (roomsTwo) {
+                                    
+                                    var roomArray = [];
+                                    for(i = 0; i < roomsTwo.length; i++) {
+                                                          
+                                    if (JSON.parse(roomsTwo[i].usersInRoom).indexOf(data.userEnteringRoom) != -1 ) {
+                                       roomArray.push(roomsTwo[i]);
+                                    }
+                                    
+                                     var uniqueRoomArray = Array.from(new Set(roomArray));
+                                    
+                                        //console.log(roomArray);
+                                        console.log('emitting available-rooms: ' + JSON.stringify(uniqueRoomArray));
+                                        
+                                        io.to(rooms.name).emit('available-rooms',
+                                                                  {
+                                                                    availableRooms: JSON.stringify(uniqueRoomArray)
+                                                                  });
+                                    }
+                                       
+                                        var roomArray = [];
+                                        
+                                  //io.sockets.emit('available-rooms', {availableRooms: JSON.stringify(rooms) });      
+                                } else {
+                                  //res.send(401, "User not found");
+                                }
+                                
+                          }, function(error) {
+                                //res.send("User not found");
+                          });
+
+                        
+                        //userIdsInRoomArray = Array.from(new Set(userIdsInRoomArray));
+                        //usernamesInRoomArray = Array.from(new Set(usernamesInRoomArray));
+       
+                    } else {
+                      //res.send(401, "User not found");
+                    }
+                    
+                    
+              }, function(error) {
+                    //res.send("User not found");
+              });
+
+            
+        });
+        
+            
             socket.on('set-volume', function (data) {
-               socket.emit('set-volume', { newVolume: data.newVolume}); 
+               //socket.emit('set-volume', { newVolume: data.newVolume}); 
             });
             
-            
-            console.log('SocketIO client connected: ' + socket.id);
-                 
+  
              socket.on('message', function (data) {
                 
-                 console.log('Received a message!' + data.message);
+                 //console.log('Received a message!' + data.message);
                  
                 var message = data.message;
                 var username = data.username;
@@ -154,7 +753,7 @@ function deleteFromArray(my_array, element) {
               
               message.add(function(success) {
                 
-                    console.log("New message written to database");              
+                    //console.log("New message written to database");              
                    //socket.broadcast.emit('message', { message: message, sender: sender });
                   
                   io.sockets.emit('message', {
@@ -187,7 +786,7 @@ function deleteFromArray(my_array, element) {
                  
                     fileStream.on('end', function() {
                         
-                    console.log('File successfully uploaded: ' + cleanName);
+                    //console.log('File successfully uploaded: ' + cleanName);
                     
                     //TELL SENDER IT'S DONE//
                     socket.emit('file-transfer-finished', { username: data.username, socketindex: socketIndex, sender: data.sender, name: cleanName });
@@ -348,13 +947,15 @@ function deleteFromArray(my_array, element) {
                         
                     var proc = require('child_process').spawn('sox');
                     proc.kill('SIGINT');
-                        
-                    var handshake = socket.handshake;
-                    var username = handshake.query.username;
-                    var userId = handshake.query.userId;
                     
+                    console.log('DISCONNECT socket user id: ' + socket.userId);
+                    console.log('DISCONNECT socket room ids: ' + socket.roomIds);
+                    console.log('DISCONNECT socket room name: ' + socket.roomNames);
+                    
+                        
                       deleteFromArray(connectedSocketIds, socket.id);
                       deleteFromArray(connectedUsernames, username);
+                      deleteFromArray(connectedUserIds, userId);
                       
                       console.log('client disconnected');
                       
@@ -364,23 +965,54 @@ function deleteFromArray(my_array, element) {
                             user.status = "offline";
                             //user.username = username;
                         
-                            user.updateById(userId, function(success) {
-   
+                            
+                            user.updateById(socket.userId, function(success) {
+                      
                                 if (success) {
                                     
-                                        socket.emit('socket-info', { socketIndex: socketIndex, socketId: socket.id, userId: userId });
-                                        var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
-                                        io.sockets.emit('connected-clients', {connectedSocketIds: JSON.stringify(connectedSocketIds), connectedUsernames: JSON.stringify(uniqueUsernameArray) });
-                                         console.log('User updated!');
-                               
+                                        //socket.emit('socket-info', { socketIndex: socketIndex, socketId: socket.id, userId: userId });
+                                        
+                                        //var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
+                                        
+                                        //console.log('emit connected clients');
+                                        
+                                            user.retrieveAll(function(users) {
+                            
+                                            if (users) {
+                                             console.log('emitting clients on disconnect: ' + JSON.stringify(users));
+                                                io.sockets.emit('connected-clients', {
+                                           
+                                                    connectedUsers: JSON.stringify(users)
+                                                });
+                                                                            
+                                               
+                                               if(socket.roomIds !== "null" && socket.roomNames !== "null") {
+                                                
+                                                    updateConnectedClientsInRoom(JSON.stringify(socket.roomIds), JSON.stringify(socket.roomNames));
+                                               }
+                                               
+                      
+                                        } else {
+                                          //res.send(401, "User not found");
+                                        }
+                                                        
+                                                        
+                                    }, function(error) {
+                                      //res.send("User not found");
+                                   });
+                                           
+                                                
                                 } else {
+                                    
                                         console.log("User not found");
+                                        
                                 }
                                 
                           }, function(error) {
                             
                           });
-                
+                          
+            
                       
                 });
                    
