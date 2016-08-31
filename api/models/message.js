@@ -7,6 +7,8 @@ var DataTypes = require("sequelize");
         
         message: DataTypes.STRING,
         userId: DataTypes.STRING,
+        username: DataTypes.STRING,
+        userColour: DataTypes.STRING,
         socketId: DataTypes.STRING,
         roomId: DataTypes.STRING,
         roomName: DataTypes.STRING
@@ -18,7 +20,17 @@ var DataTypes = require("sequelize");
                     Message.findAll({}, {raw: true})
                             .success(onSuccess).error(onError);	
                 },
-              
+                
+                findAllWhere: function(room_id, limit, onSuccess, onError) {
+                    //var limit = this.limit;
+                    if (!limit) {
+                        limit = 95,18446744073709551615;
+                    }
+                    
+                    Message.findAll({where: {roomId: room_id }, limit: limit, order:[['id', 'ASC']]})
+                       .success(onSuccess).error(onError);
+                },
+                
                 retrieveById: function(user_id, onSuccess, onError) {
                     Message.find({where: {id: user_id}}, {raw: true})
                             .success(onSuccess).error(onError);	
@@ -28,12 +40,22 @@ var DataTypes = require("sequelize");
                     
                     var message = this.message;
                     var userId = this.userId;
+                    var username = this.username;
+                    var userColour = this.userColour;
                     var socketId = this.socketId;
                     var roomId = this.roomId;
                     var roomName = this.roomName;
                 
-                    Message.build({ message: message, userId: userId, socketId: socketId, roomId: roomId, roomName: roomName })
-                            .save().success(onSuccess).error(onError);
+                    Message.build({
+                        message: message,
+                        username: username,
+                        userId: userId,
+                        userColour: userColour,
+                        socketId: socketId,
+                        roomId: roomId,
+                        roomName: roomName
+                        })
+                        .save().success(onSuccess).error(onError);
                 },
                
                 updateById: function(messageId, onSuccess, onError) {

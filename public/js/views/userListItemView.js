@@ -4,7 +4,7 @@ var UserListItemView = Backbone.View.extend({
            
     initialize: function(options){
         
-        console.log('user list itemn view init');
+        //console.log('user list itemn view init');
         
         this.options = options;
  

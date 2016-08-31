@@ -188,7 +188,7 @@
 
             <script type="text/template" id="user_list_item_template">
                 <li class="list-group-item <%= cssClass %>" data-user-id="<%= userId %>"><strong><%= time %></strong> <%= contentFromUsername %> <strong><%= contentName %></strong>
-                <i class="fa fa-plus pull-right <%= actionIconsClass %>" data-toggle="tooltip" title="Create Room" aria-hidden="true" data-user-name="<%= userName %>" data-user-id="<%= userId %>"></i>
+                <i class="fa fa-plus pull-right <%= actionIconsClass %>" data-toggle="tooltip" title="Connect With <%= userName %>!" aria-hidden="true" data-user-name="<%= userName %>" data-user-id="<%= userId %>"></i>
                 </li>
            </script>
             
@@ -301,7 +301,7 @@
           
                    
            <script type="text/template" id="list_item_template">
-                <li class="list-group-item <%= cssClass %>"><strong><%= time %></strong> <%= contentFromUsername %> <strong><%= contentName %></strong>
+                <li class="list-group-item <%= cssClass %>" data-id="<%= messageId %>" style="background-color: <%= backgroundColour %>"><strong><%= time %></strong> <%= contentFromUsername %> <strong><%= contentName %></strong>
                 <i class="fa fa-refresh fa-spin <%= loaderClass %>" title="Loading..." aria-hidden="true" data-id=""></i>
                 </li>
            </script>
@@ -309,9 +309,15 @@
               
             <script type="text/template" id="room_list_item_template">
                 <li class="list-group-item <%= cssClass %>">
-                <span class="<%= linkClass %>" data-toggle="tooltip" title="Enter Room" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>"><strong><%= roomName %></strong></span>
-                <i class="fa fa-rocket pull-right <%= linkClass %>" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>" data-toggle="tooltip" title="Enter Room" aria-hidden="true"></i>
-                </li>
+               
+                    <div>
+                    <span class="<%= linkClass %>" data-toggle="tooltip" title="Enter Room" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>"><strong><%= roomName %></strong>
+                    </span>
+                    <span class="badge message-counter" data-room-id="<%= roomId%>">0</span>
+                    <i class="fa fa-rocket pull-right <%= linkClass %>" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>" data-toggle="tooltip" title="Enter Room" aria-hidden="true"></i>
+                    </div>
+
+               </li>
             </script>
            
         </div>
@@ -365,6 +371,13 @@
         <script src="/js/views/appControlsView.js"></script>
         <script src="/js/views/listItemView.js"></script>
         <script src="/js/views/messagesView.js"></script>
+        
+        <!--CONTAINER VIEWS FOR ROUTES-->
+        <script src="/js/views/homeView.js"></script>
+        <script src="/js/views/insideRoomView.js"></script>
+        
+         <!--ROUTER-->
+        <script src="/js/routes/appRouter.js"></script>
         
     </body>
 </html>

@@ -55,14 +55,16 @@ var MessageFormView = Backbone.View.extend({
     
     submitMessage: function(e) {
             
-        console.log('submit message');
         e.preventDefault();
         var message = $('#message-text').val();
         
         socket.emit('message', { sender: tabID,
                                 username: localStorage.getItem("username"),
                                 userId: localStorage.getItem("userId"),
-                                message: message,
+				activeRoomId: localStorage.getItem("activeRoomId"),
+				activeRoomName: localStorage.getItem("activeRoomName"),
+				userColour: localStorage.getItem("userColour"),
+                                message: message
                                 });
         
         $('#message-text').val("");
@@ -105,7 +107,23 @@ var MessageFormView = Backbone.View.extend({
         this.$el.show();  
         //Backbone.View.prototype.remove.call(this);
 
+    },
+    
+    destroy: function() { 
+        
+	//$('.invitation-modal').modal("hide");
+	
+         localStorage.setItem("messageFormViewLoaded", "false");
+        
+        //this.undelegateEvents();
+        this.undelegateEvents();
+	this.$el.removeData().unbind();
+        //return this;
+        //Backbone.View.prototype.remove.call(this);
+        
+        this.remove();
     }
+    
     
    
 });

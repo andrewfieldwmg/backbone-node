@@ -142,11 +142,11 @@ var RoomsModalView = Backbone.View.extend({
         var myUserId = localStorage.getItem("userId");
         var mySocketId = localStorage.getItem("socketId");
 
-        socket.emit('join-room', {
+        /*socket.emit('join-room', {
                                 joiningRoomId: invitedRoomId,
                                 joinerUserId: myUserId,
                                 joinerUsername: myUsername
-                                });
+                                });*/
         
     },
     
@@ -160,7 +160,7 @@ var RoomsModalView = Backbone.View.extend({
 	    var roomNameArray = [];
 	}
 	
-	 roomNameArray.push(data.roomName);
+	 roomNameArray.push(data.roomName.toString());
 	 var uniqueRoomsArray = Array.from(new Set(roomNameArray));
 	 
 	 localStorage.setItem('roomName', JSON.stringify(uniqueRoomsArray));
@@ -171,7 +171,7 @@ var RoomsModalView = Backbone.View.extend({
 	    var roomIdArray = [];
 	}
 	
-	 roomIdArray.push(data.roomId);
+	 roomIdArray.push(data.roomId.toString());
 	 var uniqueRoomIdsArray = Array.from(new Set(roomIdArray));
 	 localStorage.setItem('roomIds', JSON.stringify(uniqueRoomIdsArray));
 	 
@@ -183,37 +183,9 @@ var RoomsModalView = Backbone.View.extend({
 	
          $('.rooms-modal').modal("hide");
      
-    	var connectedClientsView = new ConnectedClientsView();
-        connectedClientsView.destroy();
-        	        
-			
-        if (localStorage.getItem("messageFormViewLoaded") == "false") {
-            var messageFormView = new MessageFormView();
-            messageFormView.afterRender();
-        }    
-          
-        if (localStorage.getItem("messagesViewLoaded") == "false") {
-            var messagesView = new MessagesView();
-            messagesView.afterRender();
-        }
-        
-         if (localStorage.getItem("appControlsViewLoaded") == "false") {
-	    var appControlsView = new AppControlsView();
-	    appControlsView.afterRender();
-	 }
-	 
-	if (localStorage.getItem("clientsInRoomViewLoaded") == "false") {
-	    var clientsInRoomView = new ClientsInRoomView();
-	    clientsInRoomView.afterRender();
-	}
+	var router = new Router();
+	router.navigate("rooms/" + data.roomId, {trigger: "true"});
 	
-	if (localStorage.getItem("roomsViewLoaded") == "false") {
-	    var roomsView = new RoomsView();
-	    roomsView.afterRender();
-	}
-        
-        socket.emit("enter-room", {roomId: data.roomId, userEnteringRoom: this.myUserId });
-        
     },
     
     destroy: function() { 

@@ -33,45 +33,16 @@ var RoomListItemView = Backbone.View.extend({
     },
    
     enterRoom: function(e) {
-	
-        console.log('enter room clicked');
-        
+	     
 	var requestedRoomId = $(e.currentTarget).data('room-id');
 	var requestedRoomName = $(e.currentTarget).data('room-name');
         
-	localStorage.setItem("activeRoomId", requestedRoomId);
 	localStorage.setItem("activeRoomName", requestedRoomName);
 	
-        var connectedClientsView = new ConnectedClientsView();
-        connectedClientsView.destroy();
-
-        
-        if (localStorage.getItem("messageFormViewLoaded") == "false") {
-            var messageFormView = new MessageFormView();
-            messageFormView.afterRender();
-        }
-        
-          
-        if (localStorage.getItem("messagesViewLoaded") == "false") {
-            var messagesView = new MessagesView();
-            messagesView.afterRender();
-        }
-        
-         if (localStorage.getItem("appControlsViewLoaded") == "false") {
-	    var appControlsView = new AppControlsView();
-	    appControlsView.afterRender();
-	 }
-	 
-	if (localStorage.getItem("clientsInRoomViewLoaded") == "false") {
-	    var clientsInRoomView = new ClientsInRoomView();
-	    clientsInRoomView.afterRender();
-	}
-
-        //var roomsView = new RoomsView();
-        //roomsView.afterRender();
+	var router = new Router();
+	router.navigate("rooms/" + requestedRoomId, {trigger: "true"}); 
 	
-	socket.emit("enter-room", {roomId: requestedRoomId, roomName: requestedRoomName, userEnteringRoom: this.myUserId });
-        
+      
     }
     
     

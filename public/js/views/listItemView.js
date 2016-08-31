@@ -12,7 +12,10 @@ var ListItemView = Backbone.View.extend({
     
     render: function(){
         
-        var parameters = {cssClass: this.options.cssClass,
+        var parameters = {
+                            messageId: this.options.messageId,
+                            cssClass: this.options.cssClass,
+                            backgroundColour: this.options.backgroundColour,
                             time: this.options.time,
                             contentFromUsername: this.options.contentFromUsername,
                             contentName: this.options.contentName,

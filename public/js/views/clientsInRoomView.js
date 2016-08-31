@@ -5,12 +5,12 @@ var ClientsInRoomView = Backbone.View.extend({
     initialize: function(options){
             
             this.options = options;
-	    this.roomId = localStorage.getItem("activeRoomId");
 	    this.myUsername = localStorage.getItem("username");
             
             var self = this;
             
             socket.on('connected-clients-in-room', function(data) {
+		localStorage.setItem("activeRoomName", data.roomName);
                 self.connectedClientsInRoomUpdated(data);
             });       
 
@@ -34,32 +34,29 @@ var ClientsInRoomView = Backbone.View.extend({
         
 	$('#clients-in-room').html('');
 	
-        this.undelegateEvents();
+	this.undelegateEvents();
 	this.$el.removeData().unbind();
-        
-        this.$el.empty().off(); 
         //this.stopListening();
         
     },
     
     afterRender: function(){
-        
-	console.log('CLIENTS in *ROOM* loaded');
+	
+	//console.log('CLIENTS in *ROOM* loaded');
         localStorage.setItem("clientsInRoomViewLoaded", "true");
         
             var parameters = {
             roomName: localStorage.getItem("activeRoomName")
             };
             
-        var compiledTemplate = _.template( $("#clients_in_room_template").html(), parameters);
-        this.$el.html( compiledTemplate );
-
-                
-        if (localStorage.getItem("activeRoomName") != "") {
-            
-            $('#rooms-list-header').html('Other Rooms');
-        }
-	
+	    var compiledTemplate = _.template( $("#clients_in_room_template").html(), parameters);
+	    this.$el.html( compiledTemplate );
+	       
+	    if (localStorage.getItem("activeRoomName") != "") {
+		
+		$('#rooms-list-header').html('Other Rooms');
+	    }
+	    
 		
     },
 
@@ -71,12 +68,12 @@ var ClientsInRoomView = Backbone.View.extend({
     
     connectedClientsInRoomUpdated: function(data) {
      
-            console.log('UPDATED: clients in room');
-            
+            //console.log('UPDATED: clients in room');
+                
             $('#clients-in-room').html('');
             
             var usersInRoom = JSON.parse(data.usersInRoom);
-            console.log(usersInRoom);
+            
             for(i = 0; i < usersInRoom.length; i++) {
              
                 if(usersInRoom[i].username == localStorage.getItem("username")) {
@@ -116,19 +113,20 @@ var ClientsInRoomView = Backbone.View.extend({
     
     destroy: function() { 
         
-	console.log('connected clients remove funciont');
+	//console.log('connected clients remove funciont');
 	
 	//$('.invitation-modal').modal("hide");
-	
-        localStorage.setItem("clientsInRoomViewLoaded", "false");
+
         
-        //this.undelegateEvents();
         this.undelegateEvents();
 	this.$el.removeData().unbind();
         //return this;
         //Backbone.View.prototype.remove.call(this);
         
-        this.remove();
+        this.$el.empty();
+	
+		
+        localStorage.setItem("clientsInRoomViewLoaded", "false");
     }
     
    

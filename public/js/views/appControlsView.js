@@ -109,7 +109,18 @@ var AppControlsView = Backbone.View.extend({
          
         var stream = ss.createStream();
              
-        ss(socket).emit('audio-file', stream, { liveStream: "false", username: localStorage.getItem("username"), sender: tabID, size: file.size, name: file.name, type: file.type});
+        ss(socket).emit('audio-file', stream, {
+			activeRoomId: localStorage.getItem("activeRoomId"),
+			activeRoomName: localStorage.getItem("activeRoomName"),
+			userColour: localStorage.getItem("userColour"),
+			liveStream: "false",
+			username: localStorage.getItem("username"),
+			sender: tabID,
+			size: file.size,
+			name: file.name,
+			type: file.type
+			});
+	
         ss.createBlobReadStream(file).pipe(stream);
 
         localStorage.setItem('streamState', '');
@@ -246,7 +257,23 @@ var AppControlsView = Backbone.View.extend({
         this.$el.show();  
         //Backbone.View.prototype.remove.call(this);
 
+    },
+    
+    destroy: function() { 
+        
+	//$('.invitation-modal').modal("hide");
+	
+         localStorage.setItem("appControlsViewLoaded", "false");
+        
+        //this.undelegateEvents();
+        this.undelegateEvents();
+	this.$el.removeData().unbind();
+        //return this;
+        //Backbone.View.prototype.remove.call(this);
+        
+        this.remove();
     }
+    
       
    
 });

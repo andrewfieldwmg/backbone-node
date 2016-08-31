@@ -7,7 +7,8 @@ var DataTypes = require("sequelize");
         
         name: DataTypes.STRING,
         createdByUserId: DataTypes.STRING,
-        usersInRoom: DataTypes.STRING
+        usersInRoom: DataTypes.STRING,
+        messageCount: DataTypes.INTEGER
       }, {
         
         instanceMethods: {
@@ -32,10 +33,12 @@ var DataTypes = require("sequelize");
                     var name = this.name;
                     var createdByUserId = this.createdByUserId;
                     var usersInRoom = this.usersInRoom;
+                    var messageCount = this.messageCount;
                     
                     Room.build({ name: name,
                                createdByUserId: createdByUserId,
-                               usersInRoom: usersInRoom
+                               usersInRoom: usersInRoom,
+                               messageCount: messageCount
                                })
                             .save().success(onSuccess).error(onError);
                 },
@@ -48,6 +51,13 @@ var DataTypes = require("sequelize");
 
                      Room.update({ name: name, usersInRoom: usersInRoom}, {id: id} )
                             .success(onSuccess).error(onError);
+                },
+                
+                incrementMessageCount: function(room_id) {
+                      
+                        sequelize.query("UPDATE rooms SET messageCount = messageCount + 1 WHERE id = " + room_id).spread(function(results, metadata) {
+                            // Results will be an empty array and metadata will contain the number of affected rows.
+                          });
                 },
                
                 removeById: function(user_id, onSuccess, onError) {

@@ -6,7 +6,7 @@ var RoomsView = Backbone.View.extend({
            
     initialize: function(){
 
-            console.log('rooms view init');
+            //console.log('rooms view init');
             
             var self = this;
             
@@ -61,24 +61,18 @@ var RoomsView = Backbone.View.extend({
     
     openCreateRoomForm: function(e) {
         
-        console.log('open room form');
-        
         var roomsFormView = new RoomsFormView();
         roomsFormView.render();
         
     },
   
     availableRoomsUpdated: function(data) {
-     
-            console.log('connected rooms update message received');
-            
+
             //console.log(data);
             
             $('#available-rooms').html('');
             
             var availableRooms = JSON.parse(data.availableRooms);
-            
-            console.log(availableRooms);
                   
                 if (availableRooms.length === 0) {
                     
@@ -93,11 +87,8 @@ var RoomsView = Backbone.View.extend({
                     for(i = 0; i < availableRooms.length; i++) {
                     
                         var usersInRoom = JSON.parse(availableRooms[i].usersInRoom);
-                        console.log(usersInRoom);
-                        console.log(localStorage.getItem("userId").toString());
                         var index = usersInRoom.indexOf(localStorage.getItem("userId").toString());
-                        console.log(index);
-                        
+                  
                         if (index > -1) {
                             usersInRoom.splice(index, 1);
                         }
@@ -152,16 +143,28 @@ var RoomsView = Backbone.View.extend({
     
     remove: function() { 
           
-        localStorage.setItem("roomsViewLoaded", "false");
+        localStorage.setItem('roomsViewLoaded', "false");
         
         //this.undelegateEvents();
         this.undelegateEvents();
 	this.$el.removeData().unbind();
         //return this;
         //Backbone.View.prototype.remove.call(this);
+        
+        //this.remove();
       
     },
-    
+        
+    destroy: function() { 
+        
+        //this.undelegateEvents();
+        this.undelegateEvents();
+	this.$el.removeData().unbind();
+        //return this;
+        //Backbone.View.prototype.remove.call(this);
+        
+        this.remove();
+    }
     
    
 });

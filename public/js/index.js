@@ -23,7 +23,7 @@ $(document).on('ready', function() {
     if (typeof io !== "undefined" && isWebkit  && !isMobileOrTablet() && initiateAudioContext) {
     
         socket = initSocketIo();
-        
+
         //localStorage.clear();
         
         localStorage.setItem("roomsViewLoaded", "false");
@@ -34,27 +34,10 @@ $(document).on('ready', function() {
         localStorage.setItem("appControlsViewLoaded", "false");
         localStorage.setItem("clientsInRoomViewLoaded", "false");
         localStorage.setItem("streamState", "stopped");
-        localStorage.setItem("activeRoomId", "");
-        localStorage.setItem("activeRoomName", "");
-        
-        
-        if(localStorage.getItem("username")) {
-     
-                var connectedClientsView = new ConnectedClientsView();
-                connectedClientsView.afterRender();
-       
-                if (localStorage.getItem("roomName")) {
-                    
-                    var roomsView = new RoomsView();
-                    roomsView.afterRender();
-                }
-                
-        } else {
-                
-                new UsernameFormView();
-                
-        }
-    
+             
+        var router = new Router();
+        Backbone.history.start({pushState: true});
+
     }
     
     $('body').tooltip({
@@ -71,7 +54,8 @@ function initSocketIo() {
         var queryString = "username="+localStorage.getItem("username") +
                                 "&userId="+localStorage.getItem("userId") +
                                 "&roomIds="+localStorage.getItem("roomIds") +
-                                "&roomName="+localStorage.getItem("roomName");
+                                "&roomName="+localStorage.getItem("roomName") +
+                                "&userColour="+localStorage.getItem("userColour");
                                 
         var socket = io.connect({query: queryString});
                 
@@ -84,10 +68,12 @@ function initSocketIo() {
             var socketIndex = data.socketIndex;
             var socketId = data.socketId;
             var userId = data.userId;
-              
+            var userColour = data.userColour;
+             
             localStorage.setItem('socketIndex', socketIndex);
             localStorage.setItem('socketId', socketId);
             localStorage.setItem('userId', userId);
+            localStorage.setItem('userColour', userColour);
             
          });
          

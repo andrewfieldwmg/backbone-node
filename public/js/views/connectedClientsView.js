@@ -48,6 +48,7 @@ var ConnectedClientsView = Backbone.View.extend({
     
     afterRender: function(){
         
+        //console.log('rended connected clients');
         localStorage.setItem('connectedClientsViewLoaded', "true");
        this.$el.html( this.template );
         
@@ -62,11 +63,11 @@ var ConnectedClientsView = Backbone.View.extend({
         
     openRoomInvitation: function(data) {
     
-    console.log('invitation ro toom');
+    //console.log('invitation ro toom');
         
         if (localStorage.getItem("acceptInvitationViewLoaded") =="false") {
         
-        console.log('accept invitation view NOT loaded');
+        //console.log('accept invitation view NOT loaded');
         
             var parameters = {
                                 invitedByUsername: data.invitedByUsername,
@@ -79,7 +80,7 @@ var ConnectedClientsView = Backbone.View.extend({
             
         } else {
             
-            console.log('accept invitation view ALREADY loaded');
+            //console.log('accept invitation view ALREADY loaded');
             
         }
         
@@ -89,7 +90,7 @@ var ConnectedClientsView = Backbone.View.extend({
     
     connectedClientsUpdated: function(data) {
      
-            console.log('connected clients message received');
+            //console.log('connected clients message received');
             
             $('#connected-clients').html('');
             
@@ -100,11 +101,11 @@ var ConnectedClientsView = Backbone.View.extend({
             //var socketId = localStorage.getItem("socketId").toString();
             //var socketIndex = connectedSocketIds.indexOf(socketId);
             //var socketCss = getSocketCss(socketIndex);
-                 console.log(connectedUsers);
+                 //console.log(connectedUsers);
 
             if (connectedUsers.length < 2) {
                       
-                console.log('1 client or less');
+                //console.log('1 client or less');
                 
                 var messageFormView = new MessageFormView();
                 var appControlsView = new AppControlsView();
@@ -129,7 +130,7 @@ var ConnectedClientsView = Backbone.View.extend({
                 
             } else {
                 
-                console.log('more than 1 client');
+                //console.log('more than 1 client');
                 
                 for(i = 0; i < connectedUsers.length; i++) {
                 
@@ -175,7 +176,7 @@ var ConnectedClientsView = Backbone.View.extend({
     
     destroy: function() { 
         
-	console.log('connected clients remove funciont');
+	//console.log('connected clients remove funciont');
 	
 	//$('.invitation-modal').modal("hide");
 	
@@ -187,7 +188,7 @@ var ConnectedClientsView = Backbone.View.extend({
         //return this;
         //Backbone.View.prototype.remove.call(this);
         
-        this.remove();
+        this.$el.empty();
     }
     
    

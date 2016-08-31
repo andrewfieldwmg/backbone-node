@@ -7,7 +7,9 @@ var DataTypes = require("sequelize");
         
         username: DataTypes.STRING,
         socketId: DataTypes.STRING,
-        status: DataTypes.STRING
+        status: DataTypes.STRING,
+        userColour: DataTypes.STRING,
+        inRooms: DataTypes.STRING
       }, {
         
         instanceMethods: {
@@ -32,8 +34,14 @@ var DataTypes = require("sequelize");
                     var username = this.username;
                     var socketId = this.socketId;
                     var status = this.status;
+                    var userColour = this.userColour;
                 
-                    User.build({ username: username, socketId: socketId, status: status })
+                    User.build({ username: username,
+                               socketId: socketId,
+                               status: status,
+                               userColour: userColour
+                               
+                               })
                             .save().success(onSuccess).error(onError);
                 },
                
@@ -43,8 +51,9 @@ var DataTypes = require("sequelize");
                     var username = this.username;
                      var socketId = this.socketId;
                      var status = this.status;
-                                            
-                     User.update({ socketId: socketId, status: status }, {id: id} )
+                    var inRooms = this.inRooms;
+                      
+                     User.update({ socketId: socketId, status: status, inRooms: inRooms }, {id: id} )
                             .success(onSuccess).error(onError);
                 },
                 

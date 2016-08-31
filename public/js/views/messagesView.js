@@ -26,12 +26,17 @@ var MessagesView = Backbone.View.extend({
                  self.socketAudioStreamIncoming(data); 
               });
       
-    
-                this.render = _.wrap(this.render, function(render) {
-                           this.beforeRender();
-                           render();						
-                           //this.afterRender();
-                   });						
+      
+    	    socket.on("emptyMessages", function(data) {
+                $('#message-results').html();
+              });
+
+	      
+            this.render = _.wrap(this.render, function(render) {
+                       this.beforeRender();
+                       render();						
+                       //this.afterRender();
+               });						
                    
 
         this.render();
@@ -46,8 +51,8 @@ var MessagesView = Backbone.View.extend({
     
     beforeRender: function () {
         
-        this.undelegateEvents();
-	this.$el.removeData().unbind();
+        //this.undelegateEvents();
+	//this.$el.removeData().unbind();
         
         //this.$el.empty().off(); 
         //this.stopListening();
@@ -57,7 +62,7 @@ var MessagesView = Backbone.View.extend({
     
     afterRender: function() {
            
-        console.log('MessagesView rendered');
+        //console.log('MessagesView rendered');
                  
         localStorage.setItem('messagesViewLoaded', "true");
         //new AudioPlayerView({streamName: "No stream loaded"});
@@ -76,31 +81,41 @@ var MessagesView = Backbone.View.extend({
 
     socketMessageReceived: function(data) {
          
-         console.log('message received');
-         
+         //console.log('message received');
+
          $('.feedback-placeholder').hide();
          
-        var socketIndex = data.socketindex;
+        //var socketIndex = data.socketindex;
         
-        var socketCss = getSocketCss(socketIndex);
+        var cssClass = "list-item-" + data.userColour;
         
         if(data.username == localStorage.getItem("username")) {
             var senderName = "You";  
          } else {
              var senderName = data.username;  
          }
-                
-        var parameters = {
-                        cssClass: socketCss,
-                        time: time,
-                        contentFromUsername: "Message from " + senderName + ":",
-                        contentName: data.message,
-                        loaderClass: "hidden"
-                        };
-        
-        var listItemView = new ListItemView(parameters);
-        
-        $('#message-results').append(listItemView.render());
+         
+	    if($('.list-group-item[data-id="'+ data.messageId + '"]').length) {
+	     /* it exists */
+	    console.log('that message already exists');
+	    } else {
+		
+		var parameters = {
+				messageId: data.messageId,
+				cssClass: cssClass,
+				backgroundColour: data.userColour,
+				time: time,
+				contentFromUsername: "Message from " + senderName + ":",
+				contentName: data.message,
+				loaderClass: "hidden"
+				};
+		
+		var listItemView = new ListItemView(parameters);
+		
+		$('#message-results').append(listItemView.render());
+	    }
+
+
   
         scrollToBottom();
         playSound();
@@ -137,7 +152,7 @@ var MessagesView = Backbone.View.extend({
     
     socketFileReceived: function(data) {
         
-         console.log("receiving sent file");
+         //console.log("receiving sent file");
          
            var socketIndex = data.socketindex;
             var socketCss = getSocketCss(socketIndex);
@@ -191,7 +206,7 @@ var MessagesView = Backbone.View.extend({
     
     socketAudioStreamIncoming: function(data) {
         
-        console.log('audio stream incoming');
+        //console.log('audio stream incoming');
         
         var socketIndex = data.socketindex;
         var socketCss = getSocketCss(socketIndex);
@@ -222,6 +237,7 @@ var MessagesView = Backbone.View.extend({
                  
             var parameters = {
                             cssClass: socketCss,
+			    backgroundColour: data.userColour,
                             time: time,
                             contentFromUsername: "Audio stream loading from " + streamAuthor + ":",
                             contentName: data.name,
@@ -246,7 +262,7 @@ var MessagesView = Backbone.View.extend({
     
         localStorage.setItem("messagesViewLoaded", "false");
         
-        console.log('MessagesView removed');
+        //console.log('MessagesView removed');
         
         var self = this;
         socket.off('message');
@@ -288,7 +304,23 @@ var MessagesView = Backbone.View.extend({
         this.$el.show();  
         //Backbone.View.prototype.remove.call(this);
 
+    },
+    
+    destroy: function() { 
+        
+	//$('.invitation-modal').modal("hide");
+	
+         localStorage.setItem("messagesViewLoaded", "false");
+        
+        //this.undelegateEvents();
+        this.undelegateEvents();
+	this.$el.removeData().unbind();
+        //return this;
+        //Backbone.View.prototype.remove.call(this);
+        
+        this.remove();
     }
+    
     
       
 });
