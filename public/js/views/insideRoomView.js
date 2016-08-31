@@ -5,18 +5,42 @@ var InsideRoomView = Backbone.View.extend({
         var self = this;
         
         this.options = options;
-        
-	localStorage.setItem("activeRoomId", this.options.roomId);
+
+	//socket.emit('get-room-name', {roomId: this.options.roomId});
+       
+        socket.emit("enter-room", {
+	    roomId: this.options.roomId,
+	    //roomName: localStorage.getItem("activeRoomName"),
+	    userEnteringRoom: localStorage.getItem("userId")
+	});
+
+	 socket.on('entered-room-details', function(data) {
+	    localStorage.setItem("activeRoomId", data.roomId);
+	    localStorage.setItem("activeRoomName", data.roomName);
+	    $('#room-name').html(data.roomName);
+	 });
+
+		
+	socket.emit("refresh-connection", {
+				    username: localStorage.getItem("username"),
+				    userId: localStorage.getItem("userId"),
+				    roomIds:localStorage.getItem("roomIds"),
+				    roomName: localStorage.getItem("roomName"),
+				    userColour: localStorage.getItem("userColour")
+				    }
+	);
 	
+
     	var connectedClientsView = new ConnectedClientsView();
         connectedClientsView.destroy();
-        	        
-			
-        if (localStorage.getItem("messageFormViewLoaded") == "false") {
+        		
+	if (localStorage.getItem("messageFormViewLoaded") == "false") {
             var messageFormView = new MessageFormView();
             messageFormView.afterRender();
         }    
-          
+        		
+        $('#message-results').empty();
+	
         if (localStorage.getItem("messagesViewLoaded") == "false") {
             var messagesView = new MessagesView();
             messagesView.afterRender();
@@ -35,24 +59,7 @@ var InsideRoomView = Backbone.View.extend({
 	if (localStorage.getItem("clientsInRoomViewLoaded") == "false") {
 	    var clientsInRoomView = new ClientsInRoomView({roomid: this.options.roomId});
 	    clientsInRoomView.afterRender();
-	}   
-        
-        socket.emit("enter-room", {
-	    roomId: this.options.roomId,
-	    //roomName: localStorage.getItem("activeRoomName"),
-	    userEnteringRoom: localStorage.getItem("userId")
-	});
-	
-	
-	socket.emit("refresh-connection", {
-				    username: localStorage.getItem("username"),
-				    userId: localStorage.getItem("userId"),
-				    roomIds:localStorage.getItem("roomIds"),
-				    roomName: localStorage.getItem("roomName"),
-				    userColour: localStorage.getItem("userColour")
-				    }
-	);
-
+	}
 	
     },
   

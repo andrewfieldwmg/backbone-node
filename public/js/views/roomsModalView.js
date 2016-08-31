@@ -187,8 +187,8 @@ var RoomsModalView = Backbone.View.extend({
 	 localStorage.setItem('roomIds', JSON.stringify(uniqueRoomIdsArray));
 	 
 	 
-	 localStorage.setItem("activeRoomName", data.roomName);
-	 localStorage.setItem("activeRoomId", data.roomId);
+	 //localStorage.setItem("activeRoomName", data.roomName);
+	 //localStorage.setItem("activeRoomId", data.roomId);
      
         console.log('room ready');
 	

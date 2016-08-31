@@ -851,6 +851,8 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                 
                     if (rooms) {
                         
+                        io.to(rooms.name).emit('entered-room-details', {roomId: roomId, roomName: rooms.name});
+                        
                         var usersInRoom = JSON.parse(rooms.usersInRoom);
       
                             var user = User.build();

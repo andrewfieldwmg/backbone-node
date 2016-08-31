@@ -10,7 +10,7 @@ var ClientsInRoomView = Backbone.View.extend({
             var self = this;
             
             socket.on('connected-clients-in-room', function(data) {
-		localStorage.setItem("activeRoomName", data.roomName);
+		//localStorage.setItem("activeRoomName", data.roomName);
                 self.connectedClientsInRoomUpdated(data);
             });       
 
