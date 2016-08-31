@@ -795,6 +795,44 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
         });
         
         
+        socket.on('decline-room-invitation', function (data) {
+            
+            var room = Room.build();
+            
+            room.removeById(data.joiningRoomId, function(rooms) {
+                
+                    if (rooms) {
+                        
+                        var user = User.build();
+                               
+                        user.retrieveById(data.invitedByUserId, function(users) {
+                            
+                                if (users) {				
+            
+                                    io.to(users.socketId).emit('room-invitation-declined', {declinedByUsername: data.joinerUsername});
+                                   
+                                    socket.emit('close-room-create-modal');
+                                    
+                                } else {
+            
+                                }
+                                
+                          }, function(error) {
+                         
+                          });
+                        
+         
+                        
+                    } else {
+                    
+                    }
+              }, function(error) {
+                   
+              });
+            
+        });
+        
+        
         //userIdsInRoomArray = [];
         //usernamesInRoomArray = [];
          
@@ -958,7 +996,28 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                         userId: userId,
                         userColour: userColour
                     });
-                
+                  
+                        
+                      var room = Room.build();
+                      
+                      room.retrieveById(data.activeRoomId, function(rooms) {
+                          
+                              if (rooms) {				
+      
+                                  io.to(activeRoomName).emit('message-count-updated', {
+                                    roomId: data.activeRoomId,
+                                    messageCount: rooms.messageCount
+                                  });
+                              
+                              } else {
+                               
+                              }
+                              
+                        }, function(error) {
+                             
+                        });
+              
+                      
                 },
                 function(err) {
                     //console.log("New message NOT written to database");

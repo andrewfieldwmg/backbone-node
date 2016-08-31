@@ -56,8 +56,8 @@ var DataTypes = require("sequelize");
                 incrementMessageCount: function(room_id) {
                       
                         sequelize.query("UPDATE rooms SET messageCount = messageCount + 1 WHERE id = " + room_id).spread(function(results, metadata) {
-                            // Results will be an empty array and metadata will contain the number of affected rows.
-                          });
+                        
+                        });
                 },
                
                 removeById: function(user_id, onSuccess, onError) {

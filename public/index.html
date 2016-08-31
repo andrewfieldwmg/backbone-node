@@ -218,7 +218,7 @@
                         
                         <div class="modal-footer">
                           <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
-                          <button type="submit" class="btn btn-primary" id="create-room-from-users" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>">Go!</button>
+                          <button type="submit" class="btn btn-primary" id="create-room-from-users" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>">Send Request!</button>
                           </form>
             
                         </div>
@@ -248,8 +248,8 @@
                         
                         <div class="modal-footer">
                           <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
-                          <button type="submit" class="btn btn-primary" id="accept-room-invitation" data-join-room-id="<%= joinRoomId %>">Go!</button>
-                                   
+                          <button type="submit" class="btn btn-primary" id="accept-room-invitation" data-invited-by-user-id="<%= invitedByUserId %>" data-join-room-id="<%= joinRoomId %>">Accept Request</button>
+                           <button type="submit" class="btn btn-info" id="decline-room-invitation" data-invited-by-user-id="<%= invitedByUserId %>" data-join-room-id="<%= joinRoomId %>">Sorry, I'm Busy!</button>        
                         </div>
                       </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
@@ -308,12 +308,12 @@
            
               
             <script type="text/template" id="room_list_item_template">
-                <li class="list-group-item <%= cssClass %>">
+                <li class="list-group-item <%= cssClass %>" data-room-id="<%= roomId%>">
                
                     <div>
                     <span class="<%= linkClass %>" data-toggle="tooltip" title="Enter Room" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>"><strong><%= roomName %></strong>
                     </span>
-                    <span class="badge message-counter" data-room-id="<%= roomId%>"><%= messageCount %></span>
+                    <span class="badge message-counter" data-toggle="tooltip" title="<%= messageCount %> Messages" data-room-id="<%= roomId%>"><%= messageCount %></span>
                     <i class="fa fa-rocket pull-right <%= linkClass %>" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>" data-toggle="tooltip" title="Enter Room" aria-hidden="true"></i>
                     </div>
 

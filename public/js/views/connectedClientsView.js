@@ -72,7 +72,8 @@ var ConnectedClientsView = Backbone.View.extend({
             var parameters = {
                                 invitedByUsername: data.invitedByUsername,
                                 joinRoomId: data.roomId,
-                                invitationTo: data.roomName
+                                invitationTo: data.roomName,
+                                invitedByUserId: data.invitedByUserId
                                 };
                                 
             var invitationModalView = new InvitationModalView(parameters);

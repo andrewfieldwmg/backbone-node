@@ -8,6 +8,8 @@ var InvitationModalView = Backbone.View.extend({
         
         this.options = options;
 	this.myUserId =  localStorage.getItem("userId");
+	this.myUsername = localStorage.getItem("username");
+        this.mySocketId = localStorage.getItem("socketId");
         
         console.log('init invitation modal');
                                   
@@ -51,7 +53,8 @@ var InvitationModalView = Backbone.View.extend({
         var parameters = {
            invitedByUsername: this.options.invitedByUsername,
            joinRoomId: this.options.joinRoomId,
-           invitationTo: this.options.invitationTo
+           invitationTo: this.options.invitationTo,
+	   invitedByUserId: this.options.invitedByUserId
            };
            
                             
@@ -76,7 +79,8 @@ var InvitationModalView = Backbone.View.extend({
 
     events: {
    
-     "click #accept-room-invitation" : "acceptRoomInvitation"
+     "click #accept-room-invitation" : "acceptRoomInvitation",
+     "click #decline-room-invitation" : "declineRoomInvitation"
      
     },
     
@@ -88,16 +92,34 @@ var InvitationModalView = Backbone.View.extend({
         //e.stopPropagation();
         
         var invitedRoomId = $(e.currentTarget).data('join-room-id');
-        var myUsername = localStorage.getItem("username");
-        var myUserId = localStorage.getItem("userId");
-        var mySocketId = localStorage.getItem("socketId");
+
 
         socket.emit('join-room', {
                                 joiningRoomId: invitedRoomId,
-                                joinerUserId: myUserId,
-                                joinerUsername: myUsername
+                                joinerUserId: this.myUserId,
+                                joinerUsername: this.myUsername
                                 });
         
+    },
+    
+    declineRoomInvitation: function(e) {
+        
+        console.log("decline room invitation");
+        
+        e.preventDefault();
+        //e.stopPropagation();
+        
+        var invitedRoomId = $(e.currentTarget).data('join-room-id');
+	var invitedByUserId = $(e.currentTarget).data('invited-by-user-id');
+
+        socket.emit('decline-room-invitation', {		
+                                joiningRoomId: invitedRoomId,
+				invitedByUserId: invitedByUserId,
+				joinerUserId: this.myUserId,
+                                joinerUsername: this.myUsername
+                                });
+	
+        $('.invitation-modal').modal("hide");
     },
     
     roomReady: function(data) {

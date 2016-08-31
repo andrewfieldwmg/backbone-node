@@ -13,14 +13,17 @@ var RoomsView = Backbone.View.extend({
             socket.on('available-rooms', function(data) {
                 self.availableRoomsUpdated(data);
             });
- 
+            
+            socket.on('message-count-updated', function (data) {
+                 self.socketMessageCountUpdated(data);
+             });
+        
             this.render = _.wrap(this.render, function(render) {
                        this.beforeRender();
                        render();						
                        //this.afterRender();
                });						
                    
-
         this.render();
         
     },
@@ -111,6 +114,7 @@ var RoomsView = Backbone.View.extend({
                                             linkClass: "enter-room cursor-pointer",
                                             roomId: availableRooms[i].id,
                                             roomName: availableRooms[i].name,
+                                            messageCount: availableRooms[i].messageCount
                                             };
                                             
                                             
@@ -125,6 +129,7 @@ var RoomsView = Backbone.View.extend({
                            linkClass: "disabled",
                            roomId: availableRooms[i].id,
                            roomName: availableRooms[i].name + " - <span class='small'><em>current room</em></span>",
+                           messageCount: availableRooms[i].messageCount
                            };
                                             
                                             
@@ -137,8 +142,19 @@ var RoomsView = Backbone.View.extend({
                     }
     
                     
-                }
+            }
 
+    },
+    
+    socketMessageCountUpdated: function(data) {
+        
+        console.log('message count updated');
+        
+        $('.message-counter[data-room-id="' + data.roomId + '"]').html(data.messageCount)
+        .css('background-color', 'orange')
+        .css('color', 'black')
+        .animate({ 'zoom': 1.3 }, 100).animate({ 'zoom': 1.0 }, 100)
+        .attr('title', 'New Messages!');
     },
     
     remove: function() { 
@@ -155,7 +171,10 @@ var RoomsView = Backbone.View.extend({
       
     },
         
-    destroy: function() { 
+    destroy: function() {
+        
+        socket.off('available-rooms');
+        socket.off('message-count-updated');
         
         //this.undelegateEvents();
         this.undelegateEvents();

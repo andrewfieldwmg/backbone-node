@@ -26,7 +26,6 @@ var HomeView = Backbone.View.extend({
 	    appControlsView.destroy();
 	 }
 
-	
 	if (localStorage.getItem("roomsViewLoaded") == "true") {
 	    var roomsView = new RoomsView();
 	    roomsView.destroy();

@@ -16,8 +16,10 @@ var RoomsModalView = Backbone.View.extend({
             socket.on('joined-room-await-others', function(data) {
                 self.joinedRoomAwaitOthers(data);
             });
-            
-            
+	    
+            socket.on('room-invitation-declined', function(data) {
+                self.roomInvitationDeclined(data);
+            });
                                  
             socket.on('room-ready', function(data) {
                 self.roomReady(data);
@@ -148,6 +150,15 @@ var RoomsModalView = Backbone.View.extend({
                                 joinerUsername: myUsername
                                 });*/
         
+    },
+    
+    roomInvitationDeclined: function(data) {
+
+	$('.create-room-from-users-result').html('<strong>Sorry</strong>... ' + data.declinedByUsername + ' is currently busy.');
+	
+	setTimeout(function(){
+	    $('.rooms-modal').modal("hide");
+	}, 3000);
     },
     
     roomReady: function(data) {

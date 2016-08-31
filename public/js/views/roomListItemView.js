@@ -19,7 +19,8 @@ var RoomListItemView = Backbone.View.extend({
                             time: this.options.time,
                             linkClass: this.options.linkClass,
                             roomId: this.options.roomId,
-                            roomName: this.options.roomName
+                            roomName: this.options.roomName,
+			    messageCount: this.options.messageCount
                             };
  
         var compiledTemplate = _.template( $("#room_list_item_template").html(), parameters);
