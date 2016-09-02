@@ -6,11 +6,17 @@ var AudioPlayerView = Backbone.View.extend({
         
             console.log('new audio player view');
             
-            this.options = options;
-            this.render();
-            
         var audioContext = this.options.audioContext;
-          
+            
+              this.render = _.wrap(this.render, function(render) {
+                       this.beforeRender();
+                       render();						
+                       this.afterRender();
+               });						
+                   
+
+        this.render();
+        
         var volumeSlider = $('#ex1').slider();
         
         volumeSlider.on('slideStop', function() {
@@ -21,11 +27,27 @@ var AudioPlayerView = Backbone.View.extend({
            localStorage.setItem('streamVolume', newVolume);
            
         });
+        
+    },
+  
+    render: function(){
+
+        return this;
     
-            
     },
     
-    render: function(){
+    beforeRender: function () {
+        
+        this.undelegateEvents();
+	this.$el.removeData().unbind();
+        
+        this.$el.empty().off(); 
+        //this.stopListening();
+        
+    },
+    
+    
+    afterRender: function() {
                                     
         if(localStorage.getItem("streamVolume")) {
           var volumeToUse = localStorage.getItem("streamVolume");

@@ -105,7 +105,7 @@ var MessagesView = Backbone.View.extend({
 				cssClass: cssClass,
 				backgroundColour: data.userColour,
 				time: time,
-				contentFromUsername: "Message from " + senderName + ":",
+				contentFromUsername: senderName + ":",
 				contentName: data.message,
 				loaderClass: "hidden"
 				};
@@ -124,8 +124,9 @@ var MessagesView = Backbone.View.extend({
     
     socketFileIncoming: function(data) {
         
-            var socketIndex = data.socketindex;
-            var socketCss = getSocketCss(socketIndex);
+            //var socketIndex = data.socketindex;
+            //var socketCss = getSocketCss(socketIndex);
+            var cssClass = "list-item-" + data.userColour;
         
             if(data.username == localStorage.getItem("username")) {
                 var senderName = "You";  
@@ -134,7 +135,8 @@ var MessagesView = Backbone.View.extend({
             }
                     
             var parameters = {
-                            cssClass: socketCss,
+                            cssClass: cssClass,
+                            backgroundColour: data.userColour,
                             time: time,
                             contentFromUsername: "File transfer incoming from " + senderName + ":",
                             contentName: data.name,
@@ -154,8 +156,9 @@ var MessagesView = Backbone.View.extend({
         
          //console.log("receiving sent file");
          
-           var socketIndex = data.socketindex;
-            var socketCss = getSocketCss(socketIndex);
+           //var socketIndex = data.socketindex;
+            //var socketCss = getSocketCss(socketIndex);
+            var cssClass = "list-item-" + data.userColour;
             
             if(data.username == localStorage.getItem("username")) {
                 var senderName = "You";  
@@ -164,7 +167,8 @@ var MessagesView = Backbone.View.extend({
             }
                     
             var parameters = {
-                            cssClass: socketCss,
+                            cssClass: cssClass,
+                            backgroundColour: data.userColour,
                             time: time,
                             contentFromUsername: "File transfer received from " + senderName + ":",
                             contentName: data.name,
@@ -187,9 +191,12 @@ var MessagesView = Backbone.View.extend({
     },
     
     socketSendFileDone: function(data) {
+        
+      var cssClass = "list-item-" + localStorage.getItem("userColour");
       
         var parameters = {
-                      cssClass: "list-group-item-info",
+                      cssClass: cssClass,
+                      backgroundColour: localStorage.getItem("userColour"),
                       time: time,
                       contentFromUsername: "File transfer completed: ",
                       contentName: data.name,
@@ -208,8 +215,11 @@ var MessagesView = Backbone.View.extend({
         
         //console.log('audio stream incoming');
         
-        var socketIndex = data.socketindex;
-        var socketCss = getSocketCss(socketIndex);
+        //var socketIndex = data.socketindex;
+        //var socketCss = getSocketCss(socketIndex);
+        
+        var cssClass = "list-item-" + data.userColour;
+        
         var audioType = data.audioType;
         
         if (audioType === 'audio/wav/stream') {
@@ -227,8 +237,7 @@ var MessagesView = Backbone.View.extend({
             var audioContext = playMp3Stream(socket);
         }
         
-        //$('#listen').trigger('click');
-        
+    
             if(data.username == localStorage.getItem("username")) {
                var streamAuthor = "You";
             } else {
@@ -236,7 +245,7 @@ var MessagesView = Backbone.View.extend({
             }
                  
             var parameters = {
-                            cssClass: socketCss,
+                            cssClass: cssClass,
 			    backgroundColour: data.userColour,
                             time: time,
                             contentFromUsername: "Audio stream loading from " + streamAuthor + ":",

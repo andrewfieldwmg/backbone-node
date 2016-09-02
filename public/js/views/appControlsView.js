@@ -61,10 +61,12 @@ var AppControlsView = Backbone.View.extend({
     
     startLiveStream: function(data) {
         
-        console.log('start live stream backbone function clicked');
+        //console.log('start live stream backbone function clicked');
+        var cssClass = "list-item-" + localStorage.getItem("userColour");
     
         var parameters = {
-                        cssClass: "list-group-item-info",
+                        cssClass: cssClass,
+                        backgroundColour: localStorage.getItem("userColour"),
                         time: time,
                         contentFromUsername: "Broadcasting live stream",
                         contentName: "",
@@ -109,24 +111,30 @@ var AppControlsView = Backbone.View.extend({
          
         var stream = ss.createStream();
              
-        ss(socket).emit('audio-file', stream, {
-			activeRoomId: localStorage.getItem("activeRoomId"),
-			activeRoomName: localStorage.getItem("activeRoomName"),
-			userColour: localStorage.getItem("userColour"),
-			liveStream: "false",
-			username: localStorage.getItem("username"),
-			sender: tabID,
-			size: file.size,
-			name: file.name,
-			type: file.type
-			});
-	
+        ss(socket).emit('audio-file',
+                            stream,
+                                {
+                                userId: localStorage.getItem("userId"),
+                                username: localStorage.getItem("username"),
+                                activeRoomId: localStorage.getItem("activeRoomId"),
+                                activeRoomName: localStorage.getItem("activeRoomName"),
+                                userColour: localStorage.getItem("userColour"),
+                                liveStream: "false",
+                                sender: tabID,
+                                size: file.size,
+                                name: file.name,
+                                type: file.type
+                                });
+            
         ss.createBlobReadStream(file).pipe(stream);
 
         localStorage.setItem('streamState', '');
         
+        var cssClass = "list-item-" + localStorage.getItem("userColour");
+        
         var parameters = {
-                cssClass: "list-group-item-info",
+                cssClass: cssClass,
+                backgroundColour: localStorage.getItem("userColour"),
                 time: time,
                 contentFromUsername: "Broadcasting file stream",
                 contentName: file.name,
@@ -165,11 +173,25 @@ var AppControlsView = Backbone.View.extend({
              
             var stream = ss.createStream();
                  
-            ss(socket).emit('file-upload', stream, { username: localStorage.getItem("username"), sender: tabID, username: localStorage.getItem("username"), size: file.size, name: file.name, type: file.type});
+            ss(socket).emit('file-upload', stream, {
+                            userId: localStorage.getItem("userId"),
+                            username: localStorage.getItem("username"),
+                            activeRoomId: localStorage.getItem("activeRoomId"),
+                            activeRoomName: localStorage.getItem("activeRoomName"),
+                            userColour: localStorage.getItem("userColour"),
+                            liveStream: "false",
+                            size: file.size,
+                            name: file.name,
+                            type: file.type
+                            });
+            
             ss.createBlobReadStream(file).pipe(stream);
             
+            var cssClass = "list-item-" + localStorage.getItem("userColour");
+            
             var parameters = {
-                cssClass: "list-group-item-info",
+                cssClass: cssClass,
+                backgroundColour: localStorage.getItem("userColour"),
                 time: time,
                 contentFromUsername: "Transferring file: ",
                 contentName: file.name,

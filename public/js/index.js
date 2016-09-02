@@ -20,11 +20,11 @@ $(document).on('ready', function() {
         return;
     }
     
-    if (typeof io !== "undefined" && isWebkit  && !isMobileOrTablet() && initiateAudioContext) {
+    if (typeof io !== "undefined" && isWebkit && !isMobileOrTablet() && initiateAudioContext) {
     
         socket = initSocketIo();
 
-        //localStorage.clear();
+        localStorage.clear();
         
         localStorage.setItem("roomsViewLoaded", "false");
         localStorage.setItem("roomsModalViewLoaded", "false");

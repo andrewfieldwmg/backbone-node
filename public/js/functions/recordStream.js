@@ -6,8 +6,19 @@ function startLiveStream(socket) {
             
         var stream = ss.createStream();
         
-        ss(socket).emit('audio-file', stream, {username: localStorage.getItem("username"), sender: tabID, name: "Live Stream", type: "audio/wav/stream"});
-                     
+        ss(socket).emit('audio-file', stream, {
+                userId: localStorage.getItem("userId"),
+                username: localStorage.getItem("username"),
+                activeRoomId: localStorage.getItem("activeRoomId"),
+                activeRoomName: localStorage.getItem("activeRoomName"),
+                userColour: localStorage.getItem("userColour"),
+                liveStream: "true",
+                sender: tabID,
+                name: "Live Stream",
+                type: "audio/wav/stream"
+            });
+                                                
+                                
             if (!navigator.getUserMedia)
               navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
             navigator.mozGetUserMedia || navigator.msGetUserMedia;
@@ -69,6 +80,9 @@ function startLiveStream(socket) {
                 console.log('Recording stopped');
 
                 stopRecording();
+                
+                $('#start-recording').show();
+                $('#stop-recording').hide();
   
             });
             

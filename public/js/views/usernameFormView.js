@@ -6,7 +6,8 @@ var UsernameFormView = Backbone.View.extend({
            
     initialize: function(){
 
-            this.render();
+        console.log('new username form view');
+        this.render();
     },
     
     render: function(){
@@ -17,7 +18,10 @@ var UsernameFormView = Backbone.View.extend({
 
     events: {
    
-     "click #submit-username": "submitUsername"
+        "click #submit-username": "submitUsername",
+        "click #submit-user-genre": "submitUserGenre",
+        "click #submit-user-location": "submitUserLocation",
+        "click #submit-user-password": "submitUserPassword"
      
     },
     
@@ -26,28 +30,83 @@ var UsernameFormView = Backbone.View.extend({
         console.log('submit username');
         e.preventDefault();
         var username = $('#username').val();
-        var socketId = localStorage.getItem("socketId");
         
-        socket.emit('new-username', { sender: tabID, socketId: socketId, username: username });
+        socket.emit('new-username', {
+            socketId: localStorage.getItem("socketId"),
+            username: username
+            });
         
         localStorage.setItem('username', username);
-         
-        this.remove();
-         
-        //new MessageFormView();
-        //new AppControlsView();
-        //new MessagesView();
         
-        var connectedClientsView = new ConnectedClientsView();
-        connectedClientsView.afterRender();
+        $('#username-form').hide();
+        $('#user-genre-form').animate({width: 'toggle'}, 350);
+        $('#user-genre').focus();
+    },
+    
+    submitUserGenre: function(e) {
+                
+        e.preventDefault();
+        var userGenre = $('#user-genre').val();
+    
+        socket.emit('new-user-genre', {
+            socketId: localStorage.getItem("socketId"),
+            userId: localStorage.getItem("userId"),
+            userGenre: userGenre
+            });
+        
+        localStorage.setItem('userGenre', userGenre);
+         
+        $('#user-genre-form').hide();
+        $('#user-location-form').animate({width: 'toggle'}, 350);
+        $('#user-location').focus();
+        
+    },
+    
+    submitUserLocation: function(e) {
+                
+        e.preventDefault();
+        var userLocation = $('#user-location').val();
+    
+        socket.emit('new-user-location', {
+            socketId: localStorage.getItem("socketId"),
+            userId: localStorage.getItem("userId"),
+            userGenre: localStorage.getItem("userGenre"),
+            userLocation: userLocation
+            });
+        
+        localStorage.setItem('userLocation', userLocation);
+         
+        $('#user-location-form').hide();
+        $('#user-password-form').animate({width: 'toggle'}, 350);
+        $('#user-password').focus();
+        
+    },
+    
+    submitUserPassword: function(e) {
+                
+        e.preventDefault();
+        var userPassword = $('#user-password').val();
+    
+        socket.emit('new-user-password', {
+            socketId: localStorage.getItem("socketId"),
+            userId: localStorage.getItem("userId"),
+            userGenre: localStorage.getItem("userGenre"),
+            userLocatiom: localStorage.getItem("userLocation"),
+            userPassword: userPassword
+            });
 
-        if (localStorage.getItem("roomName")) {
-            
-            var roomsView = new RoomsView();
-            roomsView.afterRender();
-        }
+        
+        this.remove();
+        
+        //var connectedClientsView = new ConnectedClientsView();
+        //connectedClientsView.afterRender();
+
+        var router = new Router();
+	router.navigate("welcome", {trigger: "true"});
+        
         
     }
     
+
    
 });

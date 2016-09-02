@@ -36,7 +36,7 @@ var RoomListItemView = Backbone.View.extend({
     enterRoom: function(e) {
 	     
 	var requestedRoomId = $(e.currentTarget).data('room-id');
-	//var requestedRoomName = $(e.currentTarget).data('room-name');
+	var requestedRoomName = $(e.currentTarget).data('room-name');
 
 	var router = new Router();
 	router.navigate("rooms/" + requestedRoomId, {trigger: "true"}); 

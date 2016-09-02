@@ -38,7 +38,8 @@ var InsideRoomView = Backbone.View.extend({
             var messageFormView = new MessageFormView();
             messageFormView.afterRender();
         }    
-        		
+        	
+			
         $('#message-results').empty();
 	
         if (localStorage.getItem("messagesViewLoaded") == "false") {

@@ -1,88 +1,82 @@
-//CONFIG
-var config = require('./config');
+    //CONFIG
+    var config = require('./config');
+    var utils = require('./utils');
 
-//EXPRESS
-var express = require('express');
+    //EXPRESS
+    var express = require('express');
+    
+    //START THE API
+    //var api = express();
+    //module.exports.api = api;
+    //require("./api.js");
+    
+    //SOCKET IO
+    var socketApp = express();
+    var socketio_app = socketApp.listen(8080);
+    var io = require('socket.io')(socketio_app);
+    var ss = require('socket.io-stream');
+    
+    //UTILS
+    var ip = require("ip");
+    
+    //AUDIO
+    var SoxCommand = require('sox-audio');
+    
+    // FILE SYSTEM and STREAMS
+    var fs = require('fs');
+    var path = require("path");
+    var mime = require('mime');
+    var sanitize = require("sanitize-filename");
 
-//START THE API
-//var api = express();
-//module.exports.api = api;
-//require("./api.js");
-
-//SOCKET IO
-var socketApp = express();
-var socketio_app = socketApp.listen(8080);
-var io = require('socket.io')(socketio_app);
-var ss = require('socket.io-stream');
-
-//UTILS
-var ip = require("ip");
-
-//AUDIO
-var SoxCommand = require('sox-audio');
-
-// FILE SYSTEM and STREAMS
-var fs = require('fs');
-var path = require("path");
-var mime = require('mime');
-var sanitize = require("sanitize-filename");
-
-function getExtension(filename) {
-    return filename.split('.').pop();
-}
-
-//DB MODELS//
-var User = require("./models/user.js");
-var Message = require("./models/message.js");
-var Room = require("./models/room.js");
-
-//DIRS and FILE VARS (to do: add these to a config.json)
-
-var audioPath = path.join(config.filePaths.uploadDir + '/audio');
-var wavRecordingFilename = 'liveStream.wav';
-var mp3RecordingFilename = 'liveStream.mp3';
-var wavRecordingFile = audioPath + '/' + wavRecordingFilename;
-var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
-
-
-function deleteFromArray(my_array, element) {
-  position = my_array.indexOf(element);
-  my_array.splice(position, 1);
-}
-  
-  
-const flatten = arr => arr.reduce(
- (a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
-);
-
-Array.prototype.getRandom = function(cut){
-    var i= Math.floor(Math.random()*this.length);
-    if(cut && i in this){
-        return this.splice(i, 1)[0];
-    }
-    return this[i];
-}
+    //DB MODELS//
+    var User = require("./models/user.js");
+    var Message = require("./models/message.js");
+    var Room = require("./models/room.js");
+    var File = require("./models/file.js");
+    var Stream = require("./models/stream.js");
+    
+    //DIRS and FILE VARS (to do: add these to a config.json)
+    
+    var audioPath = path.join(config.filePaths.uploadDir + '/audio');
+    var wavRecordingFilename = 'liveStream.wav';
+    var mp3RecordingFilename = 'liveStream.mp3';
+    var wavRecordingFile = audioPath + '/' + wavRecordingFilename;
+    var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
 
 
-var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'lightgray', 'lightgreen', 
-'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategrey', 'lightsteelblue', 'lightyellow', 
-'aquamarine'];
- 
+    //FILE TRANSFER//
+    socketApp.get('/api/download', function (req, res) {
+        
+        var requestedFile = decodeURIComponent(req.query.file);
+       
+        var file = config.filePaths.uploadDir + "/" + requestedFile;
+    
+        var filename = path.basename(file);
+        var mimetype = mime.lookup(file);
+    
+        res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+        res.setHeader('Content-type', mimetype);
+    
+        var filestream = fs.createReadStream(file);
+        filestream.pipe(res);
+      
+    });
+
  
     ///SOCKET IO BELOW THIS POINT///
     
-    var connectedSocketIds = [];
-    var connectedUsernames = [];
-    var connectedUserIds = [];
+    //var connectedSocketIds = [];
+    //var connectedUsernames = [];
+    //var connectedUserIds = [];
 
     io.sockets.on('connection', function (socket) {
                
         console.log('socket connected');
-        
-        connectedSocketIds.push(socket.id);
+  
+        //connectedSocketIds.push(socket.id);
              
         var clientIp = socket.request.connection.remoteAddress;
-        var socketIndex = connectedSocketIds.indexOf(socket.id);
+        //var socketIndex = connectedSocketIds.indexOf(socket.id);
 
         var handshake = socket.handshake;
         var username = handshake.query.username;
@@ -96,7 +90,8 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
         socket.on('new-username', function (data) {
             
             //if (userColour == "null" || userColour == "undefined") {
-                var userColour = colors.getRandom();
+                var userColour = utils.colors[Math.floor(Math.random()*utils.colors.length)];
+                
             //}
             
             var user = User.build({
@@ -111,7 +106,7 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                 ////console.log("New socket user created!");
                 
                 socket.emit('socket-info', {
-                    socketIndex: socketIndex,
+                    //socketIndex: socketIndex,
                     socketId: socket.id,
                     userId: success.id,
                     userColour: userColour
@@ -174,6 +169,74 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
         
         });
         
+         
+         socket.on('new-user-genre', function (data) {
+            
+            var user = User.build();	
+              
+            user.userGenre = data.userGenre;
+            user.socketId = data.socketId;
+            user.status = "online";
+            
+            user.updateById(data.userId, function(success) {
+                
+                    if (success) {	
+                            
+                    } else {
+                     
+                    }
+              }, function(error) {
+                    
+              });
+            
+         });
+         
+        
+        socket.on('new-user-location', function (data) {
+            
+            var user = User.build();	
+              
+            user.userGenre = data.userGenre;
+            user.socketId = data.socketId;
+            user.status = "online";
+            user.userLocation = data.userLocation;
+             
+            user.updateById(data.userId, function(success) {
+                
+                    if (success) {	
+                            
+                    } else {
+                     
+                    }
+              }, function(error) {
+                    
+              });
+            
+         });
+        
+                
+        socket.on('new-user-password', function (data) {
+            
+            var user = User.build();	
+              
+            user.userGenre = data.userGenre;
+            user.socketId = data.socketId;
+            user.status = "online";
+            user.userLocation = data.userLocation;
+            user.password = data.userPassword;
+            
+            user.updateById(data.userId, function(success) {
+                
+                    if (success) {	
+                            
+                    } else {
+                     
+                    }
+              }, function(error) {
+                    
+              });
+            
+         });
         
         
         function updateConnectedClientsInRoom(roomIds, roomName) {
@@ -189,7 +252,7 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                            usersInRoomArray.push(JSON.parse(rooms[i].usersInRoom)); 
                         }
                         
-                        var uniqueFlatUsersInRoomArray = Array.from(new Set(flatten(usersInRoomArray)));
+                        var uniqueFlatUsersInRoomArray = Array.from(new Set(utils.flatten(usersInRoomArray)));
                         //console.log(uniqueFlatUsersInRoomArray);
                         
                        var user = User.build();
@@ -274,7 +337,7 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                         socketRoomNamesArray.push(joinedRoomArray[i]);
                     }
                     
-                    socket.roomNames = Array.from(new Set(flatten(socketRoomNamesArray)));
+                    socket.roomNames = Array.from(new Set(utils.flatten(socketRoomNamesArray)));
                 
                 } else {
                      //console.log('roomname is null');
@@ -295,7 +358,7 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                         socketRoomIdsArray.push(joinedRoomIdsArray[i]);
                     }
                     
-                    socket.roomIds = Array.from(new Set(flatten(socketRoomIdsArray)));
+                    socket.roomIds = Array.from(new Set(utils.flatten(socketRoomIdsArray)));
                 
                 } else {
                      //console.log('roomids is null');
@@ -318,45 +381,46 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
               
                         if (success) {
                             
-                                socket.emit('socket-info', {
-                                    socketIndex: socketIndex,
-                                    socketId: socket.id,
-                                    userId: userId,
-                                    userColour: userColour
-                                    });
-                                
-                                var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
-                                
-                                ////console.log('emit connected clients');
-                                
-                                    user.retrieveAll(function(users) {
-                    
-                                    if (users) {
+                            socket.emit('socket-info', {
+                                //socketIndex: socketIndex,
+                                socketId: socket.id,
+                                userId: userId,
+                                userColour: userColour
+                                });
                             
-                                        io.sockets.emit('connected-clients', {connectedUsers: JSON.stringify(users)});
-                                                                    
-                                       //console.log(roomIds);
-                                       
-                                       if(roomIds !== "null" && roomName !== "null") {
+                            //var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
+                            
+                            ////console.log('emit connected clients');
+                            
+                                user.retrieveAll(function(users) {
+                
+                                if (users) {
+                        
+                                    io.sockets.emit('connected-clients', {connectedUsers: JSON.stringify(users)});
+                                                                
+                                   //console.log(roomIds);
+                                   
+                                   if(typeof roomIds !== "undefined" && roomIds !== null && roomIds !== "null"
+                                      && typeof roomName !== "undefined" && roomName !== null && roomName !== "null") {
+                                    
+                                    //console.log('room ids:' + roomIds);
                                         
-                                        //console.log('room ids:' + roomIds);
-                                            
-                                        updateConnectedClientsInRoom(roomIds, roomName);
-                                                                                       
-                                                         
-                                       }
-         
-                          
-                                } else {
-                                  //res.send(401, "User not found");
-                                }
+                                    updateConnectedClientsInRoom(roomIds, roomName);
+                                                                                   
+                                                     
+                                   }
+     
+                      
+                            } else {
+                              //res.send(401, "User not found");
+                            }
                                 
                       }, function(error) {
                         //res.send("User not found");
                      });
             
                                 
-                            if(roomName !== "null") {
+                            if(typeof roomName !== "undefined" && roomName !== "null" && roomName !== null) {
                                         
                                     var room = Room.build();
                                     
@@ -505,22 +569,21 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                             roomsForUserArray.push(success.id.toString());
                             
                         }
-                                      
+                                                             
+                            user.status = "online";
+                            user.socketId = socket.id;
+                            user.inRooms = JSON.stringify(roomsForUserArray);
                             
-                                user.status = "online";
-                                user.socketId = socket.id;
-                                user.inRooms = JSON.stringify(roomsForUserArray);
+                            user.updateById(data.createdByUserId, function(success) {
                                 
-                                user.updateById(data.createdByUserId, function(success) {
-                                    
-                                        if (success) {	
-                                                //var roomsForUser = [];  
-                                        } else {
-                                          //res.send(401, "User not found");
-                                        }
-                                  }, function(error) {
-                                        //res.send("User not found");
-                                  });
+                                    if (success) {	
+                                            //var roomsForUser = [];  
+                                    } else {
+                                      //res.send(401, "User not found");
+                                    }
+                              }, function(error) {
+                                    //res.send("User not found");
+                              });
                          
      
                     } else {
@@ -544,7 +607,7 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                     socketRoomIdsArray.push(success.id);
                 }
                 
-                socket.roomIds = Array.from(new Set(flatten(socketRoomIdsArray)));
+                socket.roomIds = Array.from(new Set(utils.flatten(socketRoomIdsArray)));
                 
                 //console.log(socket.roomIds);
                 
@@ -558,7 +621,7 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                     socketRoomNamesArray.push(data.name);
                 }
                 
-                socket.roomNames = Array.from(new Set(flatten(socketRoomNamesArray)));
+                socket.roomNames = Array.from(new Set(utils.flatten(socketRoomNamesArray)));
                 
                 //console.log(socket.roomNames);
                 
@@ -670,7 +733,7 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                             
                         }
                         
-                              user.status = "online";
+                                user.status = "online";
                                 user.socketId = socket.id;
                                 user.inRooms = JSON.stringify(roomsForUserArray);
                                 
@@ -681,9 +744,11 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                                         } else {
                                           //res.send(401, "User not found");
                                         }
+                                        
                                   }, function(error) {
                                         //res.send("User not found");
                                   });
+                                
                          
                        } else {
    
@@ -725,7 +790,7 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                                         socketRoomIdsArray.push(data.joiningRoomId);
                                     }
                                     
-                                    socket.roomIds = Array.from(new Set(flatten(socketRoomIdsArray)));
+                                    socket.roomIds = Array.from(new Set(utils.flatten(socketRoomIdsArray)));
                                     
                                     //console.log(socket.roomIds);
                                     
@@ -739,7 +804,7 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                                         socketRoomNamesArray.push(roomsOne.name);
                                     }
                                     
-                                    socket.roomNames = Array.from(new Set(flatten(socketRoomNamesArray)));
+                                    socket.roomNames = Array.from(new Set(utils.flatten(socketRoomNamesArray)));
                                     
                                     //console.log(socket.roomNames);
                                  
@@ -821,8 +886,7 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                          
                           });
                         
-         
-                        
+                             
                     } else {
                     
                     }
@@ -975,7 +1039,7 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                 var activeRoomName = data.activeRoomName;
                 var userColour = data.userColour;
   
-                var socketIndex = connectedSocketIds.indexOf(socket.id);
+                //var socketIndex = connectedSocketIds.indexOf(socket.id);
                 
                 var message = Message.build({
                                     message: message,
@@ -992,17 +1056,17 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                     ////console.log("New message written to database");              
                    //socket.broadcast.emit('message', { message: message, sender: sender });
                   io.to(activeRoomName).emit('message', {
-                        socketindex: socketIndex,
+                        //socketindex: socketIndex,
                         message: data.message,
                         username: username,
                         userId: userId,
                         userColour: userColour
                     });
                   
-                        
-                      var room = Room.build();
-                      
-                      room.retrieveById(data.activeRoomId, function(rooms) {
+                    var room = Room.build(); 
+                    room.incrementMessageCount(data.activeRoomId);
+                                    
+                    room.retrieveById(data.activeRoomId, function(rooms) {
                           
                               if (rooms) {				
       
@@ -1025,8 +1089,7 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                     //console.log("New message NOT written to database");
                 });
     
-                var room = Room.build(); 
-                room.incrementMessageCount(data.activeRoomId);
+            
              
              });
                  
@@ -1034,27 +1097,101 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
               
             ss(socket).on('file-upload', function(fileStream, data) {
                 
-                var socketIndex = connectedSocketIds.indexOf(socket.id);
-                
-                socket.broadcast.emit('sent-file-incoming', { username: data.username, socketindex: socketIndex, sender: data.sender, name: data.name });
+                //var socketIndex = connectedSocketIds.indexOf(socket.id);
+       
+                socket.broadcast.to(data.activeRoomName).emit('sent-file-incoming', {
+                    username: data.username,
+                    userColour: data.userColour,
+                    sender: data.sender,
+                    name: data.name
+                    });
                 
                 var cleanName = sanitize(data.name);
      
                  fileUploadWriteStream = fs.createWriteStream(config.filePaths.uploadDir + "/" + cleanName);
+                 
                  fileStream.pipe(fileUploadWriteStream);
                  
                     fileStream.on('end', function() {
                         
-                    ////console.log('File successfully uploaded: ' + cleanName);
-                    
-                    //TELL SENDER IT'S DONE//
-                    socket.emit('file-transfer-finished', { username: data.username, socketindex: socketIndex, sender: data.sender, name: cleanName });
-                    
-                    //SEND THE FILE URL TO THE OTHER(S)//
-                    socket.broadcast.emit('sent-file', { username: data.username, socketindex: socketIndex, sender: data.sender, name: cleanName });
-                    //io.sockets.emit('sent-file', { username: data.username, socketindex: socketIndex, sender: data.sender, name: cleanName });
-           
-                });
+                        var file = File.build({
+                                              filename: data.name,
+                                              uploadedByUserId: data.userId,
+                                              uploadedByUsername: data.username,
+                                              roomId: data.activeRoomId,
+                                              roomName: data.activeRoomName,
+                                              downloadedBy: ""
+                                              });
+                        
+                          file.add(function(success) {
+                            
+                              ////console.log('File successfully uploaded: ' + cleanName);
+                            var message = Message.build({
+                                            message: "File Transfer: " + data.name,
+                                            userId: data.userId,
+                                            username: data.username,
+                                            userColour: data.userColour,
+                                            socketId: socket.id,
+                                            roomId: data.activeRoomId,
+                                            roomName: data.activeRoomName
+                                            });
+              
+                            message.add(function(success) {
+              
+                                              //TELL SENDER IT'S DONE//
+                                            socket.emit('file-transfer-finished', {
+                                                        username: data.username,
+                                                        userColour: data.userColour,
+                                                        //socketindex: socketIndex,
+                                                        sender: data.sender,
+                                                        name: cleanName
+                                                        });
+                                            
+                                            //SEND THE FILE URL TO THE OTHER(S)//
+                                            socket.broadcast.to(data.activeRoomName).emit('sent-file', {
+                                                username: data.username,
+                                                userColour: data.userColour,
+                                                //socketindex: socketIndex,
+                                                sender: data.sender,
+                                                name: cleanName
+                                                });
+                                                            
+                                                            
+                                    var room = Room.build(); 
+                                    room.incrementMessageCount(data.activeRoomId);
+                                                    
+                                    room.retrieveById(data.activeRoomId, function(rooms) {
+                                          
+                                              if (rooms) {				
+                      
+                                                  io.to(data.activeRoomName).emit('message-count-updated', {
+                                                    roomId: data.activeRoomId,
+                                                    messageCount: rooms.messageCount
+                                                  });
+                                              
+                                              } else {
+                                               
+                                              }
+                                              
+                                        }, function(error) {
+                                             
+                                        });
+                        
+                                    
+                              },
+                              function(err) {
+                                  //console.log("New message NOT written to database");
+                              });
+                            
+            
+             
+                          },
+                          function(err) {
+                              //console.log("New message NOT written to database");
+                          });
+          
+                     
+                    });
         
         
             });
@@ -1066,21 +1203,84 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
             
         //console.log('receiving file stream: ' + data.name);
                 
-            var socketIndex = connectedSocketIds.indexOf(socket.id);          
+            //var socketIndex = connectedSocketIds.indexOf(socket.id);          
             var mimeType = data.type;             
             var senderSocketId = socket.id;
             var activeRoomName = data.activeRoomName;
             var userColour = data.userColour;
-            
-            //socket.broadcast.emit('audio-file-incoming', { audioType: mimeType, socketindex: socketIndex, username: data.username, sender: data.sender, name: data.name});
-            io.to(activeRoomName).emit('audio-file-incoming', {
-                            userColour: userColour,
-                            audioType: mimeType,
-                            socketindex: socketIndex,
-                            username: data.username,
-                            sender: data.sender,
-                            name: data.name
-                            });
+                
+                var stream = Stream.build({
+                                      filename: data.name,
+                                      streamedByUserId: data.userId,
+                                      streamedByUsername: data.username,
+                                      roomId: data.activeRoomId,
+                                      roomName: data.activeRoomName
+                                      });
+                
+                stream.add(function(success) {
+                           
+                           ////console.log('File successfully uploaded: ' + cleanName);
+                        var message = Message.build({
+                                        message: "Audio Stream: " + data.name,
+                                        userId: data.userId,
+                                        username: data.username,
+                                        userColour: data.userColour,
+                                        socketId: socket.id,
+                                        roomId: data.activeRoomId,
+                                        roomName: data.activeRoomName
+                                        });
+          
+                        message.add(function(success) {                 
+                            
+                            var parameters = {
+                                        userColour: userColour,
+                                        audioType: mimeType,
+                                        //socketindex: socketIndex,
+                                        username: data.username,
+                                        sender: data.sender,
+                                        name: data.name
+                                        };
+                                        
+                               if(data.liveStream === "true") {      
+
+                                    socket.broadcast.to(data.activeRoomName).emit('audio-file-incoming', parameters);
+                               
+                               } else {
+                                
+                                    io.to(activeRoomName).emit('audio-file-incoming', parameters);
+                                
+                               }
+                               
+                                    var room = Room.build(); 
+                                    room.incrementMessageCount(data.activeRoomId);
+                                                    
+                                    room.retrieveById(data.activeRoomId, function(rooms) {
+                                          
+                                              if (rooms) {				
+                      
+                                                  io.to(data.activeRoomName).emit('message-count-updated', {
+                                                    roomId: data.activeRoomId,
+                                                    messageCount: rooms.messageCount
+                                                  });
+                                              
+                                              } else {
+                                               
+                                              }
+                                              
+                                        }, function(error) {
+                                             
+                                        });
+                               
+                          },
+                          function(err) {
+                              //console.log("New message NOT written to database");
+                          });
+       
+              },
+              function(err) {
+                  //console.log("New message NOT written to database");
+              });
+
          
                         
             /*var decoder = new lame.Decoder();
@@ -1112,8 +1312,19 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                     if(buffer.length >= 40) {
                         
                         var bufferConcat = Buffer.concat(buffer);
+                        
+                          if(data.liveStream === "true") {      
+
+                                    socket.broadcast.to(data.activeRoomName).emit('audio', { buffer: bufferConcat});
+                               
+                               } else {
+                                
+                                    io.to(activeRoomName).emit('audio', { buffer: bufferConcat});
+                                
+                               }
+                            
                              //socket.broadcast.emit('audio', { buffer: bufferConcat});
-                             io.to(activeRoomName).emit('audio', { buffer: bufferConcat});
+                             
                               
                        buffer = [];
                     }
@@ -1221,9 +1432,9 @@ var colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'li
                     //console.log('DISCONNECT socket room name: ' + socket.roomNames);
                     
                     
-                      deleteFromArray(connectedSocketIds, socket.id);
-                      deleteFromArray(connectedUsernames, username);
-                      deleteFromArray(connectedUserIds, userId);
+                      //deleteFromArray(connectedSocketIds, socket.id);
+                      //deleteFromArray(connectedUsernames, username);
+                      //deleteFromArray(connectedUserIds, userId);
                       
                       //console.log('client disconnected');
                       

@@ -5,7 +5,10 @@ var HomeView = Backbone.View.extend({
         var self = this;
         
         this.options = options;
-		 
+		 		 
+	 $('#stop').trigger('click');
+	 $("#audio_player_container").empty();
+	
 	if (localStorage.getItem("clientsInRoomViewLoaded") == "true") {
 	    var clientsInRoomView = new ClientsInRoomView();
 	    clientsInRoomView.destroy();
@@ -30,25 +33,27 @@ var HomeView = Backbone.View.extend({
 	    var roomsView = new RoomsView();
 	    roomsView.destroy();
 	}
+	
+	/*if (localStorage.getItem("audioPlayerViewLoaded") == "true") {
+	    var audioContext = playMp3Stream(socket);
+	    var audioPlayerView = new AudioPlayerView({autoRender: false, streamName : "", audioContext: audioContext});
+	    audioPlayerView.destroy();
+	}*/
         
-        
-        if(localStorage.getItem("username")) {
-   
-            var connectedClientsView = new ConnectedClientsView();
-            connectedClientsView.afterRender();
+	var connectedClientsView = new ConnectedClientsView();
+	connectedClientsView.afterRender();
        
                 if (localStorage.getItem("roomName")) {
                     
                     var roomsView = new RoomsView();
                     roomsView.afterRender();
                 }
-                
-        } else {
-                
-                new UsernameFormView();
-                
-        }
-
+        
+	if (this.options.showWelcome === true) {
+	    
+		var welcomeModalView = new WelcomeModalView();
+		welcomeModalView.afterRender();
+	}
 	
 	socket.emit("refresh-connection", {username: localStorage.getItem("username"),
 					    userId: localStorage.getItem("userId"),

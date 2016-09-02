@@ -6,7 +6,10 @@ var DataTypes = require("sequelize");
     var User = sequelize.define('users', {
         
         username: DataTypes.STRING,
+        password: DataTypes.STRING,
         socketId: DataTypes.STRING,
+        userGenre: DataTypes.STRING,
+        userLocation: DataTypes.STRING,
         status: DataTypes.STRING,
         userColour: DataTypes.STRING,
         inRooms: DataTypes.STRING
@@ -52,8 +55,18 @@ var DataTypes = require("sequelize");
                      var socketId = this.socketId;
                      var status = this.status;
                     var inRooms = this.inRooms;
-                      
-                     User.update({ socketId: socketId, status: status, inRooms: inRooms }, {id: id} )
+                    var userGenre = this.userGenre;
+                    var userLocation = this.userLocation;
+                    var password =  this.password;  
+                    
+                     User.update({
+                                socketId: socketId,
+                                 userGenre: userGenre,
+                                 userLocation: userLocation,
+                                 password: password,
+                                 status: status,
+                                 inRooms: inRooms
+                                 }, {id: id} )
                             .success(onSuccess).error(onError);
                 },
                 

@@ -19,7 +19,7 @@ opacity: 0.4;
 }
 
 .scrollable {
-    max-height: 300px;
+    max-height: 250px;
     overflow-y:auto;  
 }
 .alert {
@@ -41,7 +41,7 @@ opacity: 0.4;
 @media only screen and (min-width : 0px) and (max-width : 320px) {
     .action-icon { font-size: 5em; }
     #message-text { font-size: 1.3em; }
-    #username { font-size: 0.8em; }
+    .user-signup { font-size: 0.8em; }
 }
 
 
@@ -49,7 +49,7 @@ opacity: 0.4;
 @media only screen and (min-width : 321px) and (max-width : 768px) {
     .action-icon { font-size: 6em; }
     #message-text { font-size: 1.5em; }
-    #username { font-size: 1.5em; }
+    .user-signup { font-size: 1.5em; }
  
 }
 
@@ -58,7 +58,7 @@ opacity: 0.4;
 @media only screen and (min-width : 768px) and (max-width : 1024px) {
     .action-icon { font-size: 10em; }
     #message-text { font-size: 2em; }
-    #username { font-size: 2em; }
+    .user-signup { font-size: 2em; }
 }
 
 
@@ -66,7 +66,7 @@ opacity: 0.4;
 @media only screen  and (min-width : 1024px) and (max-width : 1824px) {
     .action-icon { font-size: 15em; }
     #message-text { font-size: 2.5em; }
-    #username { font-size: 2.5em; }
+    .user-signup { font-size: 2.5em; }
   
 }
 
@@ -143,4 +143,43 @@ opacity: 0.4;
     text-align: center;
 
     font: 32px Arial, sans-serif;
+}
+
+a.deco-none {
+    color:#FFF !important;
+    text-decoration:none;
+
+}
+
+.site-title {
+    border-radius: 10px;
+    font-size: 1.8em;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: #777;
+}
+
+hr {
+  -moz-border-bottom-colors: none;
+  -moz-border-image: none;
+  -moz-border-left-colors: none;
+  -moz-border-right-colors: none;
+  -moz-border-top-colors: none;
+  border-color: #EEEEEE -moz-use-text-color #777;
+  border-style: solid none;
+  border-width: 1px 0;
+  margin: 18px 0;
+}
+
+.home-link {
+    padding: 10px;
+}
+
+.site-title-h1 {
+    padding-top: 20px;
+    padding-bottom: 25px;
+}
+
+.text-wrap {
+   white-space: normal;
 }
