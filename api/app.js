@@ -177,6 +177,7 @@
             user.userGenre = data.userGenre;
             user.socketId = data.socketId;
             user.status = "online";
+            user.password = "";
             
             user.updateById(data.userId, function(success) {
                 
@@ -200,6 +201,7 @@
             user.socketId = data.socketId;
             user.status = "online";
             user.userLocation = data.userLocation;
+            user.password = "";
              
             user.updateById(data.userId, function(success) {
                 

@@ -57,9 +57,13 @@ var DataTypes = require("sequelize");
                     var inRooms = this.inRooms;
                     var userGenre = this.userGenre;
                     var userLocation = this.userLocation;
-                    var password =  this.password;  
+                    var password =  this.password;
                     
-                     User.update({
+                    //var shasum = crypto.createHash('sha1');
+                    //shasum.update(password);
+                    //password = shasum.digest('hex');
+                    
+                    User.update({
                                 socketId: socketId,
                                  userGenre: userGenre,
                                  userLocation: userLocation,

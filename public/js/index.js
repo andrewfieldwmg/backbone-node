@@ -24,7 +24,7 @@ $(document).on('ready', function() {
     
         socket = initSocketIo();
 
-        localStorage.clear();
+        //localStorage.clear();
         
         localStorage.setItem("roomsViewLoaded", "false");
         localStorage.setItem("roomsModalViewLoaded", "false");

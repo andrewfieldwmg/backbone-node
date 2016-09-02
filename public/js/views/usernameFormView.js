@@ -8,6 +8,11 @@ var UsernameFormView = Backbone.View.extend({
 
         console.log('new username form view');
         this.render();
+        
+        $('#submit-username').prop('disabled', true);
+        $('#submit-user-genre').prop('disabled', true);
+        $('#submit-user-location').prop('disabled', true);
+        $('#submit-user-password').prop('disabled', true);
     },
     
     render: function(){
@@ -17,12 +22,64 @@ var UsernameFormView = Backbone.View.extend({
     },
 
     events: {
-   
+        "keyup #username" : "usernameChanging",
+        "keyup #user-genre" : "userGenreChanging",
+        "keyup #user-location" : "userLocationChanging",
+        "keyup #user-password" : "userPasswordChanging",
         "click #submit-username": "submitUsername",
         "click #submit-user-genre": "submitUserGenre",
         "click #submit-user-location": "submitUserLocation",
         "click #submit-user-password": "submitUserPassword"
      
+    },
+    
+    usernameChanging: function(e) {
+      
+
+        var usernameLength = $(e.currentTarget).val().length;
+        
+        if (usernameLength > 2) {
+             $('#submit-username').prop('disabled', false);
+        } else {
+             $('#submit-username').prop('disabled', true);
+        }
+        
+    },
+    
+    userGenreChanging: function(e) {
+      
+        var userGenreLength = $(e.currentTarget).val().length;
+        
+        if (userGenreLength > 2) {
+             $('#submit-user-genre').prop('disabled', false);
+        } else {
+             $('#submit-user-genre').prop('disabled', true);
+        }
+        
+    },
+    
+    userLocationChanging: function(e) {
+      
+        var userLocationLength = $(e.currentTarget).val().length;
+        
+        if (userLocationLength > 2) {
+             $('#submit-user-location').prop('disabled', false);
+        } else {
+             $('#submit-user-location').prop('disabled', true);
+        }
+        
+    },
+    
+    userPasswordChanging: function(e) {
+      
+        var userPasswordLength = $(e.currentTarget).val().length;
+        
+        if (userPasswordLength > 2) {
+             $('#submit-user-password').prop('disabled', false);
+        } else {
+             $('#submit-user-password').prop('disabled', true);
+        }
+        
     },
     
     submitUsername: function(e) {
