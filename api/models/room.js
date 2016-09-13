@@ -6,9 +6,11 @@ var DataTypes = require("sequelize");
     var Room = sequelize.define('rooms', {
         
         name: DataTypes.STRING,
+        roomGenre: DataTypes.STRING,
         createdByUserId: DataTypes.STRING,
         usersInRoom: DataTypes.STRING,
-        messageCount: DataTypes.INTEGER
+        messageCount: DataTypes.INTEGER,
+        userModelsInRoom: DataTypes.TEXT
       }, {
         
         instanceMethods: {
@@ -31,14 +33,19 @@ var DataTypes = require("sequelize");
                 add: function(onSuccess, onError) {
                     
                     var name = this.name;
+                    var roomGenre = this.roomGenre;
                     var createdByUserId = this.createdByUserId;
                     var usersInRoom = this.usersInRoom;
                     var messageCount = this.messageCount;
+                    var userModelsInRoom = this.userModelsInRoom;
                     
-                    Room.build({ name: name,
-                               createdByUserId: createdByUserId,
-                               usersInRoom: usersInRoom,
-                               messageCount: messageCount
+                    Room.build({
+                                name: name,
+                                roomGenre: roomGenre,
+                                createdByUserId: createdByUserId,
+                                usersInRoom: usersInRoom,
+                                messageCount: messageCount,
+                                userModelsInRoom: userModelsInRoom
                                })
                             .save().success(onSuccess).error(onError);
                 },
@@ -47,9 +54,16 @@ var DataTypes = require("sequelize");
                       
                     var id = user_id;
                     var name = this.name;
+                    var roomGenre = this.roomGenre;
                     var usersInRoom = this.usersInRoom;
+                    var userModelsInRoom = this.userModelsInRoom;
 
-                     Room.update({ name: name, usersInRoom: usersInRoom}, {id: id} )
+                     Room.update({
+                        name: name,
+                        roomGenre: roomGenre,
+                        usersInRoom: usersInRoom,
+                        userModelsInRoom: userModelsInRoom
+                        }, {id: id} )
                             .success(onSuccess).error(onError);
                 },
                 

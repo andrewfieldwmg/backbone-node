@@ -26,12 +26,17 @@ $(document).on('ready', function() {
 
         //localStorage.clear();
         
-        localStorage.setItem("roomsViewLoaded", "false");
+        localStorage.setItem("availableRoomsViewLoaded", "false");
+        localStorage.setItem("userRoomsViewLoaded", "false");
+        
         localStorage.setItem("roomsModalViewLoaded", "false");
-        localStorage.setItem("acceptInvitationViewLoaded", "false");         
+        localStorage.setItem("acceptInvitationViewLoaded", "false");
+        
         localStorage.setItem("messageFormViewLoaded", "false");
         localStorage.setItem("messagesViewLoaded", "false");
+        
         localStorage.setItem("appControlsViewLoaded", "false");
+        
         localStorage.setItem("clientsInRoomViewLoaded", "false");
         localStorage.setItem("streamState", "stopped");
              
@@ -44,6 +49,7 @@ $(document).on('ready', function() {
         selector: '[data-toggle=tooltip]',
         'placement' : 'bottom'
     });
+    
     
 
 });
@@ -74,6 +80,14 @@ function initSocketIo() {
             localStorage.setItem('socketId', socketId);
             localStorage.setItem('userId', userId);
             localStorage.setItem('userColour', userColour);
+ 
+         });
+         
+                  
+         socket.on('socket-model', function(data) {
+            
+             var userModel = data.userModel;
+            localStorage.setItem('userModel', userModel);
             
          });
          

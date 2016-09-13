@@ -11,43 +11,75 @@
         <link href="/css/audioPlayerStyles.css" rel="stylesheet">
         <link href="/css/appStyles.css" rel="stylesheet">
         <link href="/css/bootstrap-slider.css" rel="stylesheet">
+        <link href="/css/responsive.dataTables.min.css" rel="stylesheet">
        <link href="https://fonts.googleapis.com/css?family=Trocchi" rel="stylesheet">
     </head>
 
-    <body>
-     
+    <body>      
+        
+    <!-- CONTAINERS BELOW THIS POINT-->
+    
     <div class="container-fluid">
     
-    <div class="row">
-        
-        <div class="col-lg-12">
-
-        
-        <h1 class="site-title-h1">
-            <span class="pull-left site-title">
-                <a title="Go Home" class="deco-none home-link" href="/">
-                    listentome.io
-                <i class="fa fa-rocket"></i>
-                </a>
-            </span>
-        </h1>
-                            
-        <div class="alert alert-danger" id="socket_not_loaded" role="alert">
-            <h2 class="text-danger"><strong>Error!</strong> WebSocket server not running.</h2>
-        </div>
-              
-        <div class="alert alert-danger" id="wrong_browser" role="alert">
-            <h2 class="text-danger"><strong>Error!</strong> This app only works with the latest versions of Google Chrome.</h2>
-        </div>
-     
-        <div class="alert alert-danger" id="no_audiocontext" role="alert">
-            <h2 class="text-danger"><strong>Error!</strong> Your browser doesn't support the Web Audio API.</h2>
-        </div>
-        
-        <div id="audio_player_container"></div>
-               
-        <script type="text/template" id="audio_player_template">
+        <div class="row">
             
+            <div class="col-lg-12">
+      
+                <h1 class="site-title-h1">
+                    <span class="pull-left site-title">
+                        <a title="Go Home" class="deco-none home-link" href="/">
+                            listentome.io
+                        <i class="fa fa-rocket"></i>
+                        </a>
+                    </span>
+                </h1>
+                                
+                <div class="alert alert-danger" id="socket_not_loaded" role="alert">
+                    <h2 class="text-danger"><strong>Error!</strong> WebSocket server not running.</h2>
+                </div>
+                      
+                <div class="alert alert-danger" id="wrong_browser" role="alert">
+                    <h2 class="text-danger"><strong>Error!</strong> This app only works with the latest versions of Google Chrome.</h2>
+                </div>
+             
+                <div class="alert alert-danger" id="no_audiocontext" role="alert">
+                    <h2 class="text-danger"><strong>Error!</strong> Your browser doesn't support the Web Audio API.</h2>
+                </div>
+                
+                <div id="audio_player_container"></div>
+                <div id="username_form_container"></div>       
+                <div id="clients_in_room_container"></div>      
+                <div id="message_form_container"></div>
+                <div id="app_controls_container"></div>
+            
+                <div class="col-sm-8 content">      
+                   
+                    <div id="messages_container"></div>
+                    <div id="available_rooms_container"></div> 
+                </div>
+                
+                <div class="col-sm-4 sidebar">
+                     <div id="connected_clients_container"></div>
+                        <div id="contacts_container"></div>
+                        <div id="user_rooms_container"></div>
+                </div>
+                
+                <div id="welcome_modal_container"></div>
+                <div id="rooms_modal_container"></div>
+                <div id="invitation_modal_container"></div>
+                
+                <iframe name="download-iframe" id="download-iframe" width="1" height="1" frameborder="0" src=""></iframe>
+
+            </div>
+            
+        </div>
+        
+    </div>
+        
+        
+    <!-- TEMPLATES BELOW THIS POINT-->
+        
+        <script type="text/template" id="audio_player_template"> 
             <p>
             <div class="audio-player" style="border-radius: 5px">
                 
@@ -94,10 +126,8 @@
                 </div>
             </p>   
         </script>
-   
-         
-        <div id="username_form_container"></div>
-        
+            
+            
         <script type="text/template" id="username_form_template">
             <p>   
                 <form id="username-form" class="form" action="">                   
@@ -134,31 +164,30 @@
                        <button class="btn btn-primary" id="submit-user-password" type="submit">Go!</button>
                      </span>
                    </div>
-            </form>
-                         
-              </p>
-    
+            </form>               
+            </p>
         </script>
         
-        
-        <div id="clients_in_room_container"></div>
-     
+   
         <script type="text/template" id="clients_in_room_template">  
             <p>
                 <h1><em>Room</em>: <strong><span id="room-name"><%= roomName %></span></strong></h1>
             </p>
-            
             <p>
                 <!--<h2>Who's in this room?</h2>-->
                 <ul class="list-group" id="clients-in-room"></ul>
             </p>
         </script>
                                 
-                         
-        <div id="message_form_container"></div>
+                  
+        <script type="text/template" id="clients_in_room_list_item_template">
+            <li class="list-group-item <%= cssClass %>" data-user-id="<%= userId %>"><strong><%= time %></strong> <%= contentFromUsername %> <strong><%= contentName %></strong>
+            <i class="fa fa-plus pull-right <%= actionIconsClass %>" data-toggle="tooltip" title="Connect With <%= userName %>!" aria-hidden="true" data-user-name="<%= userName %>" data-user-id="<%= userId %>"></i>
+            </li>
+       </script>
+                        
         
-        <script type="text/template" id="message_form_template">
-                          
+        <script type="text/template" id="message_form_template">                
             <p>        
                 <form class="form" action="">                   
                    <div class="input-group input-group-lg">
@@ -170,61 +199,177 @@
                 </form>
             </p> 
         </script>
-            
-            
-        <div id="app_controls_container"></div>
-        
-        <script type="text/template" id="app_controls_template">
-            <p>
-               <div class="btn-group-horizontal button-wrapper">
-                
-                    <div class="col-xs-15">            
-                        <i class="fa fa-microphone action-icon" data-toggle="tooltip" title="Record Live Audio" id="start-recording" title="Record Live Audio" aria-hidden="true"></i>
-                        <i class="fa fa-stop-circle-o action-icon" data-toggle="tooltip" title="Stop Recording" id="stop-recording" type="submit" style="display: none"></i>
-                    </div>
-                    
-                    <div class="col-xs-15">
-                        <input id="audio-file" type="file" accept="audio/mp3, audio/wav" style="display: none"/>
-                        <i class="fa fa-file-audio-o action-icon" data-toggle="tooltip" title="Stream MP3 or WAV" id="start-file-stream" title="Stream MP3 or WAV File" aria-hidden="true"></i>  
-                    </div>
-                    
-                    <div class="col-xs-15">   
-                        <i class="fa fa-headphones action-icon" data-toggle="tooltip" title="Listen" id="listen" title="Listen" aria-hidden="true"></i>
-                    </div>
-                    
-                    <div class="col-xs-15">
-                        <input id="file" type="file" style="display: none"/>
-                        <i class="fa fa-upload action-icon" data-toggle="tooltip" title="File Transfer" id="send-file" title="File Transfer" aria-hidden="true"></i>
-                     </div>           
-                    
-                    <div class="col-xs-15">
-                        <i class="fa fa-ban action-icon" data-toggle="tooltip" title="Stop All Audio" id="stop" title="Stop All Audio" aria-hidden="true"></i>
-                    </div>  
-                          
-               </div>
-           </p>
-        </script>
-        
-        
-        <div class="col-xs-12">    
-            
-        <div id="connected_clients_container"></div>
+                       
+            <script type="text/template" id="app_controls_template">
+                <p>
+                   <div class="btn-group-horizontal button-wrapper">             
+                        <div class="col-xs-15">            
+                            <i class="fa fa-microphone action-icon" data-toggle="tooltip" title="Record Live Audio" id="start-recording" title="Record Live Audio" aria-hidden="true"></i>
+                            <i class="fa fa-stop-circle-o action-icon" data-toggle="tooltip" title="Stop Recording" id="stop-recording" type="submit" style="display: none"></i>
+                        </div>
+                        
+                        <div class="col-xs-15">
+                            <input id="audio-file" type="file" accept="audio/mp3, audio/wav" style="display: none"/>
+                            <i class="fa fa-file-audio-o action-icon" data-toggle="tooltip" title="Stream MP3 or WAV" id="start-file-stream" title="Stream MP3 or WAV File" aria-hidden="true"></i>  
+                        </div>
+                        
+                        <div class="col-xs-15">   
+                            <i class="fa fa-headphones action-icon" data-toggle="tooltip" title="Listen" id="listen" title="Listen" aria-hidden="true"></i>
+                        </div>
+                        
+                        <div class="col-xs-15">
+                            <input id="file" type="file" style="display: none"/>
+                            <i class="fa fa-upload action-icon" data-toggle="tooltip" title="File Transfer" id="send-file" title="File Transfer" aria-hidden="true"></i>
+                         </div>           
+                        
+                        <div class="col-xs-15">
+                            <i class="fa fa-ban action-icon" data-toggle="tooltip" title="Stop All Audio" id="stop" title="Stop All Audio" aria-hidden="true"></i>
+                        </div>             
+                   </div>
+               </p>
+            </script>
+
         
             <script type="text/template" id="connected_clients_template">
                  <p>
-                    <h2>Who's Online?</h2>
-                    <ul class="list-group" id="connected-clients"></ul>
-                </p>
+                    <h2><strong>Who's Online?</strong></h2>
+                    <table id="table_id" class="connected-clients-table table table-striped table-bordered display nowrap" width="100%">
+                        <thead class="connected-clients-table-head">
+                            <tr>
+                            <th>Who</th>
+                            <th>Location</th>
+                            <th>Genre</th>
+                            <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="connected-clients"></tbody>
+                    </table>
+                 </p>
             </script>
 
-            <script type="text/template" id="user_list_item_template">
-                <li class="list-group-item <%= cssClass %>" data-user-id="<%= userId %>"><strong><%= time %></strong> <%= contentFromUsername %> <strong><%= contentName %></strong>
-                <i class="fa fa-plus pull-right <%= actionIconsClass %>" data-toggle="tooltip" title="Connect With <%= userName %>!" aria-hidden="true" data-user-name="<%= userName %>" data-user-id="<%= userId %>"></i>
-                </li>
+
+            <script type="text/template" id="user_table_item_template">         
+                <tr>
+                    <td class="<%= cssClass %>" data-user-id="<%= userId %>"><%= connectedUserMessage %></td>
+                    <td class="<%= cssClass %>" data-user-id="<%= userId %>"><%= userLocation %></td>
+                    <td class="<%= cssClass %>" data-user-id="<%= userId %>"><%= userGenre %></td>
+                    <td class="<%= cssClass %>" data-user-id="<%= userId %>">
+                    <i class="fa fa-plus <%= actionIconsClass %>" data-toggle="tooltip" title="Connect With <%= userName %>!" aria-hidden="true" data-user-name="<%= userName %>" data-user-id="<%= userId %>"></i>
+                    </td>
+                </tr>
+           </script>
+               
+            
+            <script type="text/template" id="contacts_template">
+                 <p>
+                    <h2><strong>Your Contacts</strong></h2>
+                    <table class="contacts-table table table-striped table-bordered display nowrap" width="100%">
+                        <thead class="contacts-table-head">
+                            <tr>
+                                <!--<th>Time</th>-->
+                                <th>Who</th>
+                                <th>Genre</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contacts">
+                            <tr>
+                                <td colspan="3" class="" data-user-id="">You have no contacts!</td>
+                                <td style="display: none;"></td>
+                                <td style="display: none;"></td>
+                            </tr>       
+                        </tbody>
+                    </table>   
+                </p>
+            </script>
+       
+       
+            <script type="text/template" id="contact_table_item_template">         
+                <tr>
+                    <!--<<td class="<%= cssClass %>" data-user-id="<%= userId %>"><%= time %></td>-->
+                    <td class="" data-user-id="">userName</td>
+                    <td class="" data-user-id="">userLocation</td>
+                    <td class="" data-user-id="">userGenre</td>
+                    <td class="" data-user-id="">
+                    <i class="fa fa-plus <%= actionIconsClass %>" data-toggle="tooltip" title="Connect With <%= userName %>!" aria-hidden="true" data-user-name="<%= userName %>" data-user-id="<%= userId %>"></i>
+                    </td>
+                </tr>
            </script>
             
+                                     
+            <script type="text/template" id="messages_template">
+                <p>
+                    <h2><strong>Feedback</strong></h2>
+                </p>               
+                <p>
+                    <ul class="list-group scrollable" id="message-results">
+                        <li class="list-group-item small feedback-placeholder"><em>Feedback will appear here!</em></li>
+                    </ul>
+                </p>
+            </script>
             
-            <div id="welcome_modal_container"></div>
+            
+            <script type="text/template" id="available_rooms_template">
+                 <p>
+                    <h2 id="available-rooms-list-header"><strong>Available Rooms</strong>
+                    </h2>
+                      <table class="available-rooms-table table table-striped table-bordered display nowrap" width="100%">
+                        <thead class="available-rooms-table-head">
+                            <tr>
+                                <!--<th>Time</th>-->
+                                <th>Name</th>
+                                <th>Genre</th>
+                                <th>Members</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="available-rooms">
+      
+                        </tbody>
+                    </table>  
+                </p> 
+            </script>
+            
+            
+            <script type="text/template" id="room_table_item_template">         
+                <tr data-room-id="<%= roomId%>">
+                    <td class="" data-user-id=""><%= roomName %> <span class="badge message-counter" data-toggle="tooltip" title="<%= messageCount %> Messages" data-room-id="<%= roomId%>"><%= messageCount %></span></td>
+                    <td class="" data-user-id=""><%= roomGenre %></td>
+                    <td class="" data-user-id=""><%= numberRoomMembers %></td>
+                    <td class="" data-user-id="">
+                        <i class="fa fa-rocket <%= linkClass %>" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>" data-toggle="tooltip" title="Enter Room" aria-hidden="true"></i>
+                    </td>        
+                </tr>
+           </script>
+            
+                           
+            <script type="text/template" id="room_list_item_template">
+                <li class="list-group-item <%= cssClass %>" data-room-id="<%= roomId%>">
+                    <div>
+                    <span class="<%= linkClass %>" data-toggle="tooltip" title="Enter Room" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>"><strong><%= roomName %></strong></span>
+                    <span class="badge message-counter" data-toggle="tooltip" title="<%= messageCount %> Messages" data-room-id="<%= roomId%>"><%= messageCount %></span>
+                    <i class="fa fa-rocket pull-right <%= linkClass %>" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>" data-toggle="tooltip" title="Enter Room" aria-hidden="true"></i>
+                    </div>
+               </li>
+            </script>
+            
+            
+            <script type="text/template" id="user_rooms_template">
+                 <p>
+                    <h2 id="rooms-list-header"><strong>Your Rooms</strong>
+                        <i class="fa fa-plus action-icon small" data-toggle="tooltip" data-placement="right" title="Create New Room" id="open-create-room-form" aria-hidden="true"></i>
+                    </h2>
+                    <ul class="list-group" id="user-rooms"></ul>
+                </p> 
+            </script>
+       
+                  
+           <script type="text/template" id="list_item_template">
+                <li class="list-group-item <%= cssClass %>" data-id="<%= messageId %>" style="background-color: <%= backgroundColour %>"><strong><%= time %></strong> <%= contentFromUsername %> <strong><%= contentName %></strong>
+                <i class="fa fa-refresh fa-spin <%= loaderClass %>" title="Loading..." aria-hidden="true" data-id=""></i>
+                </li>
+           </script>
+
             
             <script type="text/template" id="welcome_modal_template">
                 <div class="modal fade welcome-modal">
@@ -250,9 +395,7 @@
                   </div><!-- /.modal -->
             </script>
             
-            
-            <div id="rooms_modal_container"></div>
-            
+               
             <script type="text/template" id="rooms_modal_template">
                 <div class="modal fade rooms-modal">
                     <div class="modal-dialog" role="document">
@@ -277,7 +420,8 @@
                         
                         <div class="modal-footer">
                           <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
-                          <button type="submit" class="btn btn-primary" id="create-room-from-users" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>">Send Request!</button>
+                          <button type="submit" class="btn btn-primary <%= createRoomFromUserClass %>" id="create-room-from-users" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>">Send Request!</button>
+                          <button type="submit" class="btn btn-primary <%= createRoomClass %>" id="create-room">Create Room!</button>
                           </form>
             
                         </div>
@@ -286,9 +430,7 @@
                   </div><!-- /.modal -->
             </script>
             
-            
-            <div id="invitation_modal_container"></div>
-            
+       
             <script type="text/template" id="invitation_modal_template">
                 <div class="modal fade invitation-modal">
                     <div class="modal-dialog" role="document">
@@ -299,10 +441,8 @@
                           </button>
                           <h1 class="modal-title">Invitation to <strong><%= invitationTo %></strong></h1>
                         </div>
-                        <div class="modal-body">
-                    
-                            <h1><strong><%=invitedByUsername %></strong> would like to connect!<br>Do you accept?</h1>
-                        
+                        <div class="modal-body">             
+                            <h1><strong><%=invitedByUsername %></strong> would like to connect!<br>Do you accept?</h1> 
                         </div>
                         
                         <div class="modal-footer">
@@ -315,76 +455,6 @@
                   </div><!-- /.modal -->
             </script>
             
-                              
-            <div id="messages_container"></div>
-             
-            <script type="text/template" id="messages_template">
-  
-                <p>
-                    <h2>Feedback</h2>
-                </p>
-                      
-                <p>
-                    <ul class="list-group scrollable" id="message-results">
-                        <li class="list-group-item small feedback-placeholder"><em>Feedback will appear here!</em></li>
-                    </ul>
-                </p>
-            </script>
-            
-            <div id="rooms_container"></div>
-        
-            <script type="text/template" id="rooms_template">
-                 <p>
-                    <h2 id="rooms-list-header">Your Rooms</h2>
-                    <ul class="list-group" id="available-rooms"></ul>
-                    <!--<i class="fa fa-plus action-icon" data-toggle="tooltip" title="Create Room" id="open-create-room-form" aria-hidden="true"></i>-->
-                </p> 
-            </script>
-       
-            
-            <div id="rooms_form_container"></div>
-            
-            <script type="text/template" id="rooms_form_template">
-                 <p>
-                    <form id="create-room-form" class="form" action="">                   
-                       <div class="input-group input-group-lg">
-                         <input type="text" class="form-control" id="new-room-name" placeholder="What do you want to call your room?">
-                         <span class="input-group-btn">
-                           <button class="btn btn-primary" id="create-room" type="submit">Go!</button>
-                         </span>
-                       </div>
-                   </form>
-                    </p>
-            </script>
-          
-                   
-           <script type="text/template" id="list_item_template">
-                <li class="list-group-item <%= cssClass %>" data-id="<%= messageId %>" style="background-color: <%= backgroundColour %>"><strong><%= time %></strong> <%= contentFromUsername %> <strong><%= contentName %></strong>
-                <i class="fa fa-refresh fa-spin <%= loaderClass %>" title="Loading..." aria-hidden="true" data-id=""></i>
-                </li>
-           </script>
-           
-              
-            <script type="text/template" id="room_list_item_template">
-                <li class="list-group-item <%= cssClass %>" data-room-id="<%= roomId%>">
-                    <div>
-                    <span class="<%= linkClass %>" data-toggle="tooltip" title="Enter Room" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>"><strong><%= roomName %></strong></span>
-                    <span class="badge message-counter" data-toggle="tooltip" title="<%= messageCount %> Messages" data-room-id="<%= roomId%>"><%= messageCount %></span>
-                    <i class="fa fa-rocket pull-right <%= linkClass %>" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>" data-toggle="tooltip" title="Enter Room" aria-hidden="true"></i>
-                    </div>
-               </li>
-            </script>
-           
-        </div>
-
-
-            <iframe name="download-iframe" id="download-iframe" width="1" height="1" frameborder="0" src=""></iframe>
-
-
-            </div>
-        </div>
-    </div>
-        
 
         <!-- CORE DEPENDENCIES -->
         <script src="/vendor/jquery-2.0.3.min.js"></script>
@@ -396,6 +466,9 @@
         <script src="/vendor/bootstrap.js"></script>
         <script src="/vendor/bootstrap-slider.js"></script>
         
+        <!-- DATATABLES -->
+        <script src="/vendor/jquery.dataTables.min.js"></script>
+        <script src="/vendor/dataTables.responsive.min.js"></script>
         <!--<script src="/vendor/jquery-ui.js"></script>-->
         
         <!-- SOCKET.IO -->
@@ -412,25 +485,42 @@
         <script src="/js/index.js"></script>
         
         <!-- BACKBONE VIEWS -->
-        <script src="/js/views/usernameFormView.js"></script>
-        <script src="/js/views/audioPlayerView.js"></script>
-        <script src="/js/views/userListItemView.js"></script>
-        <script src="/js/views/connectedClientsView.js"></script>
-        <script src="/js/views/clientsInRoomView.js"></script>
-        <script src="/js/views/roomsFormView.js"></script>
-        <script src="/js/views/roomsView.js"></script>
-        <script src="/js/views/roomListItemView.js"></script>
-        <script src="/js/views/welcomeModalView.js"></script>
-        <script src="/js/views/roomsModalView.js"></script>
-        <script src="/js/views/acceptInvitationModalView.js"></script>
-        <script src="/js/views/messageFormView.js"></script>
-        <script src="/js/views/appControlsView.js"></script>
-        <script src="/js/views/listItemView.js"></script>
-        <script src="/js/views/messagesView.js"></script>
+                    
+            <!-- Helpers and Misc -->    
+            <script src="/js/views/misc/listItemView.js"></script>
+            <script src="/js/views/app/audioPlayerView.js"></script>
+        
+            <!-- Users -->
+            <script src="/js/views/users/usernameFormView.js"></script>
+            <script src="/js/views/users/userListItemView.js"></script>
+            <script src="/js/views/users/connectedClientsView.js"></script>
+            <script src="/js/views/users/contactsView.js"></script>
+            <script src="/js/views/users/clientsInRoomView.js"></script>
+            <script src="/js/views/users/roomUserListItemView.js"></script>
+                        
+            <!-- Rooms -->
+            <script src="/js/views/rooms/availableRoomsView.js"></script>
+            <script src="/js/views/rooms/userRoomsView.js"></script>
+            <script src="/js/views/rooms/roomListItemView.js"></script>
+            <script src="/js/views/rooms/roomTableItemView.js"></script>
+           <!--<script src="/js/views/roomsFormView.js"></script>-->
+            
+            <!-- Messages -->
+            <script src="/js/views/messages/messageFormView.js"></script>
+            <script src="/js/views/messages/messagesView.js"></script>
+             
+            <!--App Controls-->
+            <script src="/js/views/app/signupView.js"></script>
+            <script src="/js/views/app/appControlsView.js"></script>
+    
+            <!-- Modals -->
+            <script src="/js/views/modals/welcomeModalView.js"></script>
+            <script src="/js/views/modals/roomsModalView.js"></script>
+            <script src="/js/views/modals/acceptInvitationModalView.js"></script>
         
         <!--CONTAINER VIEWS FOR ROUTES-->
-        <script src="/js/views/signupView.js"></script>
         <script src="/js/views/homeView.js"></script>
+        <script src="/js/views/newHomeView.js"></script>
         <script src="/js/views/insideRoomView.js"></script>
         
          <!--ROUTER-->

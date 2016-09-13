@@ -33,13 +33,17 @@ var InsideRoomView = Backbone.View.extend({
 
     	var connectedClientsView = new ConnectedClientsView();
         connectedClientsView.destroy();
-        		
+	
+        var availableRoomsView = new AvailableRoomsView();
+	availableRoomsView.destroy();
+	
+	
 	if (localStorage.getItem("messageFormViewLoaded") == "false") {
             var messageFormView = new MessageFormView();
             messageFormView.afterRender();
         }    
         	
-			
+					
         $('#message-results').empty();
 	
         if (localStorage.getItem("messagesViewLoaded") == "false") {

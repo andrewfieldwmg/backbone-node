@@ -47,17 +47,37 @@ var DataTypes = require("sequelize");
                                })
                             .save().success(onSuccess).error(onError);
                 },
-               
+                
                 updateById: function(user_id, onSuccess, onError) {
                       
                     var id = user_id;
                     var username = this.username;
-                     var socketId = this.socketId;
-                     var status = this.status;
+                    var socketId = this.socketId;
+                    var status = this.status;
+                    var inRooms = this.inRooms;
+
+                    //var shasum = crypto.createHash('sha1');
+                    //shasum.update(password);
+                    //password = shasum.digest('hex');
+                    
+                    User.update({
+                                socketId: socketId,
+                                 status: status,
+                                 inRooms: inRooms
+                                 }, {id: id} )
+                            .success(onSuccess).error(onError);
+                },
+                
+                updateByIdFull: function(user_id, onSuccess, onError) {
+                      
+                    var id = user_id;
+                    var username = this.username;
+                    var socketId = this.socketId;
+                    var status = this.status;
                     var inRooms = this.inRooms;
                     var userGenre = this.userGenre;
                     var userLocation = this.userLocation;
-                    var password =  this.password;
+                    var password = this.password;
                     
                     //var shasum = crypto.createHash('sha1');
                     //shasum.update(password);

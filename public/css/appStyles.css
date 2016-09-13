@@ -80,8 +80,7 @@ opacity: 0.4;
 
 .action-icon:hover {
     transform: scale(1.1);
-    opacity: 0.8;
-    
+    opacity: 0.8; 
 }
 
 .col-xs-15,
@@ -182,4 +181,42 @@ hr {
 
 .text-wrap {
    white-space: normal;
+}
+
+table  {
+    width: 100%;
+}
+
+.dataTables_length {
+    float: left;
+    padding-bottom: 10px;
+}
+
+.dataTables_filter {
+    float: right;
+    padding-bottom: 10px;
+}
+
+.dataTables_paginate {
+    padding-top:10px;
+}
+
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+
+.tooltip {
+    position: fixed;
+}
+
+.table td {
+    font-size: 1.8em;
+   text-align: center;   
+}
+
+.table th {
+    font-size: 1.3em;
+   text-align: center;   
 }

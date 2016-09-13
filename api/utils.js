@@ -4,7 +4,7 @@ utils.flatten = arr => arr.reduce(
      (a, b) => a.concat(Array.isArray(b) ? utils.flatten(b) : b), []
     );
 
-utils.colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenroyellow', 'lightgray', 'lightgreen', 
+utils.colors = ['lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgreen', 
     'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategrey', 'lightsteelblue', 'lightyellow', 
     'aquamarine'];
 
