@@ -71,7 +71,7 @@ var UserRoomsView = Backbone.View.extend({
 	var requestedRoomName = $(e.currentTarget).data('room-name');
 
 	var router = new Router();
-	router.navigate("rooms/" + requestedRoomId, {trigger: "true"}); 
+	router.navigate("channels/" + requestedRoomId, {trigger: "true"}); 
 	
       
     },
@@ -88,7 +88,7 @@ var UserRoomsView = Backbone.View.extend({
 	    console.log('open room modal');
         
 	    var parameters = {
-			    modalHeaderContent: "Create a <strong>New Room</strong>",
+			    modalHeaderContent: "Create a <strong>New Channel</strong>",
 			    targetUsername: "",
 			    targetUserId: "",
                             createRoomFromUserClass: "hidden",
@@ -109,21 +109,16 @@ var UserRoomsView = Backbone.View.extend({
     availableRoomsUpdated: function(data) {
 
             //console.log(data);
-            
-            $('#user-rooms').html('');
-            
+     
             var availableRooms = JSON.parse(data.availableRooms);
                   
                 if (availableRooms.length === 0) {
                     
-                    var roomMessage = "<strong>No rooms</strong> available";
-                        var parameters = {cssClass: "connected-client-list", time: time, contentFromUsername: roomMessage, contentName: "", loaderClass: "hidden" }; 
-                        
-                        var roomListItemView = new RoomListItemView(parameters);
-                        $('#user-rooms').append(roomListItemView.render());
   
                 } else {
-            
+                   
+		    $('#user-rooms').html('');
+		
                     for(i = 0; i < availableRooms.length; i++) {
                     
                         var usersInRoom = JSON.parse(availableRooms[i].usersInRoom);
@@ -165,7 +160,7 @@ var UserRoomsView = Backbone.View.extend({
                            time: "",
                            linkClass: "disabled",
                            roomId: availableRooms[i].id,
-                           roomName: availableRooms[i].name + " - <span class='small'><em>current room</em></span>",
+                           roomName: availableRooms[i].name + " - <span class='small'><em>current channel</em></span>",
                            messageCount: availableRooms[i].messageCount
                            };
                                             

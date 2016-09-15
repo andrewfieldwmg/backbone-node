@@ -46,28 +46,30 @@
                     <h2 class="text-danger"><strong>Error!</strong> Your browser doesn't support the Web Audio API.</h2>
                 </div>
                 
-                <div id="audio_player_container"></div>
-                <div id="username_form_container"></div>       
+                <div id="audio_player_container"></div>       
                 <div id="clients_in_room_container"></div>      
                 <div id="message_form_container"></div>
                 <div id="app_controls_container"></div>
             
-                <div class="col-sm-8 content">      
-                   
+                <div class="col-sm-8 content">
+                    <div id="username_form_container"></div>
                     <div id="messages_container"></div>
-                    <div id="available_rooms_container"></div> 
+                    <div id="available_rooms_container"></div>
+                    <div id="available_streams_container"></div>
+                    <div id="featured_streams_container"></div> 
                 </div>
                 
                 <div class="col-sm-4 sidebar">
-                     <div id="connected_clients_container"></div>
-                        <div id="contacts_container"></div>
-                        <div id="user_rooms_container"></div>
+                    <div id="connected_clients_container"></div>
+                    <div id="contacts_container"></div>
+                    <div id="user_rooms_container"></div>
                 </div>
                 
                 <div id="welcome_modal_container"></div>
                 <div id="rooms_modal_container"></div>
                 <div id="invitation_modal_container"></div>
-                
+                <div id="start_stream_modal_container"></div>
+                 
                 <iframe name="download-iframe" id="download-iframe" width="1" height="1" frameborder="0" src=""></iframe>
 
             </div>
@@ -130,25 +132,25 @@
             
         <script type="text/template" id="username_form_template">
             <p>   
-                <form id="username-form" class="form" action="">                   
+                <form id="username-form" class="form signup-form" action="">                   
                    <div class="input-group input-group-lg">
-                     <input type="text" class="form-control user-signup" id="username" placeholder="First things first - what's your name?">
+                     <input type="text" class="form-control user-signup" id="username" placeholder="First things first - choose a username!">
                      <span class="input-group-btn">
                        <button class="btn btn-primary" id="submit-username" type="submit">Go!</button>
                      </span>
                    </div>
                </form>
                 
-            <form id="user-genre-form" class="form" action="" style="display: none">                   
+            <form id="user-genre-form" class="form signup-form" action="" style="display: none">                   
                    <div class="input-group input-group-lg">
-                     <input type="text" class="form-control user-signup" id="user-genre" placeholder="What style of music are you into?">
+                     <input type="text" class="form-control user-signup" id="user-genre" placeholder="What's your primary genre?">
                      <span class="input-group-btn">
                        <button class="btn btn-primary" id="submit-user-genre" type="submit">Go!</button>
                      </span>
                    </div>
             </form>
             
-            <form id="user-location-form" class="form" action="" style="display: none">                   
+            <form id="user-location-form" class="form signup-form" action="" style="display: none">                   
                    <div class="input-group input-group-lg">
                      <input type="text" class="form-control user-signup" id="user-location" placeholder="Where are you?">
                      <span class="input-group-btn">
@@ -157,7 +159,25 @@
                    </div>
             </form>
               
-            <form id="user-password-form" class="form" action="" style="display: none">                   
+            <form id="user-email-form" class="form signup-form" action="" style="display: none">                   
+                   <div class="input-group input-group-lg">
+                     <input type="text" class="form-control user-signup" id="user-email" placeholder="Email address for logging in?">
+                     <span class="input-group-btn">
+                       <button class="btn btn-primary" id="submit-user-email" type="submit">Go!</button>
+                     </span>
+                   </div>
+            </form>
+            
+            <form id="user-profile-image-form" class="form signup-form" action="" style="display: none">      
+                  <div class="input-group input-group-lg">
+                    
+                    <button class="btn btn-primary" id="open-profile-image-input" type="submit">Upload a profile picture</button>
+                    <input class="form-control user-profile-image hidden" id="user-profile-image" placeholder="Upload a profile picture" type="file" accept="image/jpeg, image/png, image/bpm">
+       
+                   </div>
+            </form>
+                       
+            <form id="user-password-form" class="form signup-form" action="" style="display: none">                   
                    <div class="input-group input-group-lg">
                      <input type="password" class="form-control user-signup" id="user-password" placeholder="Finally - choose a memorable password!">
                      <span class="input-group-btn">
@@ -171,7 +191,7 @@
    
         <script type="text/template" id="clients_in_room_template">  
             <p>
-                <h1><em>Room</em>: <strong><span id="room-name"><%= roomName %></span></strong></h1>
+                <!--<h1><em>Room</em>: <strong><span id="room-name"><%= roomName %></span></strong></h1>-->
             </p>
             <p>
                 <!--<h2>Who's in this room?</h2>-->
@@ -203,27 +223,26 @@
             <script type="text/template" id="app_controls_template">
                 <p>
                    <div class="btn-group-horizontal button-wrapper">             
-                        <div class="col-xs-15">            
+                        <div class="col-xs-3">            
                             <i class="fa fa-microphone action-icon" data-toggle="tooltip" title="Record Live Audio" id="start-recording" title="Record Live Audio" aria-hidden="true"></i>
                             <i class="fa fa-stop-circle-o action-icon" data-toggle="tooltip" title="Stop Recording" id="stop-recording" type="submit" style="display: none"></i>
                         </div>
                         
-                        <div class="col-xs-15">
-                            <input id="audio-file" type="file" accept="audio/mp3, audio/wav" style="display: none"/>
+                        <div class="col-xs-3">
                             <i class="fa fa-file-audio-o action-icon" data-toggle="tooltip" title="Stream MP3 or WAV" id="start-file-stream" title="Stream MP3 or WAV File" aria-hidden="true"></i>  
                         </div>
                         
-                        <div class="col-xs-15">   
+                        <!--<div class="col-xs-15">   
                             <i class="fa fa-headphones action-icon" data-toggle="tooltip" title="Listen" id="listen" title="Listen" aria-hidden="true"></i>
-                        </div>
+                        </div>-->
                         
-                        <div class="col-xs-15">
+                        <div class="col-xs-3">
                             <input id="file" type="file" style="display: none"/>
-                            <i class="fa fa-upload action-icon" data-toggle="tooltip" title="File Transfer" id="send-file" title="File Transfer" aria-hidden="true"></i>
+                            <i class="fa fa-upload action-icon pull-right" data-toggle="tooltip" title="File Transfer" id="send-file" title="File Transfer" aria-hidden="true"></i>
                          </div>           
                         
-                        <div class="col-xs-15">
-                            <i class="fa fa-ban action-icon" data-toggle="tooltip" title="Stop All Audio" id="stop" title="Stop All Audio" aria-hidden="true"></i>
+                        <div class="col-xs-3">
+                            <i class="fa fa-ban action-icon pull-right" data-toggle="tooltip" title="Stop All Audio" id="stop" title="Stop All Audio" aria-hidden="true"></i>
                         </div>             
                    </div>
                </p>
@@ -237,8 +256,8 @@
                         <thead class="connected-clients-table-head">
                             <tr>
                             <th>Who</th>
-                            <th>Location</th>
-                            <th>Genre</th>
+                             <th>Genre</th>
+                             <th>Location</th>                   
                             <th>Actions</th>
                             </tr>
                         </thead>
@@ -250,9 +269,11 @@
 
             <script type="text/template" id="user_table_item_template">         
                 <tr>
-                    <td class="<%= cssClass %>" data-user-id="<%= userId %>"><%= connectedUserMessage %></td>
-                    <td class="<%= cssClass %>" data-user-id="<%= userId %>"><%= userLocation %></td>
+                    <td class="<%= cssClass %>" data-user-id="<%= userId %>">
+                        <img class="img-responsive td-image-center" src="<%= profileImageSrc %>" data-toggle="tooltip" title="<%= userName %>">
+                    </td>
                     <td class="<%= cssClass %>" data-user-id="<%= userId %>"><%= userGenre %></td>
+                    <td class="<%= cssClass %>" data-user-id="<%= userId %>"><%= userLocation %></td>
                     <td class="<%= cssClass %>" data-user-id="<%= userId %>">
                     <i class="fa fa-plus <%= actionIconsClass %>" data-toggle="tooltip" title="Connect With <%= userName %>!" aria-hidden="true" data-user-name="<%= userName %>" data-user-id="<%= userId %>"></i>
                     </td>
@@ -264,7 +285,7 @@
                  <p>
                     <h2><strong>Your Contacts</strong></h2>
                     <table class="contacts-table table table-striped table-bordered display nowrap" width="100%">
-                        <thead class="contacts-table-head">
+                        <thead class="contacts-table-head" style="display: none">
                             <tr>
                                 <!--<th>Time</th>-->
                                 <th>Who</th>
@@ -308,13 +329,13 @@
                 </p>
             </script>
             
-            
+                   
             <script type="text/template" id="available_rooms_template">
                  <p>
-                    <h2 id="available-rooms-list-header"><strong>Available Rooms</strong>
+                    <h2 id="available-rooms-list-header"><strong>Available Channels</strong>
                     </h2>
                       <table class="available-rooms-table table table-striped table-bordered display nowrap" width="100%">
-                        <thead class="available-rooms-table-head">
+                        <thead class="available-rooms-table-head" style="display: none">
                             <tr>
                                 <!--<th>Time</th>-->
                                 <th>Name</th>
@@ -323,9 +344,7 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="available-rooms">
-      
-                        </tbody>
+                        <tbody id="available-rooms"></tbody>
                     </table>  
                 </p> 
             </script>
@@ -337,8 +356,119 @@
                     <td class="" data-user-id=""><%= roomGenre %></td>
                     <td class="" data-user-id=""><%= numberRoomMembers %></td>
                     <td class="" data-user-id="">
-                        <i class="fa fa-rocket <%= linkClass %>" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>" data-toggle="tooltip" title="Enter Room" aria-hidden="true"></i>
+                        <i class="fa fa-rocket <%= linkClass %>" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>" data-toggle="tooltip" title="Join Channel" aria-hidden="true"></i>
                     </td>        
+                </tr>
+           </script>
+            
+            
+        <script type="text/template" id="available_streams_template">
+                 <p>
+                    <h2 id="available-streams-list-header"><strong>Live Streams</strong>
+                    </h2>
+                      <table class="available-streams-table table table-striped table-bordered display nowrap" width="100%">
+                        <thead class="available-streams-table-head" style="display: none">
+                            <tr>
+                                <!--<th>Time</th>-->
+                                <th class="hidden">id</th>
+                                <th>Title</th>
+                                <th>User</th>
+                                <th>Genre</th>
+                                <th>Feedback</th>
+                                <th>Age</th>
+                                <th>Listen</th>
+                                <th>Join</th>
+                            </tr>
+                        </thead>
+                        <tbody id="available-streams">
+                           <tr>
+                           <td colspan="8">No live streams available! Why not create one?</td>
+                                <td style="display: none;"></td>
+                                <td style="display: none;"></td>
+                                <td style="display: none;"></td>
+                                <td style="display: none;"></td>
+                                <td style="display: none;"></td>
+                                <td style="display: none;"></td>
+                                <td style="display: none;"></td>
+                            </tr>  
+                        </tbody>
+                    </table>  
+                </p> 
+            </script>
+        
+                <script type="text/template" id="featured_streams_template">
+                 <p>
+                    <h2 id="featured-streams-list-header"><strong>Featured Streams</strong>
+                    </h2>
+                      <table class="featured-streams-table table table-striped table-bordered display nowrap" width="100%">
+                        <thead class="featured-streams-table-head" style="display: none">
+                            <tr>
+                                <!--<th>Time</th>-->
+                                <th class="hidden">id</th>
+                                <th>Title</th>
+                                <th>User</th>
+                                <th>Genre</th>
+                                <th>Feedback</th>
+                                <th>Age</th>
+                                <th>Listen</th>
+                                <th>Join</th>
+                            </tr>
+                        </thead>
+                        <tbody id="featured-streams">
+                           <tr>
+                                <td colspan="8">No streams featured! Why not create one?</td>
+                                <td style="display: none;"></td>
+                                <td style="display: none;"></td>
+                                <td style="display: none;"></td>
+                                <td style="display: none;"></td>
+                                <td style="display: none;"></td>
+                                <td style="display: none;"></td>
+                                <td style="display: none;"></td>
+                            </tr>  
+                        </tbody>
+                    </table>  
+                </p> 
+            </script>
+            
+            
+            <script type="text/template" id="stream_table_item_template">         
+                <tr data-room-id="<%= streamId%>">
+                
+                    <td class="hidden" data-user-id=""><%= streamId %></td>
+                    <td class="" data-user-id=""><%= streamName %> </td>
+                    <td class="" data-user-id="">
+                         <img class="img-responsive td-image-center" src="<%= profileImageSrc %>" data-toggle="tooltip" title="<%= <%= streamedByUsername %>">
+                    </td>
+                    <td class="" data-user-id=""><%= streamGenre %></td>
+                    <td class="" data-user-id="">
+                    
+                    <span class="badge message-counter" data-toggle="tooltip" title="<%= upvotes %> Messages" data-room-id="<%= streamId%>"><%= upvotes %></span>
+                                
+                        <span class="fa-stack fa-1x">
+                          <i class="fa fa-heart fa-stack-1x"></i>
+                          <span class="fa-stack-1x upvote-text small" data-toggle="tooltip" title="<%= upvotes %> Upvotes" style="color: white"><%= upvotes %></span>
+                        </span>                  
+                    </td>
+                    
+                    <%
+                    function convertToHoursAndMinutes(a){
+                        var hours = Math.trunc(a/60);
+                        var minutes = a % 60;
+                        return hours +" hours "+ minutes + " minutes";
+                    }
+
+                    var startTime = moment(createdAt.replace("-", "/"));
+                    var endTime = moment(Date.now());
+                    var diff = endTime.diff(startTime, 'minutes');
+                    %>
+                        
+                    <td class="" data-user-id=""><%= convertToHoursAndMinutes(diff) %></td>
+                    <td class="" data-user-id="">
+                        <i class="fa fa-headphones <%= listenButtonClass %>" data-room-id="<%= roomId %>" data-room-name="<%= roomName%>" data-toggle="tooltip" title="Listen" aria-hidden="true"></i>
+                    </td>
+                      <td class="" data-user-id="">
+                        <i class="fa fa-rocket enter-room" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>" data-toggle="tooltip" title="Join" aria-hidden="true"></i>
+                    </td>
                 </tr>
            </script>
             
@@ -346,9 +476,9 @@
             <script type="text/template" id="room_list_item_template">
                 <li class="list-group-item <%= cssClass %>" data-room-id="<%= roomId%>">
                     <div>
-                    <span class="<%= linkClass %>" data-toggle="tooltip" title="Enter Room" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>"><strong><%= roomName %></strong></span>
+                    <span class="<%= linkClass %>" data-toggle="tooltip" title="Join Channel" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>"><strong><%= roomName %></strong></span>
                     <span class="badge message-counter" data-toggle="tooltip" title="<%= messageCount %> Messages" data-room-id="<%= roomId%>"><%= messageCount %></span>
-                    <i class="fa fa-rocket pull-right <%= linkClass %>" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>" data-toggle="tooltip" title="Enter Room" aria-hidden="true"></i>
+                    <i class="fa fa-rocket pull-right <%= linkClass %>" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>" data-toggle="tooltip" title="Join Channel" aria-hidden="true"></i>
                     </div>
                </li>
             </script>
@@ -356,10 +486,12 @@
             
             <script type="text/template" id="user_rooms_template">
                  <p>
-                    <h2 id="rooms-list-header"><strong>Your Rooms</strong>
-                        <i class="fa fa-plus action-icon small" data-toggle="tooltip" data-placement="right" title="Create New Room" id="open-create-room-form" aria-hidden="true"></i>
+                    <h2 id="rooms-list-header"><strong>Your Channels</strong>
+                        <i class="fa fa-plus action-icon small" data-toggle="tooltip" data-placement="right" title="Create New Channel" id="open-create-room-form" aria-hidden="true"></i>
                     </h2>
-                    <ul class="list-group" id="user-rooms"></ul>
+                    <ul class="list-group" id="user-rooms">
+                        <li class="list-group-item">You have no channels!</li>
+                    </ul>
                 </p> 
             </script>
        
@@ -370,7 +502,33 @@
                 </li>
            </script>
 
-            
+
+            <script type="text/template" id="start_stream_modal_template">
+                <div class="modal fade start-stream-modal">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" id="close-stream-modal" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                          <h1 class="modal-title">Ready to <strong>Stream?</strong></h1>
+                        </div>
+                        <div class="modal-body">
+                         
+                            <div class="input-group input-group-lg w-100">
+                                 <input type="text" class="form-control stream-genre" placeholder="What genre is your stream?">              
+                                <input class="form-control <%= fileInputClass %>" id="audio-file" type="file" accept="audio/mp3, audio/wav">
+                            </div>
+                        
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-primary start-stream-button <%= buttonClass %>" data-dismiss="modal">Start Stream!</button>
+                        </div>
+                      </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                  </div><!-- /.modal -->
+            </script>
+                        
+                        
             <script type="text/template" id="welcome_modal_template">
                 <div class="modal fade welcome-modal">
                     <div class="modal-dialog" role="document">
@@ -410,7 +568,7 @@
     
                         <form id="create-room-with-user-form" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>" class="form  <%= textInputClass %>" action="">                   
                            <div class="input-group input-group-lg w-100">
-                             <input type="text" class="form-control create-room-from-users-name <%= textInputClass %>" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>" placeholder="What do you want to call your room?">
+                             <input type="text" class="form-control create-room-from-users-name <%= textInputClass %>" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>" placeholder="What do you want to call your channel?">
                             <h1>
                                 <span class="create-room-from-users-result" style="display: none"></span>
                             </h1>
@@ -421,7 +579,7 @@
                         <div class="modal-footer">
                           <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
                           <button type="submit" class="btn btn-primary <%= createRoomFromUserClass %>" id="create-room-from-users" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>">Send Request!</button>
-                          <button type="submit" class="btn btn-primary <%= createRoomClass %>" id="create-room">Create Room!</button>
+                          <button type="submit" class="btn btn-primary <%= createRoomClass %>" id="create-room">Go!</button>
                           </form>
             
                         </div>
@@ -456,10 +614,14 @@
             </script>
             
 
-        <!-- CORE DEPENDENCIES -->
+        <!-- DEPENDENCIES -->
         <script src="/vendor/jquery-2.0.3.min.js"></script>
         <script src="/vendor/underscore.js"></script>
         <script src="/vendor/backbone.js"></script>
+        <script src="/vendor/moment.min.js"></script>
+        <script>
+            moment().format();
+        </script>
         
         <!-- BOOTSTRAP -->
         <script src="/vendor/tether.min.js"></script>
@@ -469,13 +631,13 @@
         <!-- DATATABLES -->
         <script src="/vendor/jquery.dataTables.min.js"></script>
         <script src="/vendor/dataTables.responsive.min.js"></script>
-        <!--<script src="/vendor/jquery-ui.js"></script>-->
         
         <!-- SOCKET.IO -->
         <script src="/socket.io/socket.io.js"></script>
         <script src="/vendor/socket.io-stream.js"></script>
         
         <!-- APP UTILS and AUDIO FUNCTIONS -->
+        <script src="/config.js"></script>
         <script src="/js/functions/utils.js"></script>
         <script src="/js/functions/playMp3Stream.js"></script>
         <script src="/js/functions/playWavStream.js"></script>
@@ -497,8 +659,13 @@
             <script src="/js/views/users/contactsView.js"></script>
             <script src="/js/views/users/clientsInRoomView.js"></script>
             <script src="/js/views/users/roomUserListItemView.js"></script>
-                        
-            <!-- Rooms -->
+            
+            <!-- Streams -->
+            <script src="/js/views/streams/availableStreamsView.js"></script>
+            <script src="/js/views/streams/featuredStreamsView.js"></script>
+            <script src="/js/views/streams/streamTableItemView.js"></script>
+            
+            <!-- Rooms/Channels -->
             <script src="/js/views/rooms/availableRoomsView.js"></script>
             <script src="/js/views/rooms/userRoomsView.js"></script>
             <script src="/js/views/rooms/roomListItemView.js"></script>
@@ -517,6 +684,7 @@
             <script src="/js/views/modals/welcomeModalView.js"></script>
             <script src="/js/views/modals/roomsModalView.js"></script>
             <script src="/js/views/modals/acceptInvitationModalView.js"></script>
+            <script src="/js/views/modals/startStreamModalView.js"></script>
         
         <!--CONTAINER VIEWS FOR ROUTES-->
         <script src="/js/views/homeView.js"></script>

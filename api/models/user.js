@@ -6,6 +6,7 @@ var DataTypes = require("sequelize");
     var User = sequelize.define('users', {
         
         username: DataTypes.STRING,
+        email: DataTypes.STRING,
         password: DataTypes.STRING,
         socketId: DataTypes.STRING,
         userGenre: DataTypes.STRING,
@@ -77,6 +78,7 @@ var DataTypes = require("sequelize");
                     var inRooms = this.inRooms;
                     var userGenre = this.userGenre;
                     var userLocation = this.userLocation;
+                    var email = this.email;
                     var password = this.password;
                     
                     //var shasum = crypto.createHash('sha1');
@@ -87,6 +89,7 @@ var DataTypes = require("sequelize");
                                 socketId: socketId,
                                  userGenre: userGenre,
                                  userLocation: userLocation,
+                                 email: email,
                                  password: password,
                                  status: status,
                                  inRooms: inRooms

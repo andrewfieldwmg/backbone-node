@@ -41,6 +41,7 @@ var UserListItemView = Backbone.View.extend({
         
         var parameters = {
 			    userId: this.options.connectedUserId,
+			    profileImageSrc: this.options.profileImageSrc,
 			    userName: this.options.connectedUsername,
 			    cssClass: this.options.cssClass,
                             time: this.options.time,

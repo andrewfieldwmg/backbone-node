@@ -5,6 +5,7 @@ function startLiveStream(socket) {
         //socket.on('connect', function() {
             
         var stream = ss.createStream();
+        var genre = $('.stream-genre').val();
         
         ss(socket).emit('audio-file', stream, {
                 userId: localStorage.getItem("userId"),
@@ -15,7 +16,8 @@ function startLiveStream(socket) {
                 liveStream: "true",
                 sender: tabID,
                 name: "Live Stream",
-                type: "audio/wav/stream"
+                type: "audio/wav/stream",
+                genre: genre
             });
                                                 
                                 

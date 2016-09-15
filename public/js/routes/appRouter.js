@@ -5,7 +5,7 @@ var Router = Backbone.Router.extend({
         "signup" : "signup",
         "welcome" : "welcome",
         "home" : "home",
-        "rooms/:id" : "room"
+        "channels/:id" : "channel"
    },
    
    root: function() {
@@ -32,7 +32,7 @@ var Router = Backbone.Router.extend({
    welcome: function() {
      
       if(localStorage.getItem("username")) {     
-         new HomeView({showWelcome: true});
+         new NewHomeView({showWelcome: true});
       } else {
          this.navigate("signup", {trigger: "true"});
       }
@@ -42,7 +42,7 @@ var Router = Backbone.Router.extend({
    home: function() {
     
       if(localStorage.getItem("username")) {     
-         new HomeView({showWelcome: false});
+         new NewHomeView({showWelcome: false});
       } else {
          this.navigate("signup", {trigger: "true"});
       }
@@ -50,9 +50,9 @@ var Router = Backbone.Router.extend({
     
    },
    
-   room: function(roomId) {
+   channel: function(channelId) {
 
-        new InsideRoomView({roomId: roomId});
+        new InsideRoomView({channelId: channelId});
     
    }
    

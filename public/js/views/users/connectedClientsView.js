@@ -96,8 +96,6 @@ var ConnectedClientsView = Backbone.View.extend({
             var connectedClientsTable = $('.connected-clients-table').DataTable();
 	    
 	    connectedClientsTable.destroy();
-	    
-            $('#connected-clients').html('');
             
             var connectedUsers = JSON.parse(data.connectedUsers);
             //var connectedUsernames = JSON.parse(data.connectedUsernames);
@@ -112,15 +110,15 @@ var ConnectedClientsView = Backbone.View.extend({
                       
                 //console.log('1 client or less');
                 
-                var messageFormView = new MessageFormView();
+                /*var messageFormView = new MessageFormView();
                 var appControlsView = new AppControlsView();
                 var messagesView = new MessagesView();
-                var roomsView = new RoomsView();
+                var userRoomsView = new UserRoomsView();
                             
                     messageFormView.remove();
                     appControlsView.remove();
                     messagesView.remove();
-                    roomsView.remove();         
+                    userRoomsView.remove();       
                     
                     var parameters = {
                         cssClass: "connected-client-list",
@@ -131,11 +129,11 @@ var ConnectedClientsView = Backbone.View.extend({
                         }; 
                     
                     var userListItemView = new UserListItemView(parameters);
-                    $('#connected-clients').append(userListItemView.afterRender());
+                    $('#connected-clients').append(userListItemView.afterRender());*/  
                 
             } else {
-                
-                //console.log('more than 1 client');
+                	    
+		$('#connected-clients').html('');
                 
                 for(i = 0; i < connectedUsers.length; i++) {
                 
@@ -155,6 +153,7 @@ var ConnectedClientsView = Backbone.View.extend({
                         var parameters = {
                             connectedUserId: connectedUserId,
                             connectedUsername: connectedUsername,
+			    profileImageSrc: config.filePaths.userProfileImageDir + "/" + connectedUserId + "_profile.jpg",
                             cssClass: "connected-client-list",
                             time: time,
                             connectedUserMessage: connectedUserMessage,
@@ -173,7 +172,9 @@ var ConnectedClientsView = Backbone.View.extend({
                 }
                  
                  $('.connected-clients-table').DataTable({
-                    responsive: true});  
+                    responsive: true,
+		    "pageLength": 5
+		    });  
             	//var roomsView = new RoomsView();
                 //roomsView.afterRender();
                         

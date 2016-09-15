@@ -18,6 +18,7 @@
     
     //UTILS
     var ip = require("ip");
+    var im = require('imagemagick');
     
     //AUDIO
     var SoxCommand = require('sox-audio');
@@ -118,22 +119,7 @@
                 socket.userId = success.id;
        
                 //var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
-                
-                user.retrieveAll(function(users) {
-                    
-                        if (users) {
-                        
-                            io.sockets.emit('connected-clients', {
-                            connectedUsers: JSON.stringify(users)
-                            });
-                            
-                        } else {
-                          //res.send(401, "User not found");
-                        }
-                  }, function(error) {
-                        //res.send("User not found");
-                  });
-                
+     
             },
             
             function(err) {
@@ -192,7 +178,65 @@
             
          });
         
+        
+        ss(socket).on('new-user-profile-image', function(fileStream, data) {
+            
+                var imageExtension = data.name.split('.').pop();
+                var imageFileName = data.userId + '.' + imageExtension;
+                var hqFilePath = config.filePaths.userProfileImageDir + "/" + imageFileName;
+                    
+                 fileUploadWriteStream = fs.createWriteStream(hqFilePath);
+                 
+                 fileStream.pipe(fileUploadWriteStream);
+                                   
+                    fileStream.on('end', function() {
+                        
+                        console.log('profile image saved!');              
+                 
+                          var thumbnailFilename = data.userId + "_profile.jpg";
+                            
+                            im.resize({
+                                srcData: fs.readFileSync(hqFilePath, 'binary'),
+                                width:   60
+                                
+                              }, function(err, stdout, stderr){
+                                
+                                if (err) throw err
+                                fs.writeFileSync(config.filePaths.userProfileImageDir + "/" + thumbnailFilename, stdout, 'binary');
+                      
+                            });
+                        
+                    });
+                    
+                    
+        });
+        
+        
+        socket.on('new-user-email', function (data) {
+            
+            var user = User.build();	
+              
+            user.userGenre = data.userGenre;
+            user.socketId = data.socketId;
+            user.status = "online";
+            user.userLocation = data.userLocation;
+            user.email = data.userEmail;
+            user.password = "";
+             
+            user.updateByIdFull(data.userId, function(success) {
                 
+                    if (success) {	
+                            
+                    } else {
+                     
+                    }
+              }, function(error) {
+                    
+              });
+            
+         });
+        
+        
         socket.on('new-user-password', function (data) {
       
             var user = User.build();	
@@ -201,6 +245,7 @@
             user.socketId = data.socketId;
             user.status = "online";
             user.userLocation = data.userLocation;
+            user.email = data.userEmail;
             user.password = data.userPassword;
             
             user.updateByIdFull(data.userId, function(success) {
@@ -218,6 +263,23 @@
                                     } else {
                    
                                     }
+                                                                                                   
+                                         user.retrieveAll(function(users) {
+                                             
+                                                 if (users) {
+                                                 
+                                                     io.sockets.emit('connected-clients', {
+                                                        connectedUsers: JSON.stringify(users)
+                                                     });
+                                                     
+                                                 } else {
+                                                   //res.send(401, "User not found");
+                                                 }
+                                           }, function(error) {
+                                                 //res.send("User not found");
+                                           });
+                                                                            
+                
                               }, function(error) {
                                  
                             });
@@ -538,6 +600,30 @@
                   }, function(error) {
                     
                   });
+                    
+                                    var stream = Stream.build();
+             
+                                     stream.retrieveAll(function(streams) {
+                                         
+                                         if (streams) {
+                                                    
+                                                //socket.emit('emptyMessages');
+                                            
+                                                    
+                                                    //console.log('emitting mess ' + messages[i].message);
+                                                    
+                                                    socket.emit('available-streams', {
+                                                        availableStreams: JSON.stringify(streams)
+                                                    });
+                                                                                                   
+                                                
+                                         } else {
+                                           //res.send(401, "User not found");
+                                         }
+                                         
+                                   }, function(error) {
+                                         //res.send("User not found");
+                                   });
          
 
         }
@@ -1332,7 +1418,7 @@
     
         
     /////AUDIO STREAMS/////
-            
+    
     ss(socket).on('audio-file', function(inbound_stream, data) {
             
         ////console.log('receiving file stream: ' + data.name);
@@ -1342,9 +1428,13 @@
             var senderSocketId = socket.id;
             var activeRoomName = data.activeRoomName;
             var userColour = data.userColour;
-                
+            var justFilename = data.name.slice(0, -4);
+          
                 var stream = Stream.build({
                                       filename: data.name,
+                                      state: "live",
+                                      genre: data.genre,
+                                      upvotes: 0,
                                       streamedByUserId: data.userId,
                                       streamedByUsername: data.username,
                                       roomId: data.activeRoomId,
@@ -1352,7 +1442,8 @@
                                       });
                 
                 stream.add(function(success) {
-                           
+                        
+                        var streamId = success.id;
                            //////console.log('File successfully uploaded: ' + cleanName);
                         var message = Message.build({
                                         message: "Audio Stream: " + data.name,
@@ -1404,12 +1495,41 @@
                                         }, function(error) {
                                              
                                         });
+                                    
+                                    
+                                var stream = Stream.build();
+             
+                                     stream.retrieveAll(function(streams) {
+                                         
+                                         if (streams) {
+                                                    
+                                                //socket.emit('emptyMessages');
+                                            
+                                                    
+                                                    //console.log('emitting mess ' + messages[i].message);
+                                                    
+                                                    io.sockets.emit('available-streams', {
+                                                        availableStreams: JSON.stringify(streams)
+                                                    });
+                                                                                                   
+                                                
+                                         } else {
+                                           //res.send(401, "User not found");
+                                         }
+                                         
+                                   }, function(error) {
+                                         //res.send("User not found");
+                                   });
+         
                                
                           },
                           function(err) {
                               ////console.log("New message NOT written to database");
                           });
        
+       
+                    startStream(streamId);
+                    
               },
               function(err) {
                   ////console.log("New message NOT written to database");
@@ -1430,7 +1550,11 @@
               outSampleRate: 44100,
               mode: lame.STEREO // STEREO (default), JOINTSTEREO, DUALCHANNEL or MONO 
             });*/
-                 
+            
+            
+         function startStream(streamId) {
+                     
+            var offlineFile = fs.createWriteStream(audioPath + "/" + streamId + ".mp3");
       
             const Writable = require('stream').Writable;
                 
@@ -1442,6 +1566,8 @@
                     
                     buffer.push(chunk);
                      //////console.log(chunk);
+                     
+                    offlineFile.write(chunk);
         
                     if(buffer.length >= 40) {
                         
@@ -1457,8 +1583,7 @@
                                 
                                }
                             
-                             //socket.broadcast.emit('audio', { buffer: bufferConcat});
-                             
+                             //socket.broadcast.emit('audio', { buffer: bufferConcat});                      
                               
                        buffer = [];
                     }
@@ -1518,13 +1643,13 @@
                   
                 } else if (mimeType === 'audio/mp3') {
                     
-                    console.log('audio/mp3');
+                    //console.log('audio/mp3');
                     inbound_stream.pipe(socketSendWritableMp3);
                   
                 }
                 
-              
-                 ////console.log('sending stream to client(s): '  + data.name);
+                
+                                 ////console.log('sending stream to client(s): '  + data.name);
                             
                         socket.on('stop-audio-stream', function (data) {
                             
@@ -1538,9 +1663,50 @@
                             inbound_stream.end();
                             inbound_stream.destroy();
                             
-                            socketSendWritableMp3.end();
+                            //offlineFile.end();
 
                             buffer = [];
+                            
+                            var stream = Stream.build();	
+                      
+                                stream.state = "offline";
+                                
+                                stream.updateStateById(streamId, function(success) {
+                          
+                                    if (success) {
+
+                                                stream.retrieveAll(function(streams) {
+                                                    
+                                                    if (streams) {
+                                                               
+                                                           //socket.emit('emptyMessages');
+                                                       
+                                                               
+                                                               //console.log('emitting mess ' + messages[i].message);
+                                                               
+                                                               io.sockets.emit('available-streams', {
+                                                                   availableStreams: JSON.stringify(streams)
+                                                               });
+                                                                                                              
+                                                           
+                                                    } else {
+                                                      //res.send(401, "User not found");
+                                                    }
+                                                    
+                                              }, function(error) {
+                                                    //res.send("User not found");
+                                              });
+                                     
+                                                    
+                                    } else {
+                                        
+                                            ////console.log("User not found");
+                                            
+                                    }
+                                    
+                              }, function(error) {
+                                
+                              });
                             
                             //socket.disconnect();
 
@@ -1549,12 +1715,60 @@
                            
                         inbound_stream.on('end', function() {
                                 ////console.log('Inbound audio stream ended: ' + data.name);
+                                                      
+                                var stream = Stream.build();	
+                      
+                                stream.state = "offline";
+                                
+                                stream.updateStateById(streamId, function(success) {
+                          
+                                    if (success) {
+               
+                                              stream.retrieveAll(function(streams) {
+                                                    
+                                                    if (streams) {
+                                                               
+                                                           //socket.emit('emptyMessages');
+                                                       
+                                                               
+                                                               //console.log('emitting mess ' + messages[i].message);
+                                                               
+                                                               io.sockets.emit('available-streams', {
+                                                                   availableStreams: JSON.stringify(streams)
+                                                               });
+                                                                                                              
+                                                           
+                                                    } else {
+                                                      //res.send(401, "User not found");
+                                                    }
+                                                    
+                                              }, function(error) {
+                                                    //res.send("User not found");
+                                              });
+                                              
+                                                    
+                                    } else {
+                                        
+                                            ////console.log("User not found");
+                                            
+                                    }
+                                    
+                              }, function(error) {
+                                
+                              });
+                            
                         });
+                
+        }
+         
+
+                
                 
                       return inbound_stream;
                       
                 });
                  
+         
          
                 socket.on('disconnect', function() {
                         
@@ -1593,7 +1807,48 @@
                                                     updateConnectedClientsInRoom(JSON.stringify(socket.roomIds), JSON.stringify(socket.roomNames));
                                                }
                                                
-                      
+                                                                                                
+                                                    var stream = Stream.build();	
+                                                
+                                                          stream.state = "offline";
+                                                          
+                                                          stream.updateStateByStreamerId(socket.userId, function(success) {
+                                                    
+                                                              if (success) {
+                                         
+                                                                        stream.retrieveAll(function(streams) {
+                                                            
+                                                                            if (streams) {
+                                                                                       
+                                                                                   //socket.emit('emptyMessages');
+                                                                               
+                                                                                       
+                                                                                       //console.log('emitting mess ' + messages[i].message);
+                                                                                       
+                                                                                       io.sockets.emit('available-streams', {
+                                                                                           availableStreams: JSON.stringify(streams)
+                                                                                       });
+                                                                                                                                      
+                                                                                   
+                                                                            } else {
+                                                                              //res.send(401, "User not found");
+                                                                            }
+                                                                            
+                                                                      }, function(error) {
+                                                                            //res.send("User not found");
+                                                                      });
+                                                                                                    
+                                                              } else {
+                                                                  
+                                                                      ////console.log("User not found");
+                                                                      
+                                                              }
+                                                              
+                                                        }, function(error) {
+                                                          
+                                                        });
+                                
+                                
                                         } else {
                                           //res.send(401, "User not found");
                                         }
@@ -1614,7 +1869,7 @@
                             
                           });
                           
-            
+
                       
                 });
                    

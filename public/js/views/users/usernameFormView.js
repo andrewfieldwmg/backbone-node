@@ -12,7 +12,10 @@ var UsernameFormView = Backbone.View.extend({
         $('#submit-username').prop('disabled', true);
         $('#submit-user-genre').prop('disabled', true);
         $('#submit-user-location').prop('disabled', true);
+	$('#submit-user-email').prop('disabled', true);
         $('#submit-user-password').prop('disabled', true);
+	
+	$('#username_form_container').addClass('panel panel-default');
     },
     
     render: function(){
@@ -25,10 +28,14 @@ var UsernameFormView = Backbone.View.extend({
         "keyup #username" : "usernameChanging",
         "keyup #user-genre" : "userGenreChanging",
         "keyup #user-location" : "userLocationChanging",
+	"keyup #user-email" : "userEmailChanging",
         "keyup #user-password" : "userPasswordChanging",
         "click #submit-username": "submitUsername",
         "click #submit-user-genre": "submitUserGenre",
         "click #submit-user-location": "submitUserLocation",
+	"click #open-profile-image-input": "openProfileImageInput",
+	"change #user-profile-image": "submitUserProfileImage",
+	"click #submit-user-email": "submitUserEmail",
         "click #submit-user-password": "submitUserPassword"
     },
     
@@ -64,6 +71,18 @@ var UsernameFormView = Backbone.View.extend({
              $('#submit-user-location').prop('disabled', false);
         } else {
              $('#submit-user-location').prop('disabled', true);
+        }
+        
+    },
+    
+    userEmailChanging: function(e) {
+      
+        var userEmailLength = $(e.currentTarget).val().length;
+        
+        if (userEmailLength > 2) {
+             $('#submit-user-email').prop('disabled', false);
+        } else {
+             $('#submit-user-email').prop('disabled', true);
         }
         
     },
@@ -132,6 +151,57 @@ var UsernameFormView = Backbone.View.extend({
         localStorage.setItem('userLocation', userLocation);
          
         $('#user-location-form').hide();
+        $('#user-profile-image-form').animate({width: 'toggle'}, 350);
+        //$('#user-email').focus();
+        
+    },
+    
+    openProfileImageInput: function(e) {
+	
+	e.preventDefault();
+	$('#user-profile-image').trigger('click');
+	
+    },
+    
+    submitUserProfileImage: function(e) {
+                
+        e.preventDefault();
+	
+	var file = $('.user-profile-image')[0].files[0];
+	
+          var stream = ss.createStream();
+                 
+            ss(socket).emit('new-user-profile-image', stream, {
+                            userId: localStorage.getItem("userId"),
+                            size: file.size,
+                            name: file.name,
+                            type: file.type
+                            });
+            
+        ss.createBlobReadStream(file).pipe(stream);
+         
+        $('#user-profile-image-form').hide();
+        $('#user-email-form').animate({width: 'toggle'}, 350);
+        $('#user-email').focus();
+        
+    },
+    
+    submitUserEmail: function(e) {
+                
+        e.preventDefault();
+        var userEmail = $('#user-email').val();
+    
+        socket.emit('new-user-email', {
+            socketId: localStorage.getItem("socketId"),
+            userId: localStorage.getItem("userId"),
+            userGenre: localStorage.getItem("userGenre"),
+            userLocation: localStorage.getItem("userLocation"),
+	    userEmail: userEmail
+            });
+        
+        localStorage.setItem('userEmail', userEmail);
+         
+        $('#user-email-form').hide();
         $('#user-password-form').animate({width: 'toggle'}, 350);
         $('#user-password').focus();
         
@@ -147,11 +217,14 @@ var UsernameFormView = Backbone.View.extend({
             userId: localStorage.getItem("userId"),
             userGenre: localStorage.getItem("userGenre"),
             userLocation: localStorage.getItem("userLocation"),
+	    userEmail: localStorage.getItem("userEmail"),
             userPassword: userPassword
             });
 
         
-        this.remove();
+	$('#username_form_container').removeClass('panel panel-default');
+        
+	this.remove();
         
         //var connectedClientsView = new ConnectedClientsView();
         //connectedClientsView.afterRender();

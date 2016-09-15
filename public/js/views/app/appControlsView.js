@@ -60,26 +60,21 @@ var AppControlsView = Backbone.View.extend({
     },
     
     startLiveStream: function(data) {
-        
-        //console.log('start live stream backbone function clicked');
-        var cssClass = "list-item-" + localStorage.getItem("userColour");
-    
-        var parameters = {
-                        cssClass: cssClass,
-                        backgroundColour: localStorage.getItem("userColour"),
-                        time: time,
-                        contentFromUsername: "Broadcasting live stream",
-                        contentName: "",
-                        loaderClass: "hidden"
-                        };
-        
-        var listItemView = new ListItemView(parameters);
-        
-        $('#message-results').append(listItemView.render());
-
-        
-        scrollToBottom();
-        startLiveStream(socket);
+	
+      $.when(
+               $('#stop').triggerHandler('click')
+        ).done(function() {
+	            
+		var parameters = {
+		    fileInputClass: "hidden",
+		    buttonClass: "start-live-stream"
+		};
+		
+		var startStreamModalView = new StartStreamModalView(parameters);
+		startStreamModalView.afterRender();
+                //$('#audio-file').click();
+		
+        });   
 
     },
     
@@ -90,76 +85,20 @@ var AppControlsView = Backbone.View.extend({
         $.when(
                $('#stop').triggerHandler('click')
         ).done(function() {
-                $('#audio-file').click();
+	            
+		var parameters = {
+		    fileInputClass: "",
+		    buttonClass: "start-file-stream"
+		};
+		
+		var startStreamModalView = new StartStreamModalView(parameters);
+		startStreamModalView.afterRender();
+                //$('#audio-file').click();
+		
         });   
  
     },
     
-    startFileStream: function(e) {
-        
-        console.log('audio file changed');
-            
-        //$.when(
-        
-               //$('#stop').triggerHandler('click')
-               
-        //).done(function() {
-   
-               //audioStreamSocketIo(socket);
-         
-        var file = e.currentTarget.files[0];
-         
-        var stream = ss.createStream();
-             
-        ss(socket).emit('audio-file',
-                            stream,
-                                {
-                                userId: localStorage.getItem("userId"),
-                                username: localStorage.getItem("username"),
-                                activeRoomId: localStorage.getItem("activeRoomId"),
-                                activeRoomName: localStorage.getItem("activeRoomName"),
-                                userColour: localStorage.getItem("userColour"),
-                                liveStream: "false",
-                                sender: tabID,
-                                size: file.size,
-                                name: file.name,
-                                type: file.type
-                                });
-            
-        ss.createBlobReadStream(file).pipe(stream);
-
-        localStorage.setItem('streamState', '');
-        
-        var cssClass = "list-item-" + localStorage.getItem("userColour");
-        
-        var parameters = {
-                cssClass: cssClass,
-                backgroundColour: localStorage.getItem("userColour"),
-                time: time,
-                contentFromUsername: "Broadcasting file stream",
-                contentName: file.name,
-                loaderClass: "hidden"
-                };
-        
-        var listItemView = new ListItemView(parameters);
-        
-        $('#message-results').append(listItemView.render());
-    
-        //});
-        
-                $('#stop').on('click', function(e) {
-             
-                   console.log('stop clicked');
-                   
-                  e.stopPropagation();
-             
-                  socket.emit('stop-audio-stream');
-                         
-                  localStorage.setItem('streamState', 'stopped');
-                                                
-               });
-                
-    },
     
     openSendFile: function(e) {
         

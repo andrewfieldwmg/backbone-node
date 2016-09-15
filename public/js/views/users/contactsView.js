@@ -54,52 +54,30 @@ var ContactsView = Backbone.View.extend({
      
             //console.log('connected clients message received');
             
-            $('#contacts').html('');
-            
-            var connectedUsers = JSON.parse(data.connectedUsers);
+            var userContacts = JSON.parse(data.userContacts);
             //var connectedUsernames = JSON.parse(data.connectedUsernames);
             //var connectedUserIds = JSON.parse(data.connectedUserIds);
             
             //var socketId = localStorage.getItem("socketId").toString();
             //var socketIndex = connectedSocketIds.indexOf(socketId);
             //var socketCss = getSocketCss(socketIndex);
-                 //console.log(connectedUsers);
+                 //console.log(userContacts);
 
-            if (connectedUsers.length < 2) {
+            if (userContacts.length === 0) {
                       
-                //console.log('1 client or less');
-                
-                var messageFormView = new MessageFormView();
-                var appControlsView = new AppControlsView();
-                var messagesView = new MessagesView();
-                var roomsView = new RoomsView();
-                            
-                    messageFormView.remove();
-                    appControlsView.remove();
-                    messagesView.remove();
-                    roomsView.remove();         
-                    
-                    var parameters = {
-                        cssClass: "connected-client-list",
-                        time: time,
-                        connectedUserMessage: "Just <strong>little old you</strong>, wandering lonely as a cloud...",
-                        contentName: "",
-                        loaderClass: "hidden"
-                        }; 
-                    
-                    var userListItemView = new UserListItemView(parameters);
-                    $('#contacts').append(userListItemView.afterRender());
                 
             } else {
-                
+                            
+		$('#contacts').html('');
+		$('.contacts-table-head').show();
                 //console.log('more than 1 client');
                 
-                for(i = 0; i < connectedUsers.length; i++) {
+                for(i = 0; i < userContacts.length; i++) {
                 
-                if (connectedUsers[i].status === 'online') {
+                if (userContacts[i].status === 'online') {
                         
-                        var connectedUserId = connectedUsers[i].id;
-                        var connectedUsername = connectedUsers[i].username;
+                        var connectedUserId = userContacts[i].id;
+                        var connectedUsername = userContacts[i].username;
                         
                         if(connectedUsername == localStorage.getItem("username")) {
                            var connectedUserMessage = "<strong>You</strong> are connected";
@@ -118,8 +96,8 @@ var ContactsView = Backbone.View.extend({
                             contentName: "",
                             loaderClass: "hidden",
                             actionIconsClass: actionIconsClass,
-                            userLocation: connectedUsers[i].userLocation,
-                            userGenre: connectedUsers[i].userGenre
+                            userLocation: userContacts[i].userLocation,
+                            userGenre: userContacts[i].userGenre
                             };
                             
              

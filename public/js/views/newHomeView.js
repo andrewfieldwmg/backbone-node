@@ -10,6 +10,8 @@ var NewHomeView = Backbone.View.extend({
 	 
 	 $("#audio_player_container").empty();
 	
+	// DESTROY / CLEAR OUT VIEWS TO STOP ZOMBIES
+	
 	if (localStorage.getItem("clientsInRoomViewLoaded") == "true") {
 	    var clientsInRoomView = new ClientsInRoomView();
 	    clientsInRoomView.destroy();
@@ -38,12 +40,17 @@ var NewHomeView = Backbone.View.extend({
 	}*/
         
 	
+        //USERS
+	
 	var connectedClientsView = new ConnectedClientsView();
 	connectedClientsView.afterRender();
 	
        	var contactsView = new ContactsView();
 	contactsView.afterRender();
         
+	
+        //ROOMS
+	
 	if (localStorage.getItem("userRoomsViewLoaded") == "true") {
 	    var userRoomsView = new UserRoomsView();
 	    userRoomsView.destroy();
@@ -51,12 +58,24 @@ var NewHomeView = Backbone.View.extend({
         
 	var userRoomsView = new UserRoomsView();
 	userRoomsView.afterRender();
+        
+	
+        //STREAMS
+        
+        var availableStreamsView = new AvailableStreamsView();
+	availableStreamsView.afterRender();
 
+	var featuredStreamsView = new FeaturedStreamsView();
+	featuredStreamsView.afterRender();
+	
+
+	//WELCOME?
         if (this.options.showWelcome === true) {
             
                 var welcomeModalView = new WelcomeModalView();
                 welcomeModalView.afterRender();
         }
+	
 	
 	socket.emit("refresh-connection", {
 		    username: localStorage.getItem("username"),

@@ -225,7 +225,7 @@ var RoomsModalView = Backbone.View.extend({
          $('.rooms-modal').modal("hide");
      
 	var router = new Router();
-	router.navigate("rooms/" + data.roomId, {trigger: "true"});
+	router.navigate("channels/" + data.roomId, {trigger: "true"});
 	
     },
     

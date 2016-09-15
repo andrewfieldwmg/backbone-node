@@ -9,13 +9,18 @@ var DataTypes = require("sequelize");
         streamedByUserId: DataTypes.STRING,
         streamedByUsername: DataTypes.STRING,
         roomId: DataTypes.STRING,
-        roomName: DataTypes.STRING
+        roomName: DataTypes.STRING,
+        state: DataTypes.STRING,
+        genre: DataTypes.STRING,
+        upvotes: DataTypes.INTEGER
       }, {
+        
+        timestamps: true,
         
         instanceMethods: {
                 
                 retrieveAll: function(onSuccess, onError) {
-                    Stream.findAll({}, {raw: true})
+                    Stream.findAll({order: [['id', 'DESC']]}, {raw: true})
                             .success(onSuccess).error(onError);	
                 },
                 
@@ -36,13 +41,19 @@ var DataTypes = require("sequelize");
                     var streamedByUsername = this.streamedByUsername;
                     var roomId = this.roomId;
                     var roomName = this.roomName;
+                    var state = this.state;
+                    var genre = this.genre;
+                    var upvotes = this.upvotes;
                     
                     Stream.build({
                                filename: filename,
                                streamedByUserId: streamedByUserId,
                                streamedByUsername: streamedByUsername,
                                roomId: roomId,
-                               roomName: roomName
+                               roomName: roomName,
+                               state: state,
+                               genre: genre,
+                               upvotes: upvotes
                                })
                             .save().success(onSuccess).error(onError);
                 },
@@ -54,17 +65,46 @@ var DataTypes = require("sequelize");
                     var streamedByUsername = this.streamedByUsername;
                     var roomId = this.roomId;
                     var roomName = this.roomName;
+                    var state = this.state;
+                    var genre = this.genre;
+                    var upvotes = this.upvotes;
                     
                     Stream.update({
                                 filename: filename,
                                 streamedByUserId: streamedByUserId,
                                 streamedByUsername: streamedByUsername,
                                 roomId: roomId,
-                                roomName: roomName              
+                                roomName: roomName,
+                                state: state,
+                                genre: genre,
+                                upvotes: upvotes
                                 },
                                 {id: stream_id} )
                             .success(onSuccess).error(onError);
                 },
+                
+                updateStateById: function(stream_id, onSuccess, onError) {
+                    
+                    var state = this.state;
+                    
+                    Stream.update({
+                                state: state
+                                },
+                                {id: stream_id} )
+                            .success(onSuccess).error(onError);
+                },
+                
+                updateStateByStreamerId: function(streamerId, onSuccess, onError) {
+                    
+                    var state = this.state;
+                    
+                    Stream.update({
+                                state: state
+                                },
+                                {streamedByUserId: streamerId} )
+                            .success(onSuccess).error(onError);
+                },
+                
                 
                 removeById: function(stream_id, onSuccess, onError) {
                     Stream.destroy({id: stream_id}).success(onSuccess).error(onError);	

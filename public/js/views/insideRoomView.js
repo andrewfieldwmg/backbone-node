@@ -9,7 +9,7 @@ var InsideRoomView = Backbone.View.extend({
 	//socket.emit('get-room-name', {roomId: this.options.roomId});
        
         socket.emit("enter-room", {
-	    roomId: this.options.roomId,
+	    roomId: this.options.channelId,
 	    //roomName: localStorage.getItem("activeRoomName"),
 	    userEnteringRoom: localStorage.getItem("userId")
 	});
