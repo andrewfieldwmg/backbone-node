@@ -68,7 +68,7 @@ var StartStreamModalView = Backbone.View.extend({
     "keyup .stream-genre" : "streamGenreChanging",
      "click .start-file-stream": "startFileStream",
      "click .start-live-stream": "startLiveStream"
-     //"submit #create-room-with-user-form" : "createRoomFromUsers"
+     //"submit #create-channel-with-user-form" : "createChannelFromUsers"
      
     },
     
@@ -107,8 +107,8 @@ var StartStreamModalView = Backbone.View.extend({
                                 {
                                 userId: localStorage.getItem("userId"),
                                 username: localStorage.getItem("username"),
-                                activeRoomId: localStorage.getItem("activeRoomId"),
-                                activeRoomName: localStorage.getItem("activeRoomName"),
+                                activeChannelId: localStorage.getItem("activeChannelId"),
+                                activeChannelName: localStorage.getItem("activeChannelName"),
                                 userColour: localStorage.getItem("userColour"),
                                 liveStream: "false",
                                 sender: tabID,

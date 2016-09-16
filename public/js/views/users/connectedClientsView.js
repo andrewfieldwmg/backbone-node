@@ -71,11 +71,11 @@ var ConnectedClientsView = Backbone.View.extend({
         //console.log('accept invitation view NOT loaded');
         
             var parameters = {
-                                invitedByUsername: data.invitedByUsername,
-                                joinRoomId: data.roomId,
-                                invitationTo: data.roomName,
-                                invitedByUserId: data.invitedByUserId
-                                };
+			invitedByUsername: data.invitedByUsername,
+			joinRoomId: data.roomId,
+			invitationTo: data.roomName,
+			invitedByUserId: data.invitedByUserId
+			};
                                 
             var invitationModalView = new InvitationModalView(parameters);
             invitationModalView.afterRender();
@@ -93,8 +93,7 @@ var ConnectedClientsView = Backbone.View.extend({
     connectedClientsUpdated: function(data) {
      
             //console.log('connected clients message received');
-            var connectedClientsTable = $('.connected-clients-table').DataTable();
-	    
+            var connectedClientsTable = $('.connected-clients-table').DataTable();    
 	    connectedClientsTable.destroy();
             
             var connectedUsers = JSON.parse(data.connectedUsers);
@@ -171,6 +170,7 @@ var ConnectedClientsView = Backbone.View.extend({
                 
                 }
                  
+		 
                  $('.connected-clients-table').DataTable({
                     responsive: true,
 		    "pageLength": 5

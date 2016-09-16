@@ -10,8 +10,8 @@ var DataTypes = require("sequelize");
         username: DataTypes.STRING,
         userColour: DataTypes.STRING,
         socketId: DataTypes.STRING,
-        roomId: DataTypes.STRING,
-        roomName: DataTypes.STRING
+        channelId: DataTypes.STRING,
+        channelName: DataTypes.STRING
       }, {
         
         instanceMethods: {
@@ -21,13 +21,13 @@ var DataTypes = require("sequelize");
                             .success(onSuccess).error(onError);	
                 },
                 
-                findAllWhere: function(room_id, limit, onSuccess, onError) {
+                findAllWhere: function(channel_id, limit, onSuccess, onError) {
                     //var limit = this.limit;
                     if (!limit) {
                         limit = 95,18446744073709551615;
                     }
                     
-                    Message.findAll({where: {roomId: room_id }, limit: limit, order:[['id', 'ASC']]})
+                    Message.findAll({where: {channelId: channel_id }, limit: limit, order:[['id', 'ASC']]})
                        .success(onSuccess).error(onError);
                 },
                 
@@ -43,8 +43,8 @@ var DataTypes = require("sequelize");
                     var username = this.username;
                     var userColour = this.userColour;
                     var socketId = this.socketId;
-                    var roomId = this.roomId;
-                    var roomName = this.roomName;
+                    var channelId = this.channelId;
+                    var channelName = this.channelName;
                 
                     Message.build({
                         message: message,
@@ -52,8 +52,8 @@ var DataTypes = require("sequelize");
                         userId: userId,
                         userColour: userColour,
                         socketId: socketId,
-                        roomId: roomId,
-                        roomName: roomName
+                        channelId: channelId,
+                        channelName: channelName
                         })
                         .save().success(onSuccess).error(onError);
                 },

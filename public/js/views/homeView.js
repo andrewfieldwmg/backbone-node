@@ -1,4 +1,4 @@
-var HomeView = Backbone.View.extend({
+var NewHomeView = Backbone.View.extend({
     
     initialize: function(options){
         
@@ -10,9 +10,16 @@ var HomeView = Backbone.View.extend({
 	 
 	 $("#audio_player_container").empty();
 	
-	if (localStorage.getItem("clientsInRoomViewLoaded") == "true") {
-	    var clientsInRoomView = new ClientsInRoomView();
-	    clientsInRoomView.destroy();
+	// DESTROY / CLEAR OUT VIEWS TO STOP ZOMBIES
+	
+	if (localStorage.getItem("userControlsViewLoaded") == "true") {
+	    var userControlsView = new UserControlsView();
+	    userControlsView.destroy();
+	}
+	
+	if (localStorage.getItem("clientsInChannelViewLoaded") == "true") {
+	    var clientsInChannelView = new ClientsInChannelView();
+	    clientsInChannelView.destroy();
 	}
 	
         if (localStorage.getItem("messageFormViewLoaded") == "true") {
@@ -29,16 +36,7 @@ var HomeView = Backbone.View.extend({
 	    var appControlsView = new AppControlsView();
 	    appControlsView.destroy();
 	 }
-
-	if (localStorage.getItem("userRoomsViewLoaded") == "true") {
-	    var userRoomsView = new UserRoomsView();
-	    userRoomsView.destroy();
-	}
 	
-	if (localStorage.getItem("availableRoomsViewLoaded") == "true") {	
-	    var availableRooms = new AvailableRoomsView();
-	    availableRooms.destroy();
-	}
 	
 	/*if (localStorage.getItem("audioPlayerViewLoaded") == "true") {
 	    var audioContext = playMp3Stream(socket);
@@ -47,40 +45,57 @@ var HomeView = Backbone.View.extend({
 	}*/
         
 	
+        //USERS
+	var userControlsView = new UserControlsView();
+	userControlsView.afterRender();
+	    
 	var connectedClientsView = new ConnectedClientsView();
 	connectedClientsView.afterRender();
 	
        	var contactsView = new ContactsView();
 	contactsView.afterRender();
+        
 	
-	var availableRooms = new AvailableRoomsView();
-	availableRooms.afterRender();
+        //CHANNELS
 	
+	if (localStorage.getItem("userChannelsViewLoaded") == "true") {
+	    var userChannelsView = new UserChannelsView();
+	    userChannelsView.destroy();
+	}
+        
+	var userChannelsView = new UserChannelsView();
+	userChannelsView.afterRender();
+        
 	
-	    if (localStorage.getItem("roomName")) {
-		
-		var userRoomsView = new UserRoomsView();
-		userRoomsView.afterRender();
-	    }
+        //STREAMS
+        
+        var availableStreamsView = new AvailableStreamsView();
+	availableStreamsView.afterRender();
 
-		if (this.options.showWelcome === true) {
-		    
-			var welcomeModalView = new WelcomeModalView();
-			welcomeModalView.afterRender();
-		}
+	var featuredStreamsView = new FeaturedStreamsView();
+	featuredStreamsView.afterRender();
+	
+
+	//WELCOME?
+        if (this.options.showWelcome === true) {
+            
+                var welcomeModalView = new WelcomeModalView();
+                welcomeModalView.afterRender();
+        }
+	
 	
 	socket.emit("refresh-connection", {
 		    username: localStorage.getItem("username"),
 		    userId: localStorage.getItem("userId"),
-		    roomIds: localStorage.getItem("roomIds"),
-		    roomName: localStorage.getItem("roomName"),
+		    channelIds: localStorage.getItem("channelIds"),
+		    channelName: localStorage.getItem("channelName"),
 		    userColour: localStorage.getItem("userColour")
 		    }
 	);
 	        
 	
-        localStorage.setItem("activeRoomId", "");
-        localStorage.setItem("activeRoomName", "");
+        localStorage.setItem("activeChannelId", "");
+        localStorage.setItem("activeChannelName", "");
 
 
     },

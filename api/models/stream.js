@@ -8,8 +8,8 @@ var DataTypes = require("sequelize");
         filename: DataTypes.STRING,
         streamedByUserId: DataTypes.STRING,
         streamedByUsername: DataTypes.STRING,
-        roomId: DataTypes.STRING,
-        roomName: DataTypes.STRING,
+        channelId: DataTypes.STRING,
+        channelName: DataTypes.STRING,
         state: DataTypes.STRING,
         genre: DataTypes.STRING,
         upvotes: DataTypes.INTEGER
@@ -39,8 +39,8 @@ var DataTypes = require("sequelize");
                     var filename = this.filename;
                     var streamedByUserId = this.streamedByUserId;
                     var streamedByUsername = this.streamedByUsername;
-                    var roomId = this.roomId;
-                    var roomName = this.roomName;
+                    var channelId = this.channelId;
+                    var channelName = this.channelName;
                     var state = this.state;
                     var genre = this.genre;
                     var upvotes = this.upvotes;
@@ -49,8 +49,8 @@ var DataTypes = require("sequelize");
                                filename: filename,
                                streamedByUserId: streamedByUserId,
                                streamedByUsername: streamedByUsername,
-                               roomId: roomId,
-                               roomName: roomName,
+                               channelId: channelId,
+                               channelName: channelName,
                                state: state,
                                genre: genre,
                                upvotes: upvotes
@@ -63,8 +63,8 @@ var DataTypes = require("sequelize");
                     var filename = this.filename;
                     var streamedByUserId = this.streamedByUserId;
                     var streamedByUsername = this.streamedByUsername;
-                    var roomId = this.roomId;
-                    var roomName = this.roomName;
+                    var channelId = this.channelId;
+                    var channelName = this.channelName;
                     var state = this.state;
                     var genre = this.genre;
                     var upvotes = this.upvotes;
@@ -73,8 +73,8 @@ var DataTypes = require("sequelize");
                                 filename: filename,
                                 streamedByUserId: streamedByUserId,
                                 streamedByUsername: streamedByUsername,
-                                roomId: roomId,
-                                roomName: roomName,
+                                channelId: channelId,
+                                channelName: channelName,
                                 state: state,
                                 genre: genre,
                                 upvotes: upvotes

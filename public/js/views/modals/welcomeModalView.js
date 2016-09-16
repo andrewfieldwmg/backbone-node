@@ -39,7 +39,7 @@ var WelcomeModalView = Backbone.View.extend({
         
 	var self = this;
 	
-        //localStorage.setItem('roomsModalViewLoaded', "true");
+        //localStorage.setItem('channelsModalViewLoaded', "true");
 
        var compiledTemplate = _.template( $("#welcome_modal_template").html());                     
        this.$el.html( compiledTemplate);
@@ -62,7 +62,7 @@ var WelcomeModalView = Backbone.View.extend({
 	
 	//$('.invitation-modal').modal("hide");
 	
-        //localStorage.setItem('roomsModalViewLoaded', "false");
+        //localStorage.setItem('channelsModalViewLoaded', "false");
         
         //this.undelegateEvents();
         this.undelegateEvents();

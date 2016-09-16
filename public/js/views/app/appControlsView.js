@@ -115,8 +115,8 @@ var AppControlsView = Backbone.View.extend({
             ss(socket).emit('file-upload', stream, {
                             userId: localStorage.getItem("userId"),
                             username: localStorage.getItem("username"),
-                            activeRoomId: localStorage.getItem("activeRoomId"),
-                            activeRoomName: localStorage.getItem("activeRoomName"),
+                            activeChannelId: localStorage.getItem("activeChannelId"),
+                            activeChannelName: localStorage.getItem("activeChannelName"),
                             userColour: localStorage.getItem("userColour"),
                             liveStream: "false",
                             size: file.size,

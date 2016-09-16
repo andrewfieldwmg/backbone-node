@@ -8,8 +8,8 @@ var DataTypes = require("sequelize");
         filename: DataTypes.STRING,
         uploadedByUserId: DataTypes.STRING,
         uploadedByUsername: DataTypes.STRING,
-        roomId: DataTypes.STRING,
-        roomName: DataTypes.STRING,
+        channelId: DataTypes.STRING,
+        channelName: DataTypes.STRING,
         downloadedBy: DataTypes.STRING
       }, {
         
@@ -36,15 +36,15 @@ var DataTypes = require("sequelize");
                     var downloadedBy = this.downloadedBy;
                     var uploadedByUserId = this.uploadedByUserId;
                     var uploadedByUsername = this.uploadedByUsername;
-                    var roomId = this.roomId;
-                    var roomName = this.roomName;
+                    var channelId = this.channelId;
+                    var channelName = this.channelName;
                     
                     File.build({
                                 filename: filename,
                                uploadedByUserId: uploadedByUserId,
                                uploadedByUsername: uploadedByUsername,
-                               roomId: roomId,
-                               roomName: roomName,
+                               channelId: channelId,
+                               channelName: channelName,
                                downloadedBy: downloadedBy
                                })
                             .save().success(onSuccess).error(onError);
@@ -56,15 +56,15 @@ var DataTypes = require("sequelize");
                     var downloadedBy = this.downloadedBy;
                     var uploadedByUserId = this.uploadedByUserId;
                     var uploadedByUsername = this.uploadedByUsername;
-                    var roomId = this.roomId;
-                    var roomName = this.roomName;
+                    var channelId = this.channelId;
+                    var channelName = this.channelName;
                     
                     File.update({
                                 filename: filename,
                                 uploadedByUserId: uploadedByUserId,
                                 uploadedByUsername: uploadedByUsername,
-                                roomId: roomId,
-                                roomName: roomName,
+                                channelId: channelId,
+                                channelName: channelName,
                                 downloadedBy: downloadedBy                
                                 },
                                 {id: file_id} )

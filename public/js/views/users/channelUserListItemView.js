@@ -1,10 +1,10 @@
-var RoomUserListItemView = Backbone.View.extend({
+var ChannelUserListItemView = Backbone.View.extend({
     
     el: $("#connected_clients_container"),
            
     initialize: function(options){
         
-        console.log('room user list itemn view init');
+        console.log('channel user list itemn view init');
         
         this.options = options;
  
@@ -50,7 +50,7 @@ var RoomUserListItemView = Backbone.View.extend({
                             actionIconsClass: this.options.actionIconsClass
                             };
         
-        var compiledTemplate = _.template( $("#clients_in_room_list_item_template").html(), parameters);
+        var compiledTemplate = _.template( $("#clients_in_channel_list_item_template").html(), parameters);
         return compiledTemplate;
         
     },

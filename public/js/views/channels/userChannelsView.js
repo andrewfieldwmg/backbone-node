@@ -1,17 +1,17 @@
-var UserRoomsView = Backbone.View.extend({
+var UserChannelsView = Backbone.View.extend({
     
-    el: $("#user_rooms_container"),
+    el: $("#user_channels_container"),
     
-    template : _.template( $("#user_rooms_template").html()),
+    template : _.template( $("#user_channels_template").html()),
            
     initialize: function(){
 
-            //console.log('rooms view init');
+            //console.log('channels view init');
             
             var self = this;
             
-            socket.on('user-rooms', function(data) {
-                self.availableRoomsUpdated(data);
+            socket.on('user-channels', function(data) {
+                self.availableChannelsUpdated(data);
             });
             
             socket.on('message-count-updated', function (data) {
@@ -46,112 +46,112 @@ var UserRoomsView = Backbone.View.extend({
 		
     afterRender: function(){
          
-       localStorage.setItem('userRoomsViewLoaded', "true");
+       localStorage.setItem('userChannelsViewLoaded', "true");
        this.$el.html( this.template );
                  
-        /*if (localStorage.getItem("activeRoomName") != "") {
+        /*if (localStorage.getItem("activeChannelName") != "") {
             
-            $('#rooms-list-header').html('Other Rooms');
+            $('#channels-list-header').html('Other Channels');
         }*/
         
     },
 
     events: {
    
-     "click #open-create-room-form": "openCreateRoomForm",
-     "click .enter-room": "enterRoom"
+     "click #open-create-channel-form": "openCreateChannelForm",
+     "click .enter-channel": "enterChannel"
      
     },
     
-    enterRoom: function(e) {
+    enterChannel: function(e) {
 	
-	console.log('enterroom');
+	console.log('enterchannel');
 	     
-	var requestedRoomId = $(e.currentTarget).data('room-id');
-	var requestedRoomName = $(e.currentTarget).data('room-name');
+	var requestedChannelId = $(e.currentTarget).data('channel-id');
+	var requestedChannelName = $(e.currentTarget).data('channel-name');
 
 	var router = new Router();
-	router.navigate("channels/" + requestedRoomId, {trigger: "true"}); 
+	router.navigate("channels/" + requestedChannelId, {trigger: "true"}); 
 	
       
     },
     
-    openCreateRoomForm: function(e) {
+    openCreateChannelForm: function(e) {
         
-        //var roomsFormView = new RoomsFormView();
-        //roomsFormView.render();
+        //var channelsFormView = new ChannelsFormView();
+        //channelsFormView.render();
         	
-	if (localStorage.getItem("roomsModalViewLoaded") =="false") {
+	if (localStorage.getItem("channelsModalViewLoaded") =="false") {
         
-	    console.log('rooms modal view NOT loaded, so proceeding');
+	    console.log('channels modal view NOT loaded, so proceeding');
         	
-	    console.log('open room modal');
+	    console.log('open channel modal');
         
 	    var parameters = {
 			    modalHeaderContent: "Create a <strong>New Channel</strong>",
 			    targetUsername: "",
 			    targetUserId: "",
-                            createRoomFromUserClass: "hidden",
-			    createRoomClass: ""
+                            createChannelFromUserClass: "hidden",
+			    createChannelClass: ""
                             };
 				
-	    var roomsModalView = new RoomsModalView(parameters);
-	    roomsModalView.afterRender();
+	    var channelsModalView = new ChannelsModalView(parameters);
+	    channelsModalView.afterRender();
             
         } else {
             
-            console.log('rooms modal view ALREADY loaded');
+            console.log('channels modal view ALREADY loaded');
             
         }
         
     },
   
-    availableRoomsUpdated: function(data) {
+    availableChannelsUpdated: function(data) {
 
             //console.log(data);
      
-            var availableRooms = JSON.parse(data.availableRooms);
+            var availableChannels = JSON.parse(data.availableChannels);
                   
-                if (availableRooms.length === 0) {
+                if (availableChannels.length === 0) {
                     
   
                 } else {
                    
-		    $('#user-rooms').html('');
+		    $('#user-channels').html('');
 		
-                    for(i = 0; i < availableRooms.length; i++) {
+                    for(i = 0; i < availableChannels.length; i++) {
                     
-                        var usersInRoom = JSON.parse(availableRooms[i].usersInRoom);
-                        var index = usersInRoom.indexOf(localStorage.getItem("userId").toString());
+                        var usersInChannel = JSON.parse(availableChannels[i].usersInChannel);
+                        var index = usersInChannel.indexOf(localStorage.getItem("userId").toString());
                   
                         if (index > -1) {
-                            usersInRoom.splice(index, 1);
+                            usersInChannel.splice(index, 1);
                         }
 
-                        var numberUsersInRoom = usersInRoom.length;
+                        var numberUsersInChannel = usersInChannel.length;
                         
-                        var roomMessage = "<strong>" + availableRooms[i].name;
+                        var channelMessage = "<strong>" + availableChannels[i].name;
                         
-                        if(numberUsersInRoom > 1) {
-                            var linkClass = "enter-room cursor-pointer";
+                        if(numberUsersInChannel > 1) {
+                            var linkClass = "enter-channel cursor-pointer";
                         } else {          
                             var linkClass = "disabled";
                         }
                         
-                        if (availableRooms[i].name != localStorage.getItem("activeRoomName")) {
+                        if (availableChannels[i].name != localStorage.getItem("activeChannelName")) {
                         
                                     var parameters = {
                                             cssClass: "connected-client-list",
                                             time: "",
-                                            linkClass: "enter-room cursor-pointer",
-                                            roomId: availableRooms[i].id,
-                                            roomName: availableRooms[i].name,
-                                            messageCount: availableRooms[i].messageCount
+                                            linkClass: "enter-channel cursor-pointer",
+                                            channelId: availableChannels[i].id,
+                                            channelName: availableChannels[i].name,
+                                            messageCount: availableChannels[i].messageCount
                                             };
                                             
                                             
-                            var roomListItemView = new RoomListItemView(parameters);
-                            $('#user-rooms').append(roomListItemView.render());
+                            var channelListItemView = new ChannelListItemView(parameters);
+                            $('#user-channels').append(channelListItemView.render());
                             
                         } else {
                             
@@ -159,14 +159,14 @@ var UserRoomsView = Backbone.View.extend({
                            cssClass: "connected-client-list",
                            time: "",
                            linkClass: "disabled",
-                           roomId: availableRooms[i].id,
-                           roomName: availableRooms[i].name + " - <span class='small'><em>current channel</em></span>",
-                           messageCount: availableRooms[i].messageCount
+                           channelId: availableChannels[i].id,
+                           channelName: availableChannels[i].name + " - <span class='small'><em>current channel</em></span>",
+                           messageCount: availableChannels[i].messageCount
                            };
                                             
                                             
-                            var roomListItemView = new RoomListItemView(parameters);
-                            $('#user-rooms').append(roomListItemView.render());
+                            var channelListItemView = new ChannelListItemView(parameters);
+                            $('#user-channels').append(channelListItemView.render());
                             
                         }
  
@@ -182,7 +182,7 @@ var UserRoomsView = Backbone.View.extend({
         
         console.log('message count updated');
         
-        $('.message-counter[data-room-id="' + data.roomId + '"]').html(data.messageCount)
+        $('.message-counter[data-channel-id="' + data.channelId + '"]').html(data.messageCount)
         .css('background-color', 'orange')
         .css('color', 'black')
         .animate({ 'zoom': 1.3 }, 100).animate({ 'zoom': 1.0 }, 100)
@@ -191,7 +191,7 @@ var UserRoomsView = Backbone.View.extend({
     
     remove: function() { 
           
-        localStorage.setItem('userRoomsViewLoaded', "false");
+        localStorage.setItem('userChannelsViewLoaded', "false");
         
         //this.undelegateEvents();
         this.undelegateEvents();
@@ -205,7 +205,7 @@ var UserRoomsView = Backbone.View.extend({
         
     destroy: function() {
         
-        socket.off('user-rooms');
+        socket.off('user-channels');
         socket.off('message-count-updated');
         
         //this.undelegateEvents();

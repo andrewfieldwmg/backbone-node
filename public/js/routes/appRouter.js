@@ -52,7 +52,7 @@ var Router = Backbone.Router.extend({
    
    channel: function(channelId) {
 
-        new InsideRoomView({channelId: channelId});
+        new InsideChannelView({channelId: channelId});
     
    }
    

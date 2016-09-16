@@ -7,7 +7,6 @@ $(document).on('ready', function() {
         return;       
     }
         
-
     if (!isWebkit || isMobileOrTablet()) {
             
         $('#wrong_browser').show();
@@ -26,10 +25,10 @@ $(document).on('ready', function() {
 
         //localStorage.clear();
         
-        localStorage.setItem("availableRoomsViewLoaded", "false");
-        localStorage.setItem("userRoomsViewLoaded", "false");
+        localStorage.setItem("availableChannelsViewLoaded", "false");
+        localStorage.setItem("userChannelsViewLoaded", "false");
         
-        localStorage.setItem("roomsModalViewLoaded", "false");
+        localStorage.setItem("channelsModalViewLoaded", "false");
         localStorage.setItem("acceptInvitationViewLoaded", "false");
         
         localStorage.setItem("messageFormViewLoaded", "false");
@@ -37,7 +36,7 @@ $(document).on('ready', function() {
         
         localStorage.setItem("appControlsViewLoaded", "false");
         
-        localStorage.setItem("clientsInRoomViewLoaded", "false");
+        localStorage.setItem("clientsInChannelViewLoaded", "false");
         localStorage.setItem("streamState", "stopped");
              
         var router = new Router();
@@ -59,8 +58,8 @@ function initSocketIo() {
 
         var queryString = "username="+localStorage.getItem("username") +
                                 "&userId="+localStorage.getItem("userId") +
-                                "&roomIds="+localStorage.getItem("roomIds") +
-                                "&roomName="+localStorage.getItem("roomName") +
+                                "&channelIds="+localStorage.getItem("channelIds") +
+                                "&channelName="+localStorage.getItem("channelName") +
                                 "&userColour="+localStorage.getItem("userColour");
                                 
         var socket = io.connect({query: queryString});

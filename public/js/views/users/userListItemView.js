@@ -60,38 +60,38 @@ var UserListItemView = Backbone.View.extend({
 
     events: {
    
-     "click .open-create-room-modal": "openCreateRoomModal"
+     "click .open-create-channel-modal": "openCreateChannelModal"
 
     },
     
-    openCreateRoomModal: function(e) {
+    openCreateChannelModal: function(e) {
 	
         e.stopPropagation();
 	
 	var clickedUserId = $(e.currentTarget).data('user-id');
 	var clickedUserName = $(e.currentTarget).data('user-name');
 	
-	if (localStorage.getItem("roomsModalViewLoaded") =="false") {
+	if (localStorage.getItem("channelsModalViewLoaded") =="false") {
         
-	    console.log('rooms modal view NOT loaded, so proceeding');
+	    console.log('channels modal view NOT loaded, so proceeding');
         	
 	    var modalHeaderContent = 'Connect With <strong>'+clickedUserName+'</strong>';
-	    console.log('open room modal');
+	    console.log('open channel modal');
         
 	    var parameters = {
 			    modalHeaderContent: modalHeaderContent,
 			    targetUsername: clickedUserName,
 			    targetUserId: clickedUserId,
-			    createRoomFromUserClass: "",
-			    createRoomClass: "hidden"
+			    createChannelFromUserClass: "",
+			    createChannelClass: "hidden"
                             };
 				
-	    var roomsModalView = new RoomsModalView(parameters);
-	    roomsModalView.afterRender();
+	    var channelsModalView = new ChannelsModalView(parameters);
+	    channelsModalView.afterRender();
             
         } else {
             
-            console.log('rooms modal view ALREADY loaded');
+            console.log('channels modal view ALREADY loaded');
             
         }
 	

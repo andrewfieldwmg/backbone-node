@@ -14,8 +14,8 @@ var InvitationModalView = Backbone.View.extend({
 	 
         console.log('init invitation modal');
                                   
-            socket.on('room-ready', function(data) {
-                self.roomReady(data);
+            socket.on('channel-ready', function(data) {
+                self.channelReady(data);
             });
             
 
@@ -53,7 +53,7 @@ var InvitationModalView = Backbone.View.extend({
 	
         var parameters = {
            invitedByUsername: this.options.invitedByUsername,
-           joinRoomId: this.options.joinRoomId,
+           joinChannelId: this.options.joinChannelId,
            invitationTo: this.options.invitationTo,
 	   invitedByUserId: this.options.invitedByUserId
            };
@@ -80,23 +80,23 @@ var InvitationModalView = Backbone.View.extend({
 
     events: {
    
-     "click #accept-room-invitation" : "acceptRoomInvitation",
-     "click #decline-room-invitation" : "declineRoomInvitation"
+     "click #accept-channel-invitation" : "acceptChannelInvitation",
+     "click #decline-channel-invitation" : "declineChannelInvitation"
      
     },
     
-    acceptRoomInvitation: function(e) {
+    acceptChannelInvitation: function(e) {
         
-        console.log("accept room invitation");
+        console.log("accept channel invitation");
         
         e.preventDefault();
         //e.stopPropagation();
         
-        var invitedRoomId = $(e.currentTarget).data('join-room-id');
+        var invitedChannelId = $(e.currentTarget).data('join-channel-id');
 
 
-        socket.emit('join-room', {
-                                joiningRoomId: invitedRoomId,
+        socket.emit('join-channel', {
+                                joiningChannelId: invitedChannelId,
                                 joinerUserId: this.myUserId,
                                 joinerUsername: this.myUsername,
 				joinerUserModel: this.myUserModel
@@ -104,18 +104,18 @@ var InvitationModalView = Backbone.View.extend({
         
     },
     
-    declineRoomInvitation: function(e) {
+    declineChannelInvitation: function(e) {
         
-        console.log("decline room invitation");
+        console.log("decline channel invitation");
         
         e.preventDefault();
         //e.stopPropagation();
         
-        var invitedRoomId = $(e.currentTarget).data('join-room-id');
+        var invitedChannelId = $(e.currentTarget).data('join-channel-id');
 	var invitedByUserId = $(e.currentTarget).data('invited-by-user-id');
 
-        socket.emit('decline-room-invitation', {		
-                                joiningRoomId: invitedRoomId,
+        socket.emit('decline-channel-invitation', {		
+                                joiningChannelId: invitedChannelId,
 				invitedByUserId: invitedByUserId,
 				joinerUserId: this.myUserId,
                                 joinerUsername: this.myUsername
@@ -124,41 +124,41 @@ var InvitationModalView = Backbone.View.extend({
         $('.invitation-modal').modal("hide");
     },
     
-    roomReady: function(data) {
+    channelReady: function(data) {
      
 	var self = this;
      
-        console.log('room ready');
+        console.log('channel ready');
 		
-	if(localStorage.getItem("roomName")) {
-	    var roomNameArray = JSON.parse(localStorage.getItem("roomName"));
+	if(localStorage.getItem("channelName")) {
+	    var channelNameArray = JSON.parse(localStorage.getItem("channelName"));
 	} else {
-	    var roomNameArray = [];
+	    var channelNameArray = [];
 	}
 	
-	 roomNameArray.push(data.roomName.toString());
-	 var uniqueRoomsArray = Array.from(new Set(roomNameArray));
+	 channelNameArray.push(data.channelName.toString());
+	 var uniqueChannelsArray = Array.from(new Set(channelNameArray));
 	 
-	 localStorage.setItem('roomName', JSON.stringify(uniqueRoomsArray));
+	 localStorage.setItem('channelName', JSON.stringify(uniqueChannelsArray));
 	 
-	if(localStorage.getItem("roomIds")) {
-	    var roomIdArray = JSON.parse(localStorage.getItem("roomIds"));
+	if(localStorage.getItem("channelIds")) {
+	    var channelIdArray = JSON.parse(localStorage.getItem("channelIds"));
 	} else {
-	    var roomIdArray = [];
+	    var channelIdArray = [];
 	}
 	
-	 roomIdArray.push(data.roomId.toString());
-	 var uniqueRoomIdsArray = Array.from(new Set(roomIdArray));
-	 localStorage.setItem('roomIds', JSON.stringify(uniqueRoomIdsArray));
+	 channelIdArray.push(data.channelId.toString());
+	 var uniqueChannelIdsArray = Array.from(new Set(channelIdArray));
+	 localStorage.setItem('channelIds', JSON.stringify(uniqueChannelIdsArray));
 	 
 	 
-	 //localStorage.setItem("activeRoomName", data.roomName);
-	 //localStorage.setItem("activeRoomId", data.roomId);
+	 //localStorage.setItem("activeChannelName", data.channelName);
+	 //localStorage.setItem("activeChannelId", data.channelId);
 	
          $('.invitation-modal').modal("hide");
 	
 	var router = new Router();
-	router.navigate("rooms/" + data.roomId, {trigger: "true"}); 
+	router.navigate("channels/" + data.channelId, {trigger: "true"}); 
 
     },
     

@@ -13,7 +13,7 @@ var DataTypes = require("sequelize");
         userLocation: DataTypes.STRING,
         status: DataTypes.STRING,
         userColour: DataTypes.STRING,
-        inRooms: DataTypes.STRING
+        inChannels: DataTypes.STRING
       }, {
         
         instanceMethods: {
@@ -55,7 +55,7 @@ var DataTypes = require("sequelize");
                     var username = this.username;
                     var socketId = this.socketId;
                     var status = this.status;
-                    var inRooms = this.inRooms;
+                    var inChannels = this.inChannels;
 
                     //var shasum = crypto.createHash('sha1');
                     //shasum.update(password);
@@ -64,7 +64,7 @@ var DataTypes = require("sequelize");
                     User.update({
                                 socketId: socketId,
                                  status: status,
-                                 inRooms: inRooms
+                                 inChannels: inChannels
                                  }, {id: id} )
                             .success(onSuccess).error(onError);
                 },
@@ -75,7 +75,7 @@ var DataTypes = require("sequelize");
                     var username = this.username;
                     var socketId = this.socketId;
                     var status = this.status;
-                    var inRooms = this.inRooms;
+                    var inChannels = this.inChannels;
                     var userGenre = this.userGenre;
                     var userLocation = this.userLocation;
                     var email = this.email;
@@ -92,7 +92,7 @@ var DataTypes = require("sequelize");
                                  email: email,
                                  password: password,
                                  status: status,
-                                 inRooms: inRooms
+                                 inChannels: inChannels
                                  }, {id: id} )
                             .success(onSuccess).error(onError);
                 },

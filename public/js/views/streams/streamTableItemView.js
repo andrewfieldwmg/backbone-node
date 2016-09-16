@@ -20,8 +20,8 @@ var StreamTableItemView = Backbone.View.extend({
                             streamedByUsername: this.options.streamedByUsername,
 			    upvotes: this.options.upvotes,
 			    createdAt: this.options.createdAt,
-			    roomId: this.options.roomId,
-			    roomName: this.options.roomName,
+			    channelId: this.options.channelId,
+			    channelName: this.options.channelName,
 			    listenButtonClass: this.options.listenButtonClass
                             };
  

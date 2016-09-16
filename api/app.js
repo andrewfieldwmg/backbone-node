@@ -32,7 +32,7 @@
     //DB MODELS//
     var User = require("./models/user.js");
     var Message = require("./models/message.js");
-    var Room = require("./models/room.js");
+    var Channel = require("./models/channel.js");
     var File = require("./models/file.js");
     var Stream = require("./models/stream.js");
     
@@ -82,8 +82,8 @@
         var handshake = socket.handshake;
         var username = handshake.query.username;
         var userId = handshake.query.userId;
-        var roomIds = handshake.query.roomIds;
-        var roomName = handshake.query.roomName;
+        var channelIds = handshake.query.channelIds;
+        var channelName = handshake.query.channelName;
         var userColour = handshake.query.userColour;
         
          //user is NEW, so needs a new "account"...
@@ -294,43 +294,43 @@
          });
         
         
-        function updateConnectedClientsInRoom(roomIds, roomName) {
+        function updateConnectedClientsInChannel(channelIds, channelName) {
                                                 
-                var room = Room.build();
+                var channel = Channel.build();
                 
-                room.findAllWhere(JSON.parse(roomIds), function(rooms) {
+                channel.findAllWhere(JSON.parse(channelIds), function(channels) {
                    
-                    if (rooms) {
+                    if (channels) {
 
-                        usersInRoomArray = [];     
-                        for(i = 0; i < rooms.length; i++) {
-                           usersInRoomArray.push(JSON.parse(rooms[i].usersInRoom)); 
+                        usersInChannelArray = [];     
+                        for(i = 0; i < channels.length; i++) {
+                           usersInChannelArray.push(JSON.parse(channels[i].usersInChannel)); 
                         }
                         
-                        var uniqueFlatUsersInRoomArray = Array.from(new Set(utils.flatten(usersInRoomArray)));
-                        ////console.log(uniqueFlatUsersInRoomArray);
+                        var uniqueFlatUsersInChannelArray = Array.from(new Set(utils.flatten(usersInChannelArray)));
+                        ////console.log(uniqueFlatUsersInChannelArray);
                         
                        var user = User.build();
 
-                        user.findAllWhere(uniqueFlatUsersInRoomArray, function(users) {
+                        user.findAllWhere(uniqueFlatUsersInChannelArray, function(users) {
                             
                             if (users) {
                             
-                              var roomNameArray = JSON.parse(roomName);
-                                var roomIdsArray = JSON.parse(roomIds);
+                              var channelNameArray = JSON.parse(channelName);
+                                var channelIdsArray = JSON.parse(channelIds);
                                 
-                                        for(i = 0; i < roomNameArray.length; i++) {
+                                        for(i = 0; i < channelIdsArray.length; i++) {
                                         
-                                        ////console.log(roomIdsArray[i]);
-                                        ////console.log('emitting clients IN ROOM to: ' + roomNameArray[i] + '-' + JSON.stringify(users));
+                                        ////console.log(channelIdsArray[i]);
+                                        ////console.log('emitting clients IN ROOM to: ' + channelNameArray[i] + '-' + JSON.stringify(users));
                                              
-                                             io.to(roomNameArray[i]).emit('connected-clients-in-room', {
-                                                          usersInRoom: JSON.stringify(users),
-                                                          roomName: roomNameArray[i]
+                                             io.to(channelIdsArray[i]).emit('connected-clients-in-channel', {
+                                                          usersInChannel: JSON.stringify(users),
+                                                          channelId: channelIdsArray[i]
                                              });
                                         }
                             
-                                    roomNameArray = [];
+                                    channelNameArray = [];
                                     users = [];
                                     
                                     } else {
@@ -354,39 +354,6 @@
                                     
         }
         
-            
-            
-        function updateConnectedClientsInRoom2(roomIds, roomName) {
-                                                
-                var room = Room.build();
-                
-                room.findAllWhere(JSON.parse(roomIds), function(rooms) {
-                   
-                    if (rooms) {
-
-                        usersInRoomArray = [];
-                        
-                        for(i = 0; i < rooms.length; i++) {
-                            
-                            io.to(rooms[i].name).emit('connected-clients-in-room', {
-                                    usersInRoom: JSON.stringify(rooms[i].userModelsInRoom),
-                                    roomName: rooms[i].name
-                            });
-                          
-                        }
-                        
-      
-                    } else {
-                      //res.send(401, "User not found");
-                    }
-                            
-                            
-            }, function(error) {
-                  //res.send("User not found");
-            });
-                
-                                    
-        }
         
         
     socket.on('check-user-status', function (data) {
@@ -409,13 +376,13 @@
             
         
     socket.on('refresh-connection', function(data) {
-        
+       
         //console.log('refresh connection');
         
         var username = data.username;
         var userId = data.userId;
-        var roomIds = data.roomIds;
-        var roomName = data.roomName;
+        var channelIds = data.channelIds;
+        var channelName = data.channelName;
         var userColour = data.userColour;
         
         if(userId !== "null" && username !== "null") {
@@ -426,50 +393,50 @@
             //that means he's "registered" his "account" before
             //so we only must update his socket id
             
-            ////console.log(roomName);
+            ////console.log(channelName);
         
-                if(typeof roomName !== 'undefined' && roomName !== null && roomName !== "null") {
+                /*if(typeof channelName !== 'undefined' && channelName !== null && channelName !== "null") {
                     
-                    ////console.log('roomname is not null');
-                 // then the user hs been in at least one room before
+                    ////console.log('channelname is not null');
+                 // then the user hs been in at least one channel before
                  // so we re-join him to them - thus persisting the application state
                  // across page reloads and sessions
     
-                    socketRoomNamesArray = [];    
-                    var joinedRoomArray = JSON.parse(roomName);
+                    socketChannelNamesArray = [];    
+                    var joinedChannelArray = JSON.parse(channelName);
                    
-                    for(i = 0; i < joinedRoomArray.length; i++) {
+                    for(i = 0; i < joinedChannelArray.length; i++) {
                     
-                        socket.join(joinedRoomArray[i]);
-                        ////console.log('socket joined!!!!: ' + joinedRoomArray[i]);
-                        socketRoomNamesArray.push(joinedRoomArray[i]);
+                        socket.join(joinedChannelArray[i]);
+                        ////console.log('socket joined!!!!: ' + joinedChannelArray[i]);
+                        socketChannelNamesArray.push(joinedChannelArray[i]);
                     }
                     
-                    socket.roomNames = Array.from(new Set(utils.flatten(socketRoomNamesArray)));
+                    socket.channelNames = Array.from(new Set(utils.flatten(socketChannelNamesArray)));
                 
                 } else {
-                     ////console.log('roomname is null');
-                }
+                     ////console.log('channelname is null');
+                }*/
                 
-                if(typeof roomIds !== 'undefined' && roomIds !== null && roomIds !== "null") {
+                if(typeof channelIds !== 'undefined' && channelIds !== null && channelIds !== "null") {
                     
-                    ////console.log('roomids is not null');
-                 // then the user hs been in at least one room before
+                    ////console.log('channelids is not null');
+                 // then the user hs been in at least one channel before
                  // so we re-join him to them - thus persisting the application state
                  // across page reloads and sessions
     
-                    socketRoomIdsArray = [];    
-                    var joinedRoomIdsArray = JSON.parse(roomIds);
+                    socketChannelIdsArray = [];    
+                    var joinedChannelIdsArray = JSON.parse(channelIds);
                    
-                    for(i = 0; i < joinedRoomIdsArray.length; i++) {
-                    
-                        socketRoomIdsArray.push(joinedRoomIdsArray[i]);
+                    for(i = 0; i < joinedChannelIdsArray.length; i++) {
+                        socket.join(joinedChannelIdsArray[i]);
+                        socketChannelIdsArray.push(joinedChannelIdsArray[i]);
                     }
                     
-                    socket.roomIds = Array.from(new Set(utils.flatten(socketRoomIdsArray)));
+                    socket.channelIds = Array.from(new Set(utils.flatten(socketChannelIdsArray)));
                 
                 } else {
-                     ////console.log('roomids is null');
+                     ////console.log('channelids is null');
                 }
 
             
@@ -478,11 +445,12 @@
                     //connectedUsernames.push(username);
                     //connectedUserIds.push(userId);
                     
+        
                     var user = User.build();	
                       
                     user.socketId = socket.id;
                     user.status = "online";
-                    user.inRooms = roomIds;
+                    user.inChannels = channelIds;
                     //user.username = username;
                 
                     user.updateById(userId, function(success) {
@@ -521,14 +489,14 @@
                         
                                     io.sockets.emit('connected-clients', {connectedUsers: JSON.stringify(users)});
                                                                 
-                                   ////console.log(roomIds);
+                                   ////console.log(channelIds);
                                    
-                                   if(typeof roomIds !== "undefined" && roomIds !== null && roomIds !== "null"
-                                      && typeof roomName !== "undefined" && roomName !== null && roomName !== "null") {
+                                   if(typeof channelIds !== "undefined" && channelIds !== null && channelIds !== "null"
+                                      && typeof channelName !== "undefined" && channelName !== null && channelName !== "null") {
                                     
-                                    ////console.log('room ids:' + roomIds);
+                                    ////console.log('channel ids:' + channelIds);
                                         
-                                    updateConnectedClientsInRoom(roomIds, roomName);
+                                    updateConnectedClientsInChannel(channelIds, channelName);
                                                                                    
                                                      
                                    }
@@ -543,45 +511,45 @@
                      });
             
                                 
-                            if(typeof roomName !== "undefined" && roomName !== "null" && roomName !== null) {
+                            if(typeof channelName !== "undefined" && channelName !== "null" && channelName !== null) {
                                         
-                                    var room = Room.build();
+                                    var channel = Channel.build();
                                     
-                                    room.retrieveAll(function(rooms) {
+                                    channel.retrieveAll(function(channels) {
                                         
-                                         if (rooms) {
+                                         if (channels) {
                                             
-                                            var roomArray = [];
-                                            var allRoomsArray = [];
+                                            var channelArray = [];
+                                            var allChannelsArray = [];
                                             
-                                            for(i = 0; i < rooms.length; i++) {
+                                            for(i = 0; i < channels.length; i++) {
                                                 
-                                                if (JSON.parse(rooms[i].usersInRoom).indexOf(userId) != -1 ) {
-                                                   roomArray.push(rooms[i]);
+                                                if (JSON.parse(channels[i].usersInChannel).indexOf(userId) != -1 ) {
+                                                   channelArray.push(channels[i]);
                                                 }
-                                                    allRoomsArray.push(rooms[i]);
+                                                    allChannelsArray.push(channels[i]);
                                             }
                                                      
-                                                var uniqueRoomArray = Array.from(new Set(roomArray));
-                                                var uniqueAllRoomArray = Array.from(new Set(allRoomsArray));
+                                                var uniqueChannelArray = Array.from(new Set(channelArray));
+                                                var uniqueAllChannelArray = Array.from(new Set(allChannelsArray));
                                                 
-                                                var parsedRoomNames = JSON.parse(roomName);
+                                                var parsedChannelNames = JSON.parse(channelName);
                                                 
-                                                for(i = 0; i < parsedRoomNames.length; i++) {
+                                                for(i = 0; i < parsedChannelNames.length; i++) {
                                                     
-                                                    ////console.log('will send to: ' + parsedRoomNames[i]);
-                                                    ////console.log('will send rooms: ' + JSON.stringify(uniqueRoomArray));
+                                                    ////console.log('will send to: ' + parsedChannelNames[i]);
+                                                    ////console.log('will send channels: ' + JSON.stringify(uniqueChannelArray));
                                                     
-                                                    socket.emit('user-rooms', {availableRooms: JSON.stringify(uniqueRoomArray) });
+                                                    socket.emit('user-channels', {availableChannels: JSON.stringify(uniqueChannelArray) });
                                                    
                                                 }
                                                 
-                                                 socket.emit('available-rooms', {availableRooms: JSON.stringify(uniqueAllRoomArray) });
+                                                 socket.emit('available-channels', {availableChannels: JSON.stringify(uniqueAllChannelArray) });
                                                  
-                                            var roomArray = [];
+                                            var channelArray = [];
     
                                          } else {
-                                           ////console.log("No rooms found!");
+                                           ////console.log("No channels found!");
                                          }
                                          
                                    }, function(error) {
@@ -637,25 +605,25 @@
            return this.replace(/\\(.)/mg, "$1");
        }
 
-        socket.on('create-room-and-invite-user-in', function (data) {
+        socket.on('create-channel-and-invite-user-in', function (data) {
             
-            var usersInRoom = [];
-            var userModelsInRoom = [];
+            var usersInChannel = [];
+            var userModelsInChannel = [];
             
-            usersInRoom.push(data.createdByUserId);
-            userModelsInRoom.push(JSON.parse(data.createdByUserModel));
+            usersInChannel.push(data.createdByUserId);
+            userModelsInChannel.push(JSON.parse(data.createdByUserModel));
 
-            var room = Room.build({
+            var channel = Channel.build({
                                   name: data.name,
                                   createdByUserId: data.createdByUserId,
-                                  usersInRoom: JSON.stringify(usersInRoom),
+                                  usersInChannel: JSON.stringify(usersInChannel),
                                   messageCount: 0,
-                                  userModelsInRoom: JSON.stringify(userModelsInRoom)
+                                  userModelsInChannel: JSON.stringify(userModelsInChannel)
                                   });
             
-            room.add(function(success) {
+            channel.add(function(success) {
                 
-            //var usersInRoom = [];
+            //var usersInChannel = [];
             
 
             var user = User.build();
@@ -664,36 +632,36 @@
                 
                     if (users) {
                         
-                        var roomsForUserArray = [];
-                        ////console.log('usersinroom' + users.inRooms);
+                        var channelsForUserArray = [];
+                        ////console.log('usersinchannel' + users.inChannels);
                         
-                        if(typeof users.inRooms === 'undefined' || users.inRooms == null || users.inRooms == "null") {
+                        if(typeof users.inChannels === 'undefined' || users.inChannels == null || users.inChannels == "null") {
                            
-                            ////console.log('no inRoom');
-                             roomsForUserArray.push(success.id.toString());
+                            ////console.log('no inChannel');
+                             channelsForUserArray.push(success.id.toString());
                             
                         } else {
                             
-                            ////console.log('already inRoom');
+                            ////console.log('already inChannel');
                             
-                            var parsedInRooms = JSON.parse(users.inRooms);
-                            ////console.log(parsedInRooms);
-                            for(i = 0; i < parsedInRooms.length; i++) {
-                                roomsForUserArray.push(parsedInRooms[i].toString());
+                            var parsedInChannels = JSON.parse(users.inChannels);
+                            ////console.log(parsedInChannels);
+                            for(i = 0; i < parsedInChannels.length; i++) {
+                                channelsForUserArray.push(parsedInChannels[i].toString());
                             }
                             
-                            roomsForUserArray.push(success.id.toString());
+                            channelsForUserArray.push(success.id.toString());
                             
                         }
                                                              
                             user.status = "online";
                             user.socketId = socket.id;
-                            user.inRooms = JSON.stringify(roomsForUserArray);
+                            user.inChannels = JSON.stringify(channelsForUserArray);
                             
                             user.updateById(data.createdByUserId, function(success) {
                                 
                                     if (success) {	
-                                            //var roomsForUser = [];  
+                                            //var channelsForUser = [];  
                                     } else {
                                       //res.send(401, "User not found");
                                     }
@@ -710,40 +678,40 @@
               });
 
      
-                socket.join(data.name);
+                socket.join(success.id);
                 //////console.log(socket);
                 
-                socketRoomIdsArray = [];
-                if (typeof socket.roomIds === "undefined") {
-                    ////console.log('socket roomids undefined');
-                    socketRoomIdsArray.push(success.id);
+                socketChannelIdsArray = [];
+                if (typeof socket.channelIds === "undefined") {
+                    ////console.log('socket channelids undefined');
+                    socketChannelIdsArray.push(success.id);
                 } else {
-                    ////console.log('socket roomids NOT undefined');
-                    socketRoomIdsArray.push(socket.roomIds);
-                    socketRoomIdsArray.push(success.id);
+                    ////console.log('socket channelids NOT undefined');
+                    socketChannelIdsArray.push(socket.channelIds);
+                    socketChannelIdsArray.push(success.id);
                 }
                 
-                socket.roomIds = Array.from(new Set(utils.flatten(socketRoomIdsArray)));
+                socket.channelIds = Array.from(new Set(utils.flatten(socketChannelIdsArray)));
                 
-                ////console.log(socket.roomIds);
+                ////console.log(socket.channelIds);
                 
-                socketRoomNamesArray = [];
-                if (typeof socket.roomNames === "undefined") {
-                    ////console.log('socket roomnames undefined');
-                    socketRoomNamesArray.push(data.name);
+                /*socketChannelNamesArray = [];
+                if (typeof socket.channelNames === "undefined") {
+                    ////console.log('socket channelnames undefined');
+                    socketChannelNamesArray.push(data.name);
                 } else {
-                    ////console.log('socket roomnames NOT undefined');
-                    socketRoomNamesArray.push(socket.roomNames);
-                    socketRoomNamesArray.push(data.name);
+                    ////console.log('socket channelnames NOT undefined');
+                    socketChannelNamesArray.push(socket.channelNames);
+                    socketChannelNamesArray.push(data.name);
                 }
                 
-                socket.roomNames = Array.from(new Set(utils.flatten(socketRoomNamesArray)));
+                socket.channelNames = Array.from(new Set(utils.flatten(socketChannelNamesArray)));*/
                 
-                ////console.log(socket.roomNames);
+                ////console.log(socket.channelNames);
                 
-                socket.emit('joined-room-await-others', {
-                    roomName: data.name,
-                    roomId: success.id,
+                socket.emit('joined-channel-await-others', {
+                    channelName: data.name,
+                    channelId: success.id,
                     targetUsername: data.targetUsername
                     });
                 
@@ -754,9 +722,9 @@
                         
                         if (users) {
                             ////console.log('sending invitation to userid ' + users.id + ' on socketid ' + users.socketId);
-                            io.to(users.socketId).emit('room-invitation', {
-                                                      roomName: data.name,
-                                                       roomId: success.id,
+                            io.to(users.socketId).emit('channel-invitation', {
+                                                      channelName: data.name,
+                                                       channelId: success.id,
                                                        invitedByUserId: data.createdByUserId,
                                                        invitedByUsername: data.createdByUsername
                                                        });
@@ -768,15 +736,15 @@
                   });
        
                              
-            var usersInRoom = [];
+            var usersInChannel = [];
             
             },
             
             function(err) {
                 
-                ////console.log("New room could NOT be created!");
+                ////console.log("New channel could NOT be created!");
                             
-                var usersInRoom = [];
+                var usersInChannel = [];
             
             });
               
@@ -785,25 +753,25 @@
         
         
         
-        socket.on('create-room', function (data) {
+        socket.on('create-channel', function (data) {
             
-            var usersInRoom = [];
-            var userModelsInRoom = [];
+            var usersInChannel = [];
+            var userModelsInChannel = [];
             
-            usersInRoom.push(data.createdByUserId);
-            userModelsInRoom.push(JSON.parse(data.createdByUserModel));
+            usersInChannel.push(data.createdByUserId);
+            userModelsInChannel.push(JSON.parse(data.createdByUserModel));
 
-            var room = Room.build({
+            var channel = Channel.build({
                                   name: data.name,
                                   createdByUserId: data.createdByUserId,
-                                  usersInRoom: JSON.stringify(usersInRoom),
+                                  usersInChannel: JSON.stringify(usersInChannel),
                                   messageCount: 0,
-                                  userModelsInRoom: JSON.stringify(userModelsInRoom)
+                                  userModelsInChannel: JSON.stringify(userModelsInChannel)
                                   });
             
-            room.add(function(success) {
+            channel.add(function(success) {
                 
-            //var usersInRoom = [];
+            //var usersInChannel = [];
             
 
             var user = User.build();
@@ -812,36 +780,36 @@
                 
                     if (users) {
                         
-                        var roomsForUserArray = [];
-                        ////console.log('usersinroom' + users.inRooms);
+                        var channelsForUserArray = [];
+                        ////console.log('usersinchannel' + users.inChannels);
                         
-                        if(typeof users.inRooms === 'undefined' || users.inRooms == null || users.inRooms == "null") {
+                        if(typeof users.inChannels === 'undefined' || users.inChannels == null || users.inChannels == "null") {
                            
-                            ////console.log('no inRoom');
-                             roomsForUserArray.push(success.id.toString());
+                            ////console.log('no inChannel');
+                             channelsForUserArray.push(success.id.toString());
                             
                         } else {
                             
-                            ////console.log('already inRoom');
+                            ////console.log('already inChannel');
                             
-                            var parsedInRooms = JSON.parse(users.inRooms);
-                            ////console.log(parsedInRooms);
-                            for(i = 0; i < parsedInRooms.length; i++) {
-                                roomsForUserArray.push(parsedInRooms[i].toString());
+                            var parsedInChannels = JSON.parse(users.inChannels);
+                            ////console.log(parsedInChannels);
+                            for(i = 0; i < parsedInChannels.length; i++) {
+                                channelsForUserArray.push(parsedInChannels[i].toString());
                             }
                             
-                            roomsForUserArray.push(success.id.toString());
+                            channelsForUserArray.push(success.id.toString());
                             
                         }
                                                              
                             user.status = "online";
                             user.socketId = socket.id;
-                            user.inRooms = JSON.stringify(roomsForUserArray);
+                            user.inChannels = JSON.stringify(channelsForUserArray);
                             
                             user.updateById(data.createdByUserId, function(success) {
                                 
                                     if (success) {	
-                                            //var roomsForUser = [];  
+                                            //var channelsForUser = [];  
                                     } else {
                                       //res.send(401, "User not found");
                                     }
@@ -858,46 +826,46 @@
               });
 
      
-                socket.join(data.name);
+                socket.join(success.id);
       
-                socketRoomIdsArray = [];
-                if (typeof socket.roomIds === "undefined") {
-                    socketRoomIdsArray.push(success.id);
+                socketChannelIdsArray = [];
+                if (typeof socket.channelIds === "undefined") {
+                    socketChannelIdsArray.push(success.id);
                 } else {
-                    socketRoomIdsArray.push(socket.roomIds);
-                    socketRoomIdsArray.push(success.id);
+                    socketChannelIdsArray.push(socket.channelIds);
+                    socketChannelIdsArray.push(success.id);
                 }
                 
-                socket.roomIds = Array.from(new Set(utils.flatten(socketRoomIdsArray)));
+                socket.channelIds = Array.from(new Set(utils.flatten(socketChannelIdsArray)));
                 
-                socketRoomNamesArray = [];
-                if (typeof socket.roomNames === "undefined") {
-                    socketRoomNamesArray.push(data.name);
+                /*socketChannelNamesArray = [];
+                if (typeof socket.channelNames === "undefined") {
+                    socketChannelNamesArray.push(data.name);
                 } else {
-                    socketRoomNamesArray.push(socket.roomNames);
-                    socketRoomNamesArray.push(data.name);
+                    socketChannelNamesArray.push(socket.channelNames);
+                    socketChannelNamesArray.push(data.name);
                 }
                 
-                socket.roomNames = Array.from(new Set(utils.flatten(socketRoomNamesArray)));
+                socket.channelNames = Array.from(new Set(utils.flatten(socketChannelNamesArray)));*/
                 
-                ////console.log(socket.roomNames);
+                ////console.log(socket.channelNames);
     
-                socket.emit('room-ready', {
-                                   roomId: success.id,
-                                   roomName: room.name,
-                                   usersInRoom: room.usersInRoom
+                socket.emit('channel-ready', {
+                                   channelId: success.id,
+                                   channelName: channel.name,
+                                   usersInChannel: channel.usersInChannel
                                    });
                              
                              
-            var usersInRoom = [];
+            var usersInChannel = [];
             
             },
             
             function(err) {
                 
-                ////console.log("New room could NOT be created!");
+                ////console.log("New channel could NOT be created!");
                             
-                var usersInRoom = [];
+                var usersInChannel = [];
             
             });
               
@@ -907,9 +875,9 @@
          
          
          
-        socket.on('join-room', function (data) {
+        socket.on('join-channel', function (data) {
             
-        //////console.log("join rooms");
+        //////console.log("join channels");
                                                                
           var user = User.build();
             
@@ -917,36 +885,36 @@
                 
                     if (users) {
                         
-                        var roomsForUserArray = [];
-                        ////console.log('usersinroom' + users.inRooms);
+                        var channelsForUserArray = [];
+                        ////console.log('usersinchannel' + users.inChannels);
                         
-                        if(typeof users.inRooms === 'undefined' || users.inRooms == null || users.inRooms == "null") {
+                        if(typeof users.inChannels === 'undefined' || users.inChannels == null || users.inChannels == "null") {
                            
-                            ////console.log('no inRoom');
-                             roomsForUserArray.push(data.joiningRoomId.toString());
+                            ////console.log('no inChannel');
+                             channelsForUserArray.push(data.joiningChannelId.toString());
                             
                         } else {
                             
-                            //console.log('already inRoom');
+                            //console.log('already inChannel');
                             
-                            var parsedInRooms = JSON.parse(users.inRooms);
-                            ////console.log(parsedInRooms);
-                            for(i = 0; i < parsedInRooms.length; i++) {
-                                roomsForUserArray.push(parsedInRooms[i].toString());
+                            var parsedInChannels = JSON.parse(users.inChannels);
+                            ////console.log(parsedInChannels);
+                            for(i = 0; i < parsedInChannels.length; i++) {
+                                channelsForUserArray.push(parsedInChannels[i].toString());
                             }
                             
-                            roomsForUserArray.push(data.joiningRoomId.toString());
+                            channelsForUserArray.push(data.joiningChannelId.toString());
                             
                         }
                         
                                 user.status = "online";
                                 user.socketId = socket.id;
-                                user.inRooms = JSON.stringify(roomsForUserArray);
+                                user.inChannels = JSON.stringify(channelsForUserArray);
                                 
                                 user.updateById(data.joinerUserId, function(success) {
                                     
                                         if (success) {	
-                                                //var roomsForUser = [];  
+                                                //var channelsForUser = [];  
                                         } else {
                                           //res.send(401, "User not found");
                                         }
@@ -965,85 +933,85 @@
             
             
             
-                var room = Room.build();
+                var channel = Channel.build();
                 
-                room.retrieveById(data.joiningRoomId, function(roomsOne) {
+                channel.retrieveById(data.joiningChannelId, function(channelsOne) {
                         
-                    if (roomsOne) {				
+                    if (channelsOne) {				
                       
-                      usersInRoom = JSON.parse(roomsOne.usersInRoom);
-                      usersInRoom.push(data.joinerUserId.toString());
+                      usersInChannel = JSON.parse(channelsOne.usersInChannel);
+                      usersInChannel.push(data.joinerUserId.toString());
                       
-                      userModelsInRoom = JSON.parse(roomsOne.userModelsInRoom);
-                      userModelsInRoom.push(JSON.parse(data.joinerUserModel));
+                      userModelsInChannel = JSON.parse(channelsOne.userModelsInChannel);
+                      userModelsInChannel.push(JSON.parse(data.joinerUserModel));
           
-                      var uniqueUsersInRoom = Array.from(new Set(usersInRoom));
-                      var uniqueUserModelsInRoom = Array.from(new Set(userModelsInRoom));
+                      var uniqueUsersInChannel = Array.from(new Set(usersInChannel));
+                      var uniqueUserModelsInChannel = Array.from(new Set(userModelsInChannel));
                         
-                        room.usersInRoom = JSON.stringify(uniqueUsersInRoom);
-                        room.userModelsInRoom = JSON.stringify(uniqueUserModelsInRoom);
+                        channel.usersInChannel = JSON.stringify(uniqueUsersInChannel);
+                        channel.userModelsInChannel = JSON.stringify(uniqueUserModelsInChannel);
                         
-                        room.name = roomsOne.name;
+                        channel.name = channelsOne.name;
                         
-                        room.updateById(data.joiningRoomId, function(success) {
+                        channel.updateById(data.joiningChannelId, function(success) {
                                 
                                 if (success) {
                                     //////console.log(success);
  
-                                    socket.join(roomsOne.name);
+                                    socket.join(data.joiningChannelId);
                                     
-                                     socketRoomIdsArray = [];
-                                    if (typeof socket.roomIds === "undefined") {
-                                        ////console.log('socket roomids undefined');
-                                        socketRoomIdsArray.push(data.joiningRoomId);
+                                     socketChannelIdsArray = [];
+                                    if (typeof socket.channelIds === "undefined") {
+                                        ////console.log('socket channelids undefined');
+                                        socketChannelIdsArray.push(data.joiningChannelId);
                                     } else {
-                                        ////console.log('socket roomids NOT undefined');
-                                        socketRoomIdsArray.push(socket.roomIds);
-                                        socketRoomIdsArray.push(data.joiningRoomId);
+                                        ////console.log('socket channelids NOT undefined');
+                                        socketChannelIdsArray.push(socket.channelIds);
+                                        socketChannelIdsArray.push(data.joiningChannelId);
                                     }
                                     
-                                    socket.roomIds = Array.from(new Set(utils.flatten(socketRoomIdsArray)));
+                                    socket.channelIds = Array.from(new Set(utils.flatten(socketChannelIdsArray)));
                                     
-                                    ////console.log(socket.roomIds);
+                                    ////console.log(socket.channelIds);
                                     
-                                    socketRoomNamesArray = [];
-                                    if (typeof socket.roomNames === "undefined") {
-                                        ////console.log('socket roomnames undefined');
-                                        socketRoomNamesArray.push(roomsOne.name);
+                                    /*socketChannelNamesArray = [];
+                                    if (typeof socket.channelNames === "undefined") {
+                                        ////console.log('socket channelnames undefined');
+                                        socketChannelNamesArray.push(channelsOne.name);
                                     } else {
-                                        ////console.log('socket roomnames NOT undefined');
-                                        socketRoomNamesArray.push(socket.roomNames);
-                                        socketRoomNamesArray.push(roomsOne.name);
+                                        ////console.log('socket channelnames NOT undefined');
+                                        socketChannelNamesArray.push(socket.channelNames);
+                                        socketChannelNamesArray.push(channelsOne.name);
                                     }
                                     
-                                    socket.roomNames = Array.from(new Set(utils.flatten(socketRoomNamesArray)));
+                                    socket.channelNames = Array.from(new Set(utils.flatten(socketChannelNamesArray)));*/
                                     
-                                    ////console.log(socket.roomNames);
+                                    ////console.log(socket.channelNames);
                                  
        
-                                    io.to(roomsOne.name).emit('room-ready', {
-                                        roomId: data.joiningRoomId,
-                                        roomName: roomsOne.name,
-                                        usersInRoom: room.usersInRoom
+                                    io.to(channelsOne.name).emit('channel-ready', {
+                                        channelId: data.joiningChannelId,
+                                        channelName: channelsOne.name,
+                                        usersInChannel: channel.usersInChannel
                                         
                                         });
                                     
-                                        room.retrieveAll(function(roomsTwo) {
+                                        channel.retrieveAll(function(channelsTwo) {
                                             
-                                            if (roomsTwo) {
+                                            if (channelsTwo) {
                                                 
-                                                var roomArray = [];
-                                                for(i = 0; i < roomsTwo.length; i++) {
+                                                var channelArray = [];
+                                                for(i = 0; i < channelsTwo.length; i++) {
                                                     
-                                                    roomArray.push(roomsTwo[i]);
+                                                    channelArray.push(channelsTwo[i]);
                                                     
-                                                    //////console.log(roomArray);
-                                                    //////console.log('emitting available-rooms: ' + JSON.stringify(roomArray));
+                                                    //////console.log(channelArray);
+                                                    //////console.log('emitting available-channels: ' + JSON.stringify(channelArray));
                                                     
-                                                    // io.to(roomsTwo.name).emit('available-rooms', {availableRooms: JSON.stringify(roomArray) });
+                                                    // io.to(channelsTwo.name).emit('available-channels', {availableChannels: JSON.stringify(channelArray) });
                                                 }
 
-                                              //io.sockets.emit('available-rooms', {availableRooms: JSON.stringify(rooms) });      
+                                              //io.sockets.emit('available-channels', {availableChannels: JSON.stringify(channels) });      
                                             } else {
                                               //res.send(401, "User not found");
                                             }
@@ -1072,13 +1040,13 @@
         });
         
         
-        socket.on('decline-room-invitation', function (data) {
+        socket.on('decline-channel-invitation', function (data) {
             
-            var room = Room.build();
+            var channel = Channel.build();
             
-            room.removeById(data.joiningRoomId, function(rooms) {
+            channel.removeById(data.joiningChannelId, function(channels) {
                 
-                    if (rooms) {
+                    if (channels) {
                         
                         var user = User.build();
                                
@@ -1086,9 +1054,9 @@
                             
                                 if (users) {				
             
-                                    io.to(users.socketId).emit('room-invitation-declined', {declinedByUsername: data.joinerUsername});
+                                    io.to(users.socketId).emit('channel-invitation-declined', {declinedByUsername: data.joinerUsername});
                                    
-                                    socket.emit('close-room-create-modal');
+                                    socket.emit('close-channel-create-modal');
                                     
                                 } else {
             
@@ -1109,41 +1077,42 @@
         });
         
         
-        //userIdsInRoomArray = [];
-        //usernamesInRoomArray = [];
+        //userIdsInChannelArray = [];
+        //usernamesInChannelArray = [];
          
         //usersArray = [];
         
-        socket.on('enter-room', function (data) {
+        socket.on('enter-channel', function (data) {
   
-         ////console.log('enter-room');
+         ////console.log('enter-channel');
          ////console.log(data);
          
-            var roomId = data.roomId;
+            var channelId = data.channelId;
+            socket.join(channelId);
        
-            var room = Room.build();
+            var channel = Channel.build();
             
-            room.retrieveById(roomId, function(rooms) {
+            channel.retrieveById(channelId, function(channels) {
                 
-                    if (rooms) {
+                    if (channels) {
                         
-                        socket.emit('entered-room-details', {roomId: roomId, roomName: rooms.name});
+                        socket.emit('entered-channel-details', {channelId: channelId, channelName: channels.name});
                         
-                        var usersInRoom = JSON.parse(rooms.usersInRoom);
+                        var usersInChannel = JSON.parse(channels.usersInChannel);
       
                             var user = User.build();
        
-                               user.findAllWhere(usersInRoom, function(users) {
+                               user.findAllWhere(usersInChannel, function(users) {
                                        
                                         if (users) {
                                         
-                                            updateConnectedClientsInRoom(JSON.stringify(roomId), JSON.stringify(rooms.name));
+                                            updateConnectedClientsInChannel(JSON.stringify(channelId), JSON.stringify(channels.name));
                                                 
-                                                /*//console.log('emitting room clients: ' + rooms.name+JSON.stringify(users));
+                                                /*//console.log('emitting channel clients: ' + channels.name+JSON.stringify(users));
                                                 
-                                                io.to(rooms.name).emit('connected-clients-in-room', {
-                                                    usersInRoom: JSON.stringify(users),
-                                                    roomName: rooms.name
+                                                io.to(channels.name).emit('connected-clients-in-channel', {
+                                                    usersInChannel: JSON.stringify(users),
+                                                    channelName: channels.name
                                                 });*/
                                   
                                        } else {
@@ -1155,40 +1124,40 @@
                                  });
     
                
-                                    room.retrieveAll(function(roomsTwo) {
+                                    channel.retrieveAll(function(channelsTwo) {
                                                                 
-                                            if (roomsTwo) {
+                                            if (channelsTwo) {
                                                 
-                                                var roomArray = [];
-                                                var allRoomsArray = [];
+                                                var channelArray = [];
+                                                var allChannelsArray = [];
                                                 
-                                                    for(i = 0; i < roomsTwo.length; i++) {
+                                                    for(i = 0; i < channelsTwo.length; i++) {
                                                                           
-                                                    if (JSON.parse(roomsTwo[i].usersInRoom).indexOf(data.userEnteringRoom) != -1 ) {
-                                                       roomArray.push(roomsTwo[i]);
+                                                    if (JSON.parse(channelsTwo[i].usersInChannel).indexOf(data.userEnteringChannel) != -1 ) {
+                                                       channelArray.push(channelsTwo[i]);
                                                     }
                                                     
-                                                    allRoomsArray.push(roomsTwo[i]);
+                                                    allChannelsArray.push(channelsTwo[i]);
                                
                                                 }                                            
                                                                  
-                                                var uniqueRoomArray = Array.from(new Set(roomArray));
-                                                var uniqueAllRoomsArray = Array.from(new Set(allRoomsArray));
+                                                var uniqueChannelArray = Array.from(new Set(channelArray));
+                                                var uniqueAllChannelsArray = Array.from(new Set(allChannelsArray));
                                                 
-                                                    //////console.log(roomArray);
-                                                    ////console.log('emitting available-rooms: ' + JSON.stringify(uniqueRoomArray));
+                                                    //////console.log(channelArray);
+                                                    ////console.log('emitting available-channels: ' + JSON.stringify(uniqueChannelArray));
                                                     
-                                                    socket.emit('user-rooms', {
-                                                      availableRooms: JSON.stringify(uniqueRoomArray)
+                                                    socket.emit('user-channels', {
+                                                      availableChannels: JSON.stringify(uniqueChannelArray)
                                                     });
                                                    
-                                                   socket.emit('available-rooms', {availableRooms: JSON.stringify(uniqueAllRoomsArray) });
+                                                   socket.emit('available-channels', {availableChannels: JSON.stringify(uniqueAllChannelsArray) });
                                                    
-                                                    var roomArray = [];
-                                                    var allRoomsArray = [];
+                                                    var channelArray = [];
+                                                    var allChannelsArray = [];
                                                     
                                                     
-                                              //io.sockets.emit('available-rooms', {availableRooms: JSON.stringify(rooms) });      
+                                              //io.sockets.emit('available-channels', {availableChannels: JSON.stringify(channels) });      
                                             } else {
                                               //res.send(401, "User not found");
                                             }
@@ -1201,7 +1170,7 @@
            
                                     var message = Message.build();
              
-                                     message.findAllWhere(roomId, null, function(messages) {
+                                     message.findAllWhere(channelId, null, function(messages) {
                                          
                                          if (messages) {
                                                     
@@ -1212,7 +1181,7 @@
                                                     //console.log('emitting mess ' + messages[i].message);
                                                     
                                                     socket.emit('message', {
-                                                        roomId: messages[i].roomId,
+                                                        channelId: messages[i].channelId,
                                                         messageId: messages[i].id,
                                                         message: messages[i].message,
                                                         username: messages[i].username,
@@ -1257,7 +1226,8 @@
                 var message = data.message;
                 var userId = data.userId;
                 var username = data.username;
-                var activeRoomName = data.activeRoomName;
+                var activeChannelId = data.activeChannelId;
+                var activeChannelName = data.activeChannelName;
                 var userColour = data.userColour;
   
                 //var socketIndex = connectedSocketIds.indexOf(socket.id);
@@ -1268,31 +1238,31 @@
                                     username: username,
                                     userColour: userColour,
                                     socketId: socket.id,
-                                    roomId: data.activeRoomId,
-                                    roomName: data.activeRoomName
+                                    channelId: data.activeChannelId,
+                                    channelName: data.activeChannelName
                                     });
               
               message.add(function(success) {
                            
                    //socket.broadcast.emit('message', { message: message, sender: sender });
-                  io.to(activeRoomName).emit('message', {
-                        roomId: data.activeRoomId,
+                  io.to(activeChannelId).emit('message', {
+                        channelId: data.activeChannelId,
                         message: data.message,
                         username: username,
                         userId: userId,
                         userColour: userColour
                     });
                   
-                    var room = Room.build(); 
-                    room.incrementMessageCount(data.activeRoomId);
+                    var channel = Channel.build(); 
+                    channel.incrementMessageCount(data.activeChannelId);
                                     
-                    room.retrieveById(data.activeRoomId, function(rooms) {
+                    channel.retrieveById(data.activeChannelId, function(channels) {
                           
-                              if (rooms) {				
-      
-                                  io.to(activeRoomName).emit('message-count-updated', {
-                                    roomId: data.activeRoomId,
-                                    messageCount: rooms.messageCount
+                              if (channels) {				
+                                    //console.log('message count updated');
+                                  io.to(activeChannelId).emit('message-count-updated', {
+                                    channelId: data.activeChannelId,
+                                    messageCount: channels.messageCount
                                   });
                               
                               } else {
@@ -1319,7 +1289,7 @@
                 
                 //var socketIndex = connectedSocketIds.indexOf(socket.id);
        
-                socket.broadcast.to(data.activeRoomName).emit('sent-file-incoming', {
+                socket.broadcast.to(data.activeChannelName).emit('sent-file-incoming', {
                     username: data.username,
                     userColour: data.userColour,
                     sender: data.sender,
@@ -1338,8 +1308,8 @@
                                               filename: data.name,
                                               uploadedByUserId: data.userId,
                                               uploadedByUsername: data.username,
-                                              roomId: data.activeRoomId,
-                                              roomName: data.activeRoomName,
+                                              channelId: data.activeChannelId,
+                                              channelName: data.activeChannelName,
                                               downloadedBy: ""
                                               });
                         
@@ -1352,8 +1322,8 @@
                                             username: data.username,
                                             userColour: data.userColour,
                                             socketId: socket.id,
-                                            roomId: data.activeRoomId,
-                                            roomName: data.activeRoomName
+                                            channelId: data.activeChannelId,
+                                            channelName: data.activeChannelName
                                             });
               
                             message.add(function(success) {
@@ -1368,7 +1338,7 @@
                                                         });
                                             
                                             //SEND THE FILE URL TO THE OTHER(S)//
-                                            socket.broadcast.to(data.activeRoomName).emit('sent-file', {
+                                            socket.broadcast.to(data.activeChannelName).emit('sent-file', {
                                                 username: data.username,
                                                 userColour: data.userColour,
                                                 //socketindex: socketIndex,
@@ -1377,16 +1347,16 @@
                                                 });
                                                             
                                                             
-                                    var room = Room.build(); 
-                                    room.incrementMessageCount(data.activeRoomId);
+                                    var channel = Channel.build(); 
+                                    channel.incrementMessageCount(data.activeChannelId);
                                                     
-                                    room.retrieveById(data.activeRoomId, function(rooms) {
+                                    channel.retrieveById(data.activeChannelId, function(channels) {
                                           
-                                              if (rooms) {				
+                                              if (channels) {				
                       
-                                                  io.to(data.activeRoomName).emit('message-count-updated', {
-                                                    roomId: data.activeRoomId,
-                                                    messageCount: rooms.messageCount
+                                                  io.to(data.activeChannelName).emit('message-count-updated', {
+                                                    channelId: data.activeChannelId,
+                                                    messageCount: channels.messageCount
                                                   });
                                               
                                               } else {
@@ -1426,7 +1396,7 @@
             //var socketIndex = connectedSocketIds.indexOf(socket.id);          
             var mimeType = data.type;             
             var senderSocketId = socket.id;
-            var activeRoomName = data.activeRoomName;
+            var activeChannelName = data.activeChannelName;
             var userColour = data.userColour;
             var justFilename = data.name.slice(0, -4);
           
@@ -1437,8 +1407,8 @@
                                       upvotes: 0,
                                       streamedByUserId: data.userId,
                                       streamedByUsername: data.username,
-                                      roomId: data.activeRoomId,
-                                      roomName: data.activeRoomName
+                                      channelId: data.activeChannelId,
+                                      channelName: data.activeChannelName
                                       });
                 
                 stream.add(function(success) {
@@ -1451,8 +1421,8 @@
                                         username: data.username,
                                         userColour: data.userColour,
                                         socketId: socket.id,
-                                        roomId: data.activeRoomId,
-                                        roomName: data.activeRoomName
+                                        channelId: data.activeChannelId,
+                                        channelName: data.activeChannelName
                                         });
           
                         message.add(function(success) {                 
@@ -1468,24 +1438,24 @@
                                         
                                if(data.liveStream === "true") {      
 
-                                    socket.broadcast.to(data.activeRoomName).emit('audio-file-incoming', parameters);
+                                    socket.broadcast.to(data.activeChannelId).emit('audio-file-incoming', parameters);
                                
                                } else {
                                 
-                                    io.to(activeRoomName).emit('audio-file-incoming', parameters);
+                                    io.to(data.activeChannelId).emit('audio-file-incoming', parameters);
                                 
                                }
                                
-                                    var room = Room.build(); 
-                                    room.incrementMessageCount(data.activeRoomId);
+                                    var channel = Channel.build(); 
+                                    channel.incrementMessageCount(data.activeChannelId);
                                                     
-                                    room.retrieveById(data.activeRoomId, function(rooms) {
+                                    channel.retrieveById(data.activeChannelId, function(channels) {
                                           
-                                              if (rooms) {				
+                                              if (channels) {				
                       
-                                                  io.to(data.activeRoomName).emit('message-count-updated', {
-                                                    roomId: data.activeRoomId,
-                                                    messageCount: rooms.messageCount
+                                                  io.to(data.activeChannelId).emit('message-count-updated', {
+                                                    channelId: data.activeChannelId,
+                                                    messageCount: channels.messageCount
                                                   });
                                               
                                               } else {
@@ -1575,11 +1545,11 @@
                         
                           if(data.liveStream === "true") {      
 
-                                    socket.broadcast.to(data.activeRoomName).emit('audio', { buffer: bufferConcat});
+                                    socket.broadcast.to(data.activeChannelId).emit('audio', { buffer: bufferConcat});
                                
                                } else {
                                 
-                                    io.to(data.activeRoomName).emit('audio', { buffer: bufferConcat});
+                                    io.to(data.activeChannelId).emit('audio', { buffer: bufferConcat});
                                 
                                }
                             
@@ -1801,10 +1771,10 @@
                                                     connectedUsers: JSON.stringify(users)
                                                 });
                                                                             
-                                               ////console.log(socket.roomIds);
-                                               if(typeof socket.roomIds !== "undefined" && typeof socket.roomNames !== "undefined") {
+                                               ////console.log(socket.channelIds);
+                                               if(typeof socket.channelIds !== "undefined" && typeof socket.channelNames !== "undefined") {
                                                 
-                                                    updateConnectedClientsInRoom(JSON.stringify(socket.roomIds), JSON.stringify(socket.roomNames));
+                                                    updateConnectedClientsInChannel(JSON.stringify(socket.channelIds), JSON.stringify(socket.channelNames));
                                                }
                                                
                                                                                                 

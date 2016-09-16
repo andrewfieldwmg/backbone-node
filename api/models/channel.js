@@ -3,49 +3,49 @@ var sequelize = require("../database.js");
 var crypto = require('crypto');
 var DataTypes = require("sequelize");
     
-    var Room = sequelize.define('rooms', {
+    var Channel = sequelize.define('channels', {
         
         name: DataTypes.STRING,
-        roomGenre: DataTypes.STRING,
+        channelGenre: DataTypes.STRING,
         createdByUserId: DataTypes.STRING,
-        usersInRoom: DataTypes.STRING,
+        usersInChannel: DataTypes.STRING,
         messageCount: DataTypes.INTEGER,
-        userModelsInRoom: DataTypes.TEXT
+        userModelsInChannel: DataTypes.TEXT
       }, {
         
         instanceMethods: {
                 
                 retrieveAll: function(onSuccess, onError) {
-                    Room.findAll({}, {raw: true})
+                    Channel.findAll({}, {raw: true})
                             .success(onSuccess).error(onError);	
                 },
               
                 retrieveById: function(user_id, onSuccess, onError) {
-                    Room.find({where: {id: user_id}}, {raw: true})
+                    Channel.find({where: {id: user_id}}, {raw: true})
                             .success(onSuccess).error(onError);	
                 },
                 
-                findAllWhere: function(room_id, onSuccess, onError) {
-                    Room.findAll({where: {id: room_id }})
+                findAllWhere: function(channel_id, onSuccess, onError) {
+                    Channel.findAll({where: {id: channel_id }})
                        .success(onSuccess).error(onError);
                 },
               
                 add: function(onSuccess, onError) {
                     
                     var name = this.name;
-                    var roomGenre = this.roomGenre;
+                    var channelGenre = this.channelGenre;
                     var createdByUserId = this.createdByUserId;
-                    var usersInRoom = this.usersInRoom;
+                    var usersInChannel = this.usersInChannel;
                     var messageCount = this.messageCount;
-                    var userModelsInRoom = this.userModelsInRoom;
+                    var userModelsInChannel = this.userModelsInChannel;
                     
-                    Room.build({
+                    Channel.build({
                                 name: name,
-                                roomGenre: roomGenre,
+                                channelGenre: channelGenre,
                                 createdByUserId: createdByUserId,
-                                usersInRoom: usersInRoom,
+                                usersInChannel: usersInChannel,
                                 messageCount: messageCount,
-                                userModelsInRoom: userModelsInRoom
+                                userModelsInChannel: userModelsInChannel
                                })
                             .save().success(onSuccess).error(onError);
                 },
@@ -54,32 +54,32 @@ var DataTypes = require("sequelize");
                       
                     var id = user_id;
                     var name = this.name;
-                    var roomGenre = this.roomGenre;
-                    var usersInRoom = this.usersInRoom;
-                    var userModelsInRoom = this.userModelsInRoom;
+                    var channelGenre = this.channelGenre;
+                    var usersInChannel = this.usersInChannel;
+                    var userModelsInChannel = this.userModelsInChannel;
 
-                     Room.update({
+                     Channel.update({
                         name: name,
-                        roomGenre: roomGenre,
-                        usersInRoom: usersInRoom,
-                        userModelsInRoom: userModelsInRoom
+                        channelGenre: channelGenre,
+                        usersInChannel: usersInChannel,
+                        userModelsInChannel: userModelsInChannel
                         }, {id: id} )
                             .success(onSuccess).error(onError);
                 },
                 
-                incrementMessageCount: function(room_id) {
+                incrementMessageCount: function(channel_id) {
                       
-                        sequelize.query("UPDATE rooms SET messageCount = messageCount + 1 WHERE id = " + room_id).spread(function(results, metadata) {
+                        sequelize.query("UPDATE channels SET messageCount = messageCount + 1 WHERE id = " + channel_id).spread(function(results, metadata) {
                         
                         });
                 },
                
                 removeById: function(user_id, onSuccess, onError) {
-                    Room.destroy({id: user_id}).success(onSuccess).error(onError);	
+                    Channel.destroy({id: user_id}).success(onSuccess).error(onError);	
                 }
 
             }
       });
     
-     module.exports = Room;
+     module.exports = Channel;
     

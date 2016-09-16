@@ -39,14 +39,14 @@ var ContactsView = Backbone.View.extend({
     afterRender: function(){
         
         //console.log('rended connected clients');
-    localStorage.setItem('contactsViewLoaded', "true");
+	localStorage.setItem('contactsViewLoaded', "true");
        this.$el.html( this.template );
         
     },
 
     events: {
    
-        "click .add-to-room": "addToRoom"
+        "click .add-to-channel": "addToChannel"
      
     },
     
@@ -69,6 +69,7 @@ var ContactsView = Backbone.View.extend({
             } else {
                             
 		$('#contacts').html('');
+		
 		$('.contacts-table-head').show();
                 //console.log('more than 1 client');
                 
@@ -84,7 +85,7 @@ var ContactsView = Backbone.View.extend({
                            var actionIconsClass = "hidden";
                         } else {
                             var connectedUserMessage = "<strong>" + connectedUsername + "</strong> is connected";  
-                            var actionIconsClass = "open-create-room-modal";
+                            var actionIconsClass = "open-create-channel-modal";
                         }
                         
                         var parameters = {
@@ -107,9 +108,8 @@ var ContactsView = Backbone.View.extend({
                 
                 }
 
-            	//var roomsView = new RoomsView();
-                //roomsView.afterRender();
-                        
+            	//var channelsView = new ChannelsView();
+                //channelsView.afterRender();                     
      
             }
 

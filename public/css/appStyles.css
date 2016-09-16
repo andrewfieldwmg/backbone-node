@@ -170,7 +170,7 @@ hr {
   margin: 18px 0;
 }
 
-.home-link {
+.padding10 {
     padding: 10px;
 }
 
@@ -228,4 +228,30 @@ table  {
 .signup-form {
     padding: 10px;
     border-radius: 10px;
+}
+
+.user-control-button {
+    padding-right: 10px;
+     padding-bottom: 10px;
+}
+
+.action-icon {
+    margin-top: 0px; 
+  
+}
+
+#message-text {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+
+#message-text {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+#submit-message {
+    margin-top: 40px;
+    margin-bottom: 40px;
 }

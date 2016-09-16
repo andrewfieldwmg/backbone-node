@@ -1,8 +1,8 @@
-var RoomsModalView = Backbone.View.extend({
+var ChannelsModalView = Backbone.View.extend({
     
-    el: $("#rooms_modal_container"),
+    el: $("#channels_modal_container"),
     
-    template : _.template( $("#rooms_modal_template").html()),
+    template : _.template( $("#channels_modal_template").html()),
            
     initialize: function(options){
         
@@ -11,18 +11,18 @@ var RoomsModalView = Backbone.View.extend({
         this.options = options;
 	this.myUserId = localStorage.getItem("userId");
         
-        console.log('init rooms modal view');
+        console.log('init channels modal view');
                        
-            socket.on('joined-room-await-others', function(data) {
-                self.joinedRoomAwaitOthers(data);
+            socket.on('joined-channel-await-others', function(data) {
+                self.joinedChannelAwaitOthers(data);
             });
 	    
-            socket.on('room-invitation-declined', function(data) {
-                self.roomInvitationDeclined(data);
+            socket.on('channel-invitation-declined', function(data) {
+                self.channelInvitationDeclined(data);
             });
                                  
-            socket.on('room-ready', function(data) {
-                self.roomReady(data);
+            socket.on('channel-ready', function(data) {
+                self.channelReady(data);
             });
             
                  
@@ -57,26 +57,26 @@ var RoomsModalView = Backbone.View.extend({
         
 	var self = this;
 	
-        localStorage.setItem('roomsModalViewLoaded', "true");
+        localStorage.setItem('channelsModalViewLoaded', "true");
          
 	        var parameters = {
                             textInputClass: this.options.textInputClass,
                             modalBodyContent: this.options.modalBodyContent,
-                            joinRoomId: this.options.joinRoomId,
+                            joinChannelId: this.options.joinChannelId,
                             modalHeaderContent: this.options.modalHeaderContent,
                             targetUsername: this.options.targetUsername,
 			    targetUserId: this.options.targetUserId ,
-			    createRoomFromUserClass: this.options.createRoomFromUserClass,
-			    createRoomClass: this.options.createRoomClass
+			    createChannelFromUserClass: this.options.createChannelFromUserClass,
+			    createChannelClass: this.options.createChannelClass
                             };
                             
-       var compiledTemplate = _.template( $("#rooms_modal_template").html(), parameters);                     
+       var compiledTemplate = _.template( $("#channels_modal_template").html(), parameters);                     
        this.$el.html( compiledTemplate);
        
-       $('.rooms-modal').modal();
+       $('.channels-modal').modal();
        
-            $('.rooms-modal').on('hidden.bs.modal', function () {
-		console.log('hidden rooms modal handler');
+            $('.channels-modal').on('hidden.bs.modal', function () {
+		console.log('hidden channels modal handler');
 		self.destroy();
 	    });
 	    
@@ -84,15 +84,15 @@ var RoomsModalView = Backbone.View.extend({
 
     events: {
    
-     "click #create-room-from-users": "createRoomFromUsers",
-     "click #create-room": "createRoom"
-     //"submit #create-room-with-user-form" : "createRoomFromUsers"
+     "click #create-channel-from-users": "createChannelFromUsers",
+     "click #create-channel": "createChannel",
+     "submit #create-channel-with-user-form" : "createChannel"
      
     },
     
-    createRoom: function(e) {
+    createChannel: function(e) {
                 
-        console.log('create room');
+        console.log('create channel');
         e.preventDefault();
         e.stopPropagation();
         
@@ -101,10 +101,10 @@ var RoomsModalView = Backbone.View.extend({
         var mySocketId = localStorage.getItem("socketId");
 	var myUserModel = localStorage.getItem("userModel");
        
-        var roomName = $('.create-room-from-users-name').val();
+        var channelName = $('.create-channel-from-users-name').val();
         
-        socket.emit('create-room', {
-                                        name: roomName,
+        socket.emit('create-channel', {
+                                        name: channelName,
                                         createdByUserId: myUserId,
                                         createdByUsername: myUsername,
                                         targetUserId: "",
@@ -112,13 +112,13 @@ var RoomsModalView = Backbone.View.extend({
 					createdByUserModel: myUserModel
                                         });
 	
-        //$('#create-room-from-users').hide();
+        //$('#create-channel-from-users').hide();
         //$('.modal').modal("toggle");
     },
     
-    createRoomFromUsers: function(e) {
+    createChannelFromUsers: function(e) {
                 
-        console.log('create room from users');
+        console.log('create channel from users');
         e.preventDefault();
         e.stopPropagation();
         
@@ -129,10 +129,10 @@ var RoomsModalView = Backbone.View.extend({
         var mySocketId = localStorage.getItem("socketId");
 	var myUserModel = localStorage.getItem("userModel");
        
-        var roomName = $('.create-room-from-users-name[data-target-user-id="'+targetUserId+'"]').val();
+        var channelName = $('.create-channel-from-users-name[data-target-user-id="'+targetUserId+'"]').val();
         
-        socket.emit('create-room-and-invite-user-in', {
-                                        name: roomName,
+        socket.emit('create-channel-and-invite-user-in', {
+                                        name: channelName,
                                         createdByUserId: myUserId,
                                         createdByUsername: myUsername,
                                         targetUserId: targetUserId.toString(),
@@ -140,102 +140,102 @@ var RoomsModalView = Backbone.View.extend({
 					createdByUserModel: myUserModel
                                         });
 	
-        $('#create-room-from-users').hide();
+        $('#create-channel-from-users').hide();
         //$('.modal').modal("toggle");
     },
     
-    joinedRoomAwaitOthers: function(data) {
+    joinedChannelAwaitOthers: function(data) {
      
-        //localStorage.setItem('roomId', data.roomId);
-        //localStorage.setItem('roomName', data.roomName);
+        //localStorage.setItem('channelId', data.channelId);
+        //localStorage.setItem('channelName', data.channelName);
           
-         $('.create-room-from-users-name').hide();
-         $('.create-room-from-users-result')
-         .html('<strong>' + data.roomName + '</strong> created!<br><br>Now waiting for <strong>' + data.targetUsername + ' </strong>to accept')
-         .append(' <i class="fa fa-refresh fa-spin room-invitation-spinner" title="Loading..." aria-hidden="true" style="display: none"></i>')
+         $('.create-channel-from-users-name').hide();
+         $('.create-channel-from-users-result')
+         .html('<strong>' + data.channelName + '</strong> created!<br><br>Now waiting for <strong>' + data.targetUsername + ' </strong>to accept')
+         .append(' <i class="fa fa-refresh fa-spin channel-invitation-spinner" title="Loading..." aria-hidden="true" style="display: none"></i>')
          .show();
          
          $('.modal-title').hide();
-         $('.room-invitation-spinner').show();
-         $('.create-room-from-users').hide();
+         $('.channel-invitation-spinner').show();
+         $('.create-channel-from-users').hide();
          
         
     },
     
-    acceptRoomInvitation: function(e) {
+    acceptChannelInvitation: function(e) {
         
-        console.log("accept room invitation");
+        console.log("accept channel invitation");
         
         e.preventDefault();
         //e.stopPropagation();
         
-        var invitedRoomId = $(e.currentTarget).data('join-room-id');
+        var invitedChannelId = $(e.currentTarget).data('join-channel-id');
         var myUsername = localStorage.getItem("username");
         var myUserId = localStorage.getItem("userId");
         var mySocketId = localStorage.getItem("socketId");
 
-        /*socket.emit('join-room', {
-                                joiningRoomId: invitedRoomId,
+        /*socket.emit('join-channel', {
+                                joiningChannelId: invitedChannelId,
                                 joinerUserId: myUserId,
                                 joinerUsername: myUsername
                                 });*/
         
     },
     
-    roomInvitationDeclined: function(data) {
+    channelInvitationDeclined: function(data) {
 
-	$('.create-room-from-users-result').html('<strong>Sorry</strong>... ' + data.declinedByUsername + ' is currently busy.');
+	$('.create-channel-from-users-result').html('<strong>Sorry</strong>... ' + data.declinedByUsername + ' is currently busy.');
 	
 	setTimeout(function(){
-	    $('.rooms-modal').modal("hide");
+	    $('.channels-modal').modal("hide");
 	}, 3000);
     },
     
-    roomReady: function(data) {
+    channelReady: function(data) {
     
 	var self = this;
 	
-	if(localStorage.getItem("roomName")) {
-	    var roomNameArray = JSON.parse(localStorage.getItem("roomName"));
+	if(localStorage.getItem("channelName")) {
+	    var channelNameArray = JSON.parse(localStorage.getItem("channelName"));
 	} else {
-	    var roomNameArray = [];
+	    var channelNameArray = [];
 	}
 	
-	 roomNameArray.push(data.roomName.toString());
-	 var uniqueRoomsArray = Array.from(new Set(roomNameArray));
+	 channelNameArray.push(data.channelName.toString());
+	 var uniqueChannelsArray = Array.from(new Set(channelNameArray));
 	 
-	 localStorage.setItem('roomName', JSON.stringify(uniqueRoomsArray));
+	 localStorage.setItem('channelName', JSON.stringify(uniqueChannelsArray));
 	 
-	if(localStorage.getItem("roomIds")) {
-	    var roomIdArray = JSON.parse(localStorage.getItem("roomIds"));
+	if(localStorage.getItem("channelIds")) {
+	    var channelIdArray = JSON.parse(localStorage.getItem("channelIds"));
 	} else {
-	    var roomIdArray = [];
+	    var channelIdArray = [];
 	}
 	
-	 roomIdArray.push(data.roomId.toString());
-	 var uniqueRoomIdsArray = Array.from(new Set(roomIdArray));
-	 localStorage.setItem('roomIds', JSON.stringify(uniqueRoomIdsArray));
+	 channelIdArray.push(data.channelId.toString());
+	 var uniqueChannelIdsArray = Array.from(new Set(channelIdArray));
+	 localStorage.setItem('channelIds', JSON.stringify(uniqueChannelIdsArray));
 	 
 	 
-	 //localStorage.setItem("activeRoomName", data.roomName);
-	 //localStorage.setItem("activeRoomId", data.roomId);
+	 //localStorage.setItem("activeChannelName", data.channelName);
+	 //localStorage.setItem("activeChannelId", data.channelId);
      
-        console.log('room ready');
+        console.log('channel ready');
 	
-         $('.rooms-modal').modal("hide");
+         $('.channels-modal').modal("hide");
      
 	var router = new Router();
-	router.navigate("channels/" + data.roomId, {trigger: "true"});
+	router.navigate("channels/" + data.channelId, {trigger: "true"});
 	
     },
     
     destroy: function() { 
         
-	console.log('rooms modal remove funciont');
+	console.log('channels modal remove funciont');
 	
 	//$('.invitation-modal').modal("hide");
 	
-        localStorage.setItem('roomsModalViewLoaded', "false");
+        localStorage.setItem('channelsModalViewLoaded', "false");
         
         //this.undelegateEvents();
         this.undelegateEvents();

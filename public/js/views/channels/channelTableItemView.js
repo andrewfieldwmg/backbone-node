@@ -1,10 +1,10 @@
-var RoomListItemView = Backbone.View.extend({
+var ChannelTableItemView = Backbone.View.extend({
          
     initialize: function(options){
                 
             //console.log('list item view init');
             this.options = options;
-	    this.myUserId =  localStorage.getItem("userId");
+	    this.myUserId = localStorage.getItem("userId");
 	    
             //this.render();
 
@@ -13,15 +13,15 @@ var RoomListItemView = Backbone.View.extend({
     render: function(){
         
             var parameters = {
-                            cssClass: this.options.cssClass,
-                            time: this.options.time,
                             linkClass: this.options.linkClass,
-                            roomId: this.options.roomId,
-                            roomName: this.options.roomName,
+                            channelId: this.options.channelId,
+                            channelName: this.options.channelName,
+                            channelGenre: this.options.channelGenre,
+                            numberChannelMembers: this.options.numberChannelMembers,
 			    messageCount: this.options.messageCount
                             };
  
-        var compiledTemplate = _.template( $("#room_list_item_template").html(), parameters);
+        var compiledTemplate = _.template( $("#channel_table_item_template").html(), parameters);
         
         return compiledTemplate;
         

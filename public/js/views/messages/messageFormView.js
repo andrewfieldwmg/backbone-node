@@ -39,7 +39,7 @@ var MessageFormView = Backbone.View.extend({
             
         var parameters = {
             username: localStorage.getItem("username"),
-            roomName: localStorage.getItem("activeRoomName")
+            channelName: localStorage.getItem("activeChannelName")
             };
             
         var compiledTemplate = _.template( $("#message_form_template").html(), parameters);
@@ -61,8 +61,8 @@ var MessageFormView = Backbone.View.extend({
         socket.emit('message', { sender: tabID,
                                 username: localStorage.getItem("username"),
                                 userId: localStorage.getItem("userId"),
-				activeRoomId: localStorage.getItem("activeRoomId"),
-				activeRoomName: localStorage.getItem("activeRoomName"),
+				activeChannelId: localStorage.getItem("activeChannelId"),
+				activeChannelName: localStorage.getItem("activeChannelName"),
 				userColour: localStorage.getItem("userColour"),
                                 message: message
                                 });

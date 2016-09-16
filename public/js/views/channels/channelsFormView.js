@@ -1,17 +1,17 @@
-var RoomsFormView = Backbone.View.extend({
+var ChannelsFormView = Backbone.View.extend({
     
-    el: $("#rooms_form_container"),
+    el: $("#channels_form_container"),
     
-    template : _.template( $("#rooms_form_template").html()),
+    template : _.template( $("#channels_form_template").html()),
            
     initialize: function(){
-        console.log('init rooms form view');
+        console.log('init channels form view');
             //this.render();
     },
     
     render: function(){
         
-        localStorage.setItem('roomsFormViewLoaded', "true");
+        localStorage.setItem('channelsFormViewLoaded', "true");
          
        this.$el.html( this.template );
         
@@ -19,13 +19,13 @@ var RoomsFormView = Backbone.View.extend({
 
     events: {
    
-     "click #create-room": "createRoom"
+     "click #create-channel": "createChannel"
      
     },
     
-    createRoom: function(e) {
+    createChannel: function(e) {
                 
-        console.log('create room');
+        console.log('create channel');
         e.preventDefault();
         e.stopPropagation();
         
@@ -35,10 +35,10 @@ var RoomsFormView = Backbone.View.extend({
         var userId = localStorage.getItem("userId");
         var socketId = localStorage.getItem("socketId");
        
-        var roomName = $('#new-room-name').val();
-        console.log(roomName);
-        socket.emit('create-new-room', {
-                                        name: roomName,
+        var channelName = $('#new-channel-name').val();
+        console.log(channelName);
+        socket.emit('create-new-channel', {
+                                        name: channelName,
                                         createdByUserId: userId
                                         
                                         });
@@ -46,13 +46,13 @@ var RoomsFormView = Backbone.View.extend({
 
     },
     
-    availableRoomsUpdated: function(data) {
+    availableChannelsUpdated: function(data) {
      
     },
     
     remove: function() { 
           
-        localStorage.setItem("roomsFormViewLoaded", "false");
+        localStorage.setItem("channelsFormViewLoaded", "false");
         
         //this.undelegateEvents();
         this.$el.empty().off(); 

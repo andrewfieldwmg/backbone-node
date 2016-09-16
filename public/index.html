@@ -27,7 +27,7 @@
       
                 <h1 class="site-title-h1">
                     <span class="pull-left site-title">
-                        <a title="Go Home" class="deco-none home-link" href="/">
+                        <a title="Go Home" data-toggle="tooltip" class="deco-none padding10" href="/">
                             listentome.io
                         <i class="fa fa-rocket"></i>
                         </a>
@@ -47,26 +47,27 @@
                 </div>
                 
                 <div id="audio_player_container"></div>       
-                <div id="clients_in_room_container"></div>      
-                <div id="message_form_container"></div>
-                <div id="app_controls_container"></div>
+                  <div id="username_form_container"></div>
             
                 <div class="col-sm-8 content">
-                    <div id="username_form_container"></div>
+                    <div id="app_controls_container"></div>
+                    <div id="message_form_container"></div>
                     <div id="messages_container"></div>
-                    <div id="available_rooms_container"></div>
+                    <div id="available_channels_container"></div>
                     <div id="available_streams_container"></div>
                     <div id="featured_streams_container"></div> 
                 </div>
                 
                 <div class="col-sm-4 sidebar">
+                    <div id="user_controls_container"></div>
                     <div id="connected_clients_container"></div>
+                    <div id="clients_in_channel_container"></div>   
                     <div id="contacts_container"></div>
-                    <div id="user_rooms_container"></div>
+                    <div id="user_channels_container"></div>
                 </div>
                 
                 <div id="welcome_modal_container"></div>
-                <div id="rooms_modal_container"></div>
+                <div id="channels_modal_container"></div>
                 <div id="invitation_modal_container"></div>
                 <div id="start_stream_modal_container"></div>
                  
@@ -188,19 +189,22 @@
             </p>
         </script>
         
-   
-        <script type="text/template" id="clients_in_room_template">  
-            <p>
-                <!--<h1><em>Room</em>: <strong><span id="room-name"><%= roomName %></span></strong></h1>-->
-            </p>
-            <p>
-                <!--<h2>Who's in this room?</h2>-->
-                <ul class="list-group" id="clients-in-room"></ul>
-            </p>
+        <script type="text/template" id="user_controls_template">  
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h2><strong>User Panel</strong></h2></div>
+                    
+                        <div class="panel-body">
+                            <div class="padding10">
+                                    <button type="button" class="btn btn-primary user-control-button create-channel" data-toggle="tooltip" data-placement="right" title="Start Streaming">Start Streaming!</button>
+                                    <button type="button" class="btn btn-info user-control-button edit-account" data-toggle="tooltip" data-placement="right" title="Edit Account">Edit Account</button>
+                                    <button type="button" class="btn btn-danger user-control-button open-help" data-toggle="tooltip" data-placement="right" title="Help Me!">Help Me!</button>
+                            </div>
+                        </div>
+                </div>
         </script>
-                                
+         
                   
-        <script type="text/template" id="clients_in_room_list_item_template">
+        <script type="text/template" id="clients_in_channel_list_item_template">
             <li class="list-group-item <%= cssClass %>" data-user-id="<%= userId %>"><strong><%= time %></strong> <%= contentFromUsername %> <strong><%= contentName %></strong>
             <i class="fa fa-plus pull-right <%= actionIconsClass %>" data-toggle="tooltip" title="Connect With <%= userName %>!" aria-hidden="true" data-user-name="<%= userName %>" data-user-id="<%= userId %>"></i>
             </li>
@@ -208,20 +212,20 @@
                         
         
         <script type="text/template" id="message_form_template">                
-            <p>        
+             
                 <form class="form" action="">                   
-                   <div class="input-group input-group-lg">
+                   <div class="input-group input-group-lg message-input-group">
                      <input type="text" class="form-control" id="message-text" placeholder="What's up, <%= username %>?">
                      <span class="input-group-btn">
                        <button class="btn btn-primary" id="submit-message" type="submit">Go!</button>
                      </span>
                    </div>
                 </form>
-            </p> 
+           
         </script>
                        
             <script type="text/template" id="app_controls_template">
-                <p>
+             
                    <div class="btn-group-horizontal button-wrapper">             
                         <div class="col-xs-3">            
                             <i class="fa fa-microphone action-icon" data-toggle="tooltip" title="Record Live Audio" id="start-recording" title="Record Live Audio" aria-hidden="true"></i>
@@ -245,28 +249,57 @@
                             <i class="fa fa-ban action-icon pull-right" data-toggle="tooltip" title="Stop All Audio" id="stop" title="Stop All Audio" aria-hidden="true"></i>
                         </div>             
                    </div>
-               </p>
+             
             </script>
 
         
             <script type="text/template" id="connected_clients_template">
-                 <p>
-                    <h2><strong>Who's Online?</strong></h2>
-                    <table id="table_id" class="connected-clients-table table table-striped table-bordered display nowrap" width="100%">
-                        <thead class="connected-clients-table-head">
-                            <tr>
-                            <th>Who</th>
-                             <th>Genre</th>
-                             <th>Location</th>                   
-                            <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="connected-clients"></tbody>
-                    </table>
-                 </p>
+              
+                    <div class="panel panel-default">
+                        <div class="panel-heading">  
+                            <h2><strong>Who's Online?</strong></h2>
+                        </div>
+                        <div class="panel-body">
+                        
+                            <table class="connected-clients-table table table-striped table-bordered display nowrap" width="100%">
+                                <thead class="connected-clients-table-head">
+                                    <tr>
+                                    <th>Who</th>
+                                     <th>Genre</th>
+                                     <th>Location</th>                   
+                                    <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                    <tbody id="connected-clients"></tbody>
+                         </table>
+                    </div>
+                </div>
             </script>
-
-
+    
+            <script type="text/template" id="clients_in_channel_template">
+            
+               <div class="panel panel-default">
+                        <div class="panel-heading">  
+                            <h2><strong>Who's Listening?</strong></h2>
+                        </div>
+                        <div class="panel-body">
+                        
+                            <table class="channel-clients-table table table-striped table-bordered display nowrap" width="100%">
+                                <thead class="channel-clients-table-head">
+                                    <tr>
+                                    <th>Who</th>
+                                     <th>Genre</th>
+                                     <th>Location</th>
+                                     <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                    <tbody id="clients-in-channel"></tbody>
+                         </table>
+                    </div>
+                </div>                  
+            </script>
+                       
+                       
             <script type="text/template" id="user_table_item_template">         
                 <tr>
                     <td class="<%= cssClass %>" data-user-id="<%= userId %>">
@@ -274,7 +307,7 @@
                     </td>
                     <td class="<%= cssClass %>" data-user-id="<%= userId %>"><%= userGenre %></td>
                     <td class="<%= cssClass %>" data-user-id="<%= userId %>"><%= userLocation %></td>
-                    <td class="<%= cssClass %>" data-user-id="<%= userId %>">
+                    <td class="user-list-action-td <%= cssClass %>" data-user-id="<%= userId %>">
                     <i class="fa fa-plus <%= actionIconsClass %>" data-toggle="tooltip" title="Connect With <%= userName %>!" aria-hidden="true" data-user-name="<%= userName %>" data-user-id="<%= userId %>"></i>
                     </td>
                 </tr>
@@ -282,26 +315,33 @@
                
             
             <script type="text/template" id="contacts_template">
-                 <p>
-                    <h2><strong>Your Contacts</strong></h2>
-                    <table class="contacts-table table table-striped table-bordered display nowrap" width="100%">
-                        <thead class="contacts-table-head" style="display: none">
-                            <tr>
-                                <!--<th>Time</th>-->
-                                <th>Who</th>
-                                <th>Genre</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="contacts">
-                            <tr>
-                                <td colspan="3" class="" data-user-id="">You have no contacts!</td>
-                                <td style="display: none;"></td>
-                                <td style="display: none;"></td>
-                            </tr>       
-                        </tbody>
-                    </table>   
-                </p>
+                
+                <div class="panel panel-default">
+                        <div class="panel-heading">  
+                            <h2><strong>Your Contacts</strong></h2>
+                        </div>
+                        <div class="panel-body">
+                                       
+                             <table class="contacts-table table table-striped table-bordered display nowrap" width="100%">
+                                 <thead class="contacts-table-head" style="display: none">
+                                     <tr>
+                                         <!--<th>Time</th>-->
+                                         <th>Who</th>
+                                         <th>Genre</th>
+                                         <th>Actions</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody id="contacts">
+                                     <tr>
+                                         <td colspan="3" class="" data-user-id="">You have no contacts!</td>
+                                         <td style="display: none;"></td>
+                                         <td style="display: none;"></td>
+                                     </tr>       
+                                 </tbody>
+                             </table>   
+                    </div>
+                </div>
+
             </script>
        
        
@@ -319,23 +359,34 @@
             
                                      
             <script type="text/template" id="messages_template">
-                <p>
-                    <h2><strong>Feedback</strong></h2>
-                </p>               
-                <p>
+                
+                <div class="panel panel-default">
+                        <div class="panel-heading">  
+                             <h2><strong>Feedback</strong></h2>
+                           
+                            </h2>
+                        </div>
+                        <div class="panel-body">
+        
                     <ul class="list-group scrollable" id="message-results">
                         <li class="list-group-item small feedback-placeholder"><em>Feedback will appear here!</em></li>
                     </ul>
-                </p>
+              
+                    </div>
+                </div>
+     
             </script>
             
                    
-            <script type="text/template" id="available_rooms_template">
-                 <p>
-                    <h2 id="available-rooms-list-header"><strong>Available Channels</strong>
-                    </h2>
-                      <table class="available-rooms-table table table-striped table-bordered display nowrap" width="100%">
-                        <thead class="available-rooms-table-head" style="display: none">
+            <script type="text/template" id="available_channels_template">
+                <div class="panel panel-default">
+                        <div class="panel-heading">  
+                              <h2 id="available-channels-list-header"><strong>Available Channels</strong></h2>
+                        </div>
+                        <div class="panel-body">
+                                       
+                            <table class="available-channels-table table table-striped table-bordered display nowrap" width="100%">
+                        <thead class="available-channels-table-head" style="display: none">
                             <tr>
                                 <!--<th>Time</th>-->
                                 <th>Name</th>
@@ -344,29 +395,33 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="available-rooms"></tbody>
+                        <tbody id="available-channels"></tbody>
                     </table>  
-                </p> 
+                    </div>
+                </div>
+                            
             </script>
             
             
-            <script type="text/template" id="room_table_item_template">         
-                <tr data-room-id="<%= roomId%>">
-                    <td class="" data-user-id=""><%= roomName %> <span class="badge message-counter" data-toggle="tooltip" title="<%= messageCount %> Messages" data-room-id="<%= roomId%>"><%= messageCount %></span></td>
-                    <td class="" data-user-id=""><%= roomGenre %></td>
-                    <td class="" data-user-id=""><%= numberRoomMembers %></td>
+            <script type="text/template" id="channel_table_item_template">         
+                <tr data-channel-id="<%= channelId%>">
+                    <td class="" data-user-id=""><%= channelName %> <span class="badge message-counter" data-toggle="tooltip" title="<%= messageCount %> Messages" data-channel-id="<%= channelId%>"><%= messageCount %></span></td>
+                    <td class="" data-user-id=""><%= channelGenre %></td>
+                    <td class="" data-user-id=""><%= numberChannelMembers %></td>
                     <td class="" data-user-id="">
-                        <i class="fa fa-rocket <%= linkClass %>" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>" data-toggle="tooltip" title="Join Channel" aria-hidden="true"></i>
+                        <i class="fa fa-rocket <%= linkClass %>" data-channel-id="<%= channelId%>" data-channel-name="<%= channelName%>" data-toggle="tooltip" title="Join Channel" aria-hidden="true"></i>
                     </td>        
                 </tr>
            </script>
             
             
         <script type="text/template" id="available_streams_template">
-                 <p>
-                    <h2 id="available-streams-list-header"><strong>Live Streams</strong>
-                    </h2>
-                      <table class="available-streams-table table table-striped table-bordered display nowrap" width="100%">
+                <div class="panel panel-default">
+                        <div class="panel-heading">  
+                               <h2 id="available-streams-list-header"><strong>Live Streams</strong></h2>
+                        </div>
+                        <div class="panel-body">
+                             <table class="available-streams-table table table-striped table-bordered display nowrap" width="100%">
                         <thead class="available-streams-table-head" style="display: none">
                             <tr>
                                 <!--<th>Time</th>-->
@@ -382,7 +437,11 @@
                         </thead>
                         <tbody id="available-streams">
                            <tr>
-                           <td colspan="8">No live streams available! Why not create one?</td>
+                           <td colspan="8">No live streams available!
+                                   <!--<div class="padding10 create-channel-div">
+                                            <button type="button" class="btn btn-primary create-channel" data-toggle="tooltip" data-placement="right" title="Create New Channel">Create A Channel</button>
+                                    </div>-->
+                           </td>
                                 <td style="display: none;"></td>
                                 <td style="display: none;"></td>
                                 <td style="display: none;"></td>
@@ -392,47 +451,59 @@
                                 <td style="display: none;"></td>
                             </tr>  
                         </tbody>
-                    </table>  
-                </p> 
+                    </table> 
+                    </div>
+                </div>
             </script>
         
-                <script type="text/template" id="featured_streams_template">
-                 <p>
-                    <h2 id="featured-streams-list-header"><strong>Featured Streams</strong>
-                    </h2>
-                      <table class="featured-streams-table table table-striped table-bordered display nowrap" width="100%">
-                        <thead class="featured-streams-table-head" style="display: none">
-                            <tr>
-                                <!--<th>Time</th>-->
-                                <th class="hidden">id</th>
-                                <th>Title</th>
-                                <th>User</th>
-                                <th>Genre</th>
-                                <th>Feedback</th>
-                                <th>Age</th>
-                                <th>Listen</th>
-                                <th>Join</th>
-                            </tr>
-                        </thead>
-                        <tbody id="featured-streams">
-                           <tr>
-                                <td colspan="8">No streams featured! Why not create one?</td>
-                                <td style="display: none;"></td>
-                                <td style="display: none;"></td>
-                                <td style="display: none;"></td>
-                                <td style="display: none;"></td>
-                                <td style="display: none;"></td>
-                                <td style="display: none;"></td>
-                                <td style="display: none;"></td>
-                            </tr>  
-                        </tbody>
-                    </table>  
-                </p> 
+            
+            <script type="text/template" id="featured_streams_template">
+                
+                <div class="panel panel-default">
+                        <div class="panel-heading">  
+                                  <h2 id="featured-streams-list-header"><strong>Featured Streams</strong>
+                                    </h2>
+                        </div>
+                        <div class="panel-body">
+                            
+                            <table class="featured-streams-table table table-striped table-bordered display nowrap" width="100%">
+                              <thead class="featured-streams-table-head" style="display: none">
+                                  <tr>
+                                      <!--<th>Time</th>-->
+                                      <th class="hidden">id</th>
+                                      <th>Title</th>
+                                      <th>User</th>
+                                      <th>Genre</th>
+                                      <th>Feedback</th>
+                                      <th>Age</th>
+                                      <th>Listen</th>
+                                      <th>Join</th>
+                                  </tr>
+                              </thead>
+                              <tbody id="featured-streams">
+                                 <tr>
+                                      <td colspan="8">No featured streams available!
+                                              <!--<div class="padding10 create-channel-div">
+                                                  <button type="button" class="btn btn-primary create-channel" data-toggle="tooltip" data-placement="right" title="Create New Channel">Create A Channel</button>
+                                              </div>-->
+                                      </td>
+                                      <td style="display: none;"></td>
+                                      <td style="display: none;"></td>
+                                      <td style="display: none;"></td>
+                                      <td style="display: none;"></td>
+                                      <td style="display: none;"></td>
+                                      <td style="display: none;"></td>
+                                      <td style="display: none;"></td>
+                                  </tr>  
+                              </tbody>
+                          </table>  
+                    </div>
+                </div>
             </script>
             
             
             <script type="text/template" id="stream_table_item_template">         
-                <tr data-room-id="<%= streamId%>">
+                <tr data-channel-id="<%= streamId%>">
                 
                     <td class="hidden" data-user-id=""><%= streamId %></td>
                     <td class="" data-user-id=""><%= streamName %> </td>
@@ -442,7 +513,7 @@
                     <td class="" data-user-id=""><%= streamGenre %></td>
                     <td class="" data-user-id="">
                     
-                    <span class="badge message-counter" data-toggle="tooltip" title="<%= upvotes %> Messages" data-room-id="<%= streamId%>"><%= upvotes %></span>
+                    <span class="badge message-counter" data-toggle="tooltip" title="<%= upvotes %> Messages" data-channel-id="<%= streamId%>"><%= upvotes %></span>
                                 
                         <span class="fa-stack fa-1x">
                           <i class="fa fa-heart fa-stack-1x"></i>
@@ -464,35 +535,42 @@
                         
                     <td class="" data-user-id=""><%= convertToHoursAndMinutes(diff) %></td>
                     <td class="" data-user-id="">
-                        <i class="fa fa-headphones <%= listenButtonClass %>" data-room-id="<%= roomId %>" data-room-name="<%= roomName%>" data-toggle="tooltip" title="Listen" aria-hidden="true"></i>
+                        <i class="fa fa-headphones <%= listenButtonClass %>" data-channel-id="<%= channelId %>" data-channel-name="<%= channelName%>" data-toggle="tooltip" title="Listen" aria-hidden="true"></i>
                     </td>
                       <td class="" data-user-id="">
-                        <i class="fa fa-rocket enter-room" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>" data-toggle="tooltip" title="Join" aria-hidden="true"></i>
+                        <i class="fa fa-rocket enter-channel" data-channel-id="<%= channelId%>" data-channel-name="<%= channelName%>" data-toggle="tooltip" title="Join" aria-hidden="true"></i>
                     </td>
                 </tr>
            </script>
             
                            
-            <script type="text/template" id="room_list_item_template">
-                <li class="list-group-item <%= cssClass %>" data-room-id="<%= roomId%>">
+            <script type="text/template" id="channel_list_item_template">
+                <li class="list-group-item <%= cssClass %>" data-channel-id="<%= channelId%>">
                     <div>
-                    <span class="<%= linkClass %>" data-toggle="tooltip" title="Join Channel" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>"><strong><%= roomName %></strong></span>
-                    <span class="badge message-counter" data-toggle="tooltip" title="<%= messageCount %> Messages" data-room-id="<%= roomId%>"><%= messageCount %></span>
-                    <i class="fa fa-rocket pull-right <%= linkClass %>" data-room-id="<%= roomId%>" data-room-name="<%= roomName%>" data-toggle="tooltip" title="Join Channel" aria-hidden="true"></i>
+                    <span class="<%= linkClass %>" data-toggle="tooltip" title="Join Channel" data-channel-id="<%= channelId%>" data-channel-name="<%= channelName%>"><strong><%= channelName %></strong></span>
+                    <span class="badge message-counter" data-toggle="tooltip" title="<%= messageCount %> Messages" data-channel-id="<%= channelId%>"><%= messageCount %></span>
+                    <i class="fa fa-rocket pull-right <%= linkClass %>" data-channel-id="<%= channelId%>" data-channel-name="<%= channelName%>" data-toggle="tooltip" title="Join Channel" aria-hidden="true"></i>
                     </div>
                </li>
             </script>
             
             
-            <script type="text/template" id="user_rooms_template">
-                 <p>
-                    <h2 id="rooms-list-header"><strong>Your Channels</strong>
-                        <i class="fa fa-plus action-icon small" data-toggle="tooltip" data-placement="right" title="Create New Channel" id="open-create-room-form" aria-hidden="true"></i>
-                    </h2>
-                    <ul class="list-group" id="user-rooms">
-                        <li class="list-group-item">You have no channels!</li>
-                    </ul>
-                </p> 
+            <script type="text/template" id="user_channels_template">
+                               
+                <div class="panel panel-default">
+                        <div class="panel-heading">  
+                            <h2 id="channels-list-header"><strong>Your Channels</strong>
+                                <i class="fa fa-plus action-icon small" data-toggle="tooltip" data-placement="right" title="Create New Channel" id="open-create-channel-form" aria-hidden="true"></i>
+                            </h2>
+                        </div>
+                        <div class="panel-body">
+        
+                           <ul class="list-group" id="user-channels">
+                               <li class="list-group-item">You have no channels!</li>
+                           </ul>
+                    </div>
+                </div>
+    
             </script>
        
                   
@@ -554,8 +632,8 @@
             </script>
             
                
-            <script type="text/template" id="rooms_modal_template">
-                <div class="modal fade rooms-modal">
+            <script type="text/template" id="channels_modal_template">
+                <div class="modal fade channels-modal">
                     <div class="modal-dialog" role="document">
                       <div class="modal-content">
                         <div class="modal-header">
@@ -566,20 +644,20 @@
                         </div>
                         <div class="modal-body">
     
-                        <form id="create-room-with-user-form" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>" class="form  <%= textInputClass %>" action="">                   
+                        <form id="create-channel-with-user-form" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>" class="form  <%= textInputClass %>" action="">                   
                            <div class="input-group input-group-lg w-100">
-                             <input type="text" class="form-control create-room-from-users-name <%= textInputClass %>" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>" placeholder="What do you want to call your channel?">
+                             <input type="text" class="form-control create-channel-from-users-name <%= textInputClass %>" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>" placeholder="To help you find your feedback later, enter a name here">
                             <h1>
-                                <span class="create-room-from-users-result" style="display: none"></span>
+                                <span class="create-channel-from-users-result" style="display: none"></span>
                             </h1>
                            </div>
-                  
+                        </form>
                         </div>
                         
                         <div class="modal-footer">
                           <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
-                          <button type="submit" class="btn btn-primary <%= createRoomFromUserClass %>" id="create-room-from-users" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>">Send Request!</button>
-                          <button type="submit" class="btn btn-primary <%= createRoomClass %>" id="create-room">Go!</button>
+                          <button type="submit" class="btn btn-primary <%= createChannelFromUserClass %>" id="create-channel-from-users" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>">Send Request!</button>
+                          <button type="submit" class="btn btn-primary <%= createChannelClass %>" id="create-channel">Go!</button>
                           </form>
             
                         </div>
@@ -605,8 +683,8 @@
                         
                         <div class="modal-footer">
                           <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
-                          <button type="submit" class="btn btn-primary" id="accept-room-invitation" data-invited-by-user-id="<%= invitedByUserId %>" data-join-room-id="<%= joinRoomId %>">Accept Request</button>
-                           <button type="submit" class="btn btn-info" id="decline-room-invitation" data-invited-by-user-id="<%= invitedByUserId %>" data-join-room-id="<%= joinRoomId %>">Sorry, I'm Busy!</button>        
+                          <button type="submit" class="btn btn-primary" id="accept-channel-invitation" data-invited-by-user-id="<%= invitedByUserId %>" data-join-channel-id="<%= joinChannelId %>">Accept Request</button>
+                           <button type="submit" class="btn btn-info" id="decline-channel-invitation" data-invited-by-user-id="<%= invitedByUserId %>" data-join-channel-id="<%= joinChannelId %>">Sorry, I'm Busy!</button>        
                         </div>
                       </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
@@ -654,23 +732,24 @@
         
             <!-- Users -->
             <script src="/js/views/users/usernameFormView.js"></script>
+            <script src="/js/views/users/userControlsView.js"></script>
             <script src="/js/views/users/userListItemView.js"></script>
             <script src="/js/views/users/connectedClientsView.js"></script>
             <script src="/js/views/users/contactsView.js"></script>
-            <script src="/js/views/users/clientsInRoomView.js"></script>
-            <script src="/js/views/users/roomUserListItemView.js"></script>
+            <script src="/js/views/users/clientsInChannelView.js"></script>
+            <script src="/js/views/users/channelUserListItemView.js"></script>
             
             <!-- Streams -->
             <script src="/js/views/streams/availableStreamsView.js"></script>
             <script src="/js/views/streams/featuredStreamsView.js"></script>
             <script src="/js/views/streams/streamTableItemView.js"></script>
             
-            <!-- Rooms/Channels -->
-            <script src="/js/views/rooms/availableRoomsView.js"></script>
-            <script src="/js/views/rooms/userRoomsView.js"></script>
-            <script src="/js/views/rooms/roomListItemView.js"></script>
-            <script src="/js/views/rooms/roomTableItemView.js"></script>
-           <!--<script src="/js/views/roomsFormView.js"></script>-->
+            <!-- Channels -->
+            <script src="/js/views/channels/availableChannelsView.js"></script>
+            <script src="/js/views/channels/userChannelsView.js"></script>
+            <script src="/js/views/channels/channelListItemView.js"></script>
+            <script src="/js/views/channels/channelTableItemView.js"></script>
+           <!--<script src="/js/views/channelsFormView.js"></script>-->
             
             <!-- Messages -->
             <script src="/js/views/messages/messageFormView.js"></script>
@@ -682,14 +761,13 @@
     
             <!-- Modals -->
             <script src="/js/views/modals/welcomeModalView.js"></script>
-            <script src="/js/views/modals/roomsModalView.js"></script>
+            <script src="/js/views/modals/channelsModalView.js"></script>
             <script src="/js/views/modals/acceptInvitationModalView.js"></script>
             <script src="/js/views/modals/startStreamModalView.js"></script>
         
         <!--CONTAINER VIEWS FOR ROUTES-->
         <script src="/js/views/homeView.js"></script>
-        <script src="/js/views/newHomeView.js"></script>
-        <script src="/js/views/insideRoomView.js"></script>
+        <script src="/js/views/insideChannelView.js"></script>
         
          <!--ROUTER-->
         <script src="/js/routes/appRouter.js"></script>

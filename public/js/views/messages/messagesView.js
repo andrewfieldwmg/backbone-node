@@ -83,7 +83,7 @@ var MessagesView = Backbone.View.extend({
          
          //console.log('message received');
 
-        if (data.roomId != localStorage.getItem("activeRoomId")) {
+        if (data.channelId != localStorage.getItem("activeChannelId")) {
             
             return;
         

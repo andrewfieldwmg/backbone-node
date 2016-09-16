@@ -10,8 +10,8 @@ function startLiveStream(socket) {
         ss(socket).emit('audio-file', stream, {
                 userId: localStorage.getItem("userId"),
                 username: localStorage.getItem("username"),
-                activeRoomId: localStorage.getItem("activeRoomId"),
-                activeRoomName: localStorage.getItem("activeRoomName"),
+                activeChannelId: localStorage.getItem("activeChannelId"),
+                activeChannelName: localStorage.getItem("activeChannelName"),
                 userColour: localStorage.getItem("userColour"),
                 liveStream: "true",
                 sender: tabID,
