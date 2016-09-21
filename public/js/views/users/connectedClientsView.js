@@ -97,6 +97,8 @@ var ConnectedClientsView = Backbone.View.extend({
 	    connectedClientsTable.destroy();
             
             var connectedUsers = JSON.parse(data.connectedUsers);
+	    
+	    //console.log(connectedUsers);
             //var connectedUsernames = JSON.parse(data.connectedUsernames);
             //var connectedUserIds = JSON.parse(data.connectedUserIds);
             
@@ -105,7 +107,7 @@ var ConnectedClientsView = Backbone.View.extend({
             //var socketCss = getSocketCss(socketIndex);
                  //console.log(connectedUsers);
 
-            if (connectedUsers.length < 2) {
+            //if (connectedUsers.length < 2) {
                       
                 //console.log('1 client or less');
                 
@@ -130,7 +132,7 @@ var ConnectedClientsView = Backbone.View.extend({
                     var userListItemView = new UserListItemView(parameters);
                     $('#connected-clients').append(userListItemView.afterRender());*/  
                 
-            } else {
+            //} else {
                 	    
 		$('#connected-clients').html('');
                 
@@ -164,7 +166,8 @@ var ConnectedClientsView = Backbone.View.extend({
                             };
                             
              
-                        var userListItemView = new UserListItemView(parameters);   
+                        var userListItemView = new UserListItemView(parameters);
+		
                         $('#connected-clients').append(userListItemView.afterRender());
                     }
                 
@@ -179,7 +182,7 @@ var ConnectedClientsView = Backbone.View.extend({
                 //roomsView.afterRender();
                         
      
-            }
+            //}
 
             
     },

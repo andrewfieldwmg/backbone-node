@@ -13,7 +13,8 @@ var DataTypes = require("sequelize");
         userLocation: DataTypes.STRING,
         status: DataTypes.STRING,
         userColour: DataTypes.STRING,
-        inChannels: DataTypes.STRING
+        inChannels: DataTypes.STRING,
+        currentChannel: DataTypes.STRING
       }, {
         
         instanceMethods: {
@@ -56,6 +57,7 @@ var DataTypes = require("sequelize");
                     var socketId = this.socketId;
                     var status = this.status;
                     var inChannels = this.inChannels;
+                    var currentChannel = this.currentChannel;
 
                     //var shasum = crypto.createHash('sha1');
                     //shasum.update(password);
@@ -64,7 +66,8 @@ var DataTypes = require("sequelize");
                     User.update({
                                 socketId: socketId,
                                  status: status,
-                                 inChannels: inChannels
+                                 inChannels: inChannels,
+                                 currentChannel: currentChannel
                                  }, {id: id} )
                             .success(onSuccess).error(onError);
                 },
@@ -76,6 +79,7 @@ var DataTypes = require("sequelize");
                     var socketId = this.socketId;
                     var status = this.status;
                     var inChannels = this.inChannels;
+                    var currentChannel = this.currentChannel;
                     var userGenre = this.userGenre;
                     var userLocation = this.userLocation;
                     var email = this.email;
@@ -92,7 +96,8 @@ var DataTypes = require("sequelize");
                                  email: email,
                                  password: password,
                                  status: status,
-                                 inChannels: inChannels
+                                 inChannels: inChannels,
+                                 currentChannel: currentChannel
                                  }, {id: id} )
                             .success(onSuccess).error(onError);
                 },

@@ -15,7 +15,7 @@ var UsernameFormView = Backbone.View.extend({
 	$('#submit-user-email').prop('disabled', true);
         $('#submit-user-password').prop('disabled', true);
 	
-	$('#username_form_container').addClass('panel panel-default');
+	//$('#username_form_container').addClass('panel panel-default');
     },
     
     render: function(){

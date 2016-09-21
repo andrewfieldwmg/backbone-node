@@ -8,7 +8,7 @@ var NewHomeView = Backbone.View.extend({
 		 		 
 	 $('#stop').trigger('click');
 	 
-	 $("#audio_player_container").empty();
+	 $("#audio_player_container").empty().removeClass("marginbottom45");
 	
 	// DESTROY / CLEAR OUT VIEWS TO STOP ZOMBIES
 	
@@ -58,10 +58,10 @@ var NewHomeView = Backbone.View.extend({
 	
         //CHANNELS
 	
-	if (localStorage.getItem("userChannelsViewLoaded") == "true") {
+	/*if (localStorage.getItem("userChannelsViewLoaded") == "true") {
 	    var userChannelsView = new UserChannelsView();
 	    userChannelsView.destroy();
-	}
+	}*/
         
 	var userChannelsView = new UserChannelsView();
 	userChannelsView.afterRender();
@@ -69,11 +69,11 @@ var NewHomeView = Backbone.View.extend({
 	
         //STREAMS
         
-        var availableStreamsView = new AvailableStreamsView();
-	availableStreamsView.afterRender();
+        //var availableStreamsView = new AvailableStreamsView();
+	//availableStreamsView.afterRender();
 
-	var featuredStreamsView = new FeaturedStreamsView();
-	featuredStreamsView.afterRender();
+	var streamsView = new StreamsView();
+	streamsView.afterRender();
 	
 
 	//WELCOME?

@@ -29,6 +29,7 @@ function playMp3Stream(socket) {
           socket.on("audio", function(data) {
  
           console.log('receiving audio stream via socket io stream');  
+
               
           if(localStorage.getItem("streamState") === "stopped") {
                       

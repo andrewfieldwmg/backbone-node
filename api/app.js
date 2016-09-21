@@ -35,14 +35,6 @@
     var Channel = require("./models/channel.js");
     var File = require("./models/file.js");
     var Stream = require("./models/stream.js");
-    
-    //DIRS and FILE VARS (to do: add these to a config.json)
-    
-    var audioPath = path.join(config.filePaths.uploadDir + '/audio');
-    var wavRecordingFilename = 'liveStream.wav';
-    var mp3RecordingFilename = 'liveStream.mp3';
-    var wavRecordingFile = audioPath + '/' + wavRecordingFilename;
-    var mp3RecordingFile = audioPath + '/' + mp3RecordingFilename;
 
 
     //FILE TRANSFER//
@@ -295,7 +287,9 @@
         
         
         function updateConnectedClientsInChannel(channelIds, channelName) {
-                                                
+                  
+                console.log('update connected clients function');
+                            
                 var channel = Channel.build();
                 
                 channel.findAllWhere(JSON.parse(channelIds), function(channels) {
@@ -322,7 +316,7 @@
                                         for(i = 0; i < channelIdsArray.length; i++) {
                                         
                                         ////console.log(channelIdsArray[i]);
-                                        ////console.log('emitting clients IN ROOM to: ' + channelNameArray[i] + '-' + JSON.stringify(users));
+                                    //console.log('emitting clients IN CHANNEL to: ' + channelIdsArray[i] + '-' + JSON.stringify(users));
                                              
                                              io.to(channelIdsArray[i]).emit('connected-clients-in-channel', {
                                                           usersInChannel: JSON.stringify(users),
@@ -377,7 +371,7 @@
         
     socket.on('refresh-connection', function(data) {
        
-        //console.log('refresh connection');
+        console.log('refresh connection');
         
         var username = data.username;
         var userId = data.userId;
@@ -494,7 +488,7 @@
                                    if(typeof channelIds !== "undefined" && channelIds !== null && channelIds !== "null"
                                       && typeof channelName !== "undefined" && channelName !== null && channelName !== "null") {
                                     
-                                    ////console.log('channel ids:' + channelIds);
+                                    //console.log('channel ids:' + channelIds);
                                         
                                     updateConnectedClientsInChannel(channelIds, channelName);
                                                                                    
@@ -524,7 +518,7 @@
                                             
                                             for(i = 0; i < channels.length; i++) {
                                                 
-                                                if (JSON.parse(channels[i].usersInChannel).indexOf(userId) != -1 ) {
+                                                if (channels[i].createdByUserId == userId) {
                                                    channelArray.push(channels[i]);
                                                 }
                                                     allChannelsArray.push(channels[i]);
@@ -569,30 +563,32 @@
                     
                   });
                     
-                                    var stream = Stream.build();
-             
-                                     stream.retrieveAll(function(streams) {
-                                         
-                                         if (streams) {
-                                                    
-                                                //socket.emit('emptyMessages');
-                                            
-                                                    
-                                                    //console.log('emitting mess ' + messages[i].message);
-                                                    
-                                                    socket.emit('available-streams', {
-                                                        availableStreams: JSON.stringify(streams)
-                                                    });
-                                                                                                   
-                                                
-                                         } else {
-                                           //res.send(401, "User not found");
-                                         }
-                                         
-                                   }, function(error) {
-                                         //res.send("User not found");
-                                   });
-         
+                    
+                    
+                var stream = Stream.build();
+
+                 stream.retrieveAll(function(streams) {
+                     
+                     if (streams) {
+                                
+                            //socket.emit('emptyMessages');
+                        
+                                
+                                //console.log('emitting mess ' + messages[i].message);
+                                
+                                socket.emit('available-streams', {
+                                    availableStreams: JSON.stringify(streams)
+                                });
+                                                                               
+                            
+                     } else {
+                       //res.send(401, "User not found");
+                     }
+                     
+               }, function(error) {
+                     //res.send("User not found");
+               });
+
 
         }
 
@@ -605,7 +601,8 @@
            return this.replace(/\\(.)/mg, "$1");
        }
 
-        socket.on('create-channel-and-invite-user-in', function (data) {
+        
+        /*socket.on('create-channel-and-invite-user-in', function (data) {
             
             var usersInChannel = [];
             var userModelsInChannel = [];
@@ -705,7 +702,7 @@
                     socketChannelNamesArray.push(data.name);
                 }
                 
-                socket.channelNames = Array.from(new Set(utils.flatten(socketChannelNamesArray)));*/
+                socket.channelNames = Array.from(new Set(utils.flatten(socketChannelNamesArray)));
                 
                 ////console.log(socket.channelNames);
                 
@@ -749,7 +746,7 @@
             });
               
         
-        });
+        });*/
         
         
         
@@ -771,8 +768,7 @@
             
             channel.add(function(success) {
                 
-            //var usersInChannel = [];
-            
+            //var usersInChannel = [];         
 
             var user = User.build();
             
@@ -805,6 +801,7 @@
                             user.status = "online";
                             user.socketId = socket.id;
                             user.inChannels = JSON.stringify(channelsForUserArray);
+                            user.currentChannel = success.id.toString();
                             
                             user.updateById(data.createdByUserId, function(success) {
                                 
@@ -853,10 +850,11 @@
                 socket.emit('channel-ready', {
                                    channelId: success.id,
                                    channelName: channel.name,
-                                   usersInChannel: channel.usersInChannel
+                                   usersInChannel: channel.usersInChannel,
+                                   createdByUserId: data.createdByUserId
                                    });
-                             
-                             
+  
+                   
             var usersInChannel = [];
             
             },
@@ -875,7 +873,7 @@
          
          
          
-        socket.on('join-channel', function (data) {
+        /*socket.on('join-channel', function (data) {
             
         //////console.log("join channels");
                                                                
@@ -984,7 +982,7 @@
                                         socketChannelNamesArray.push(channelsOne.name);
                                     }
                                     
-                                    socket.channelNames = Array.from(new Set(utils.flatten(socketChannelNamesArray)));*/
+                                    socket.channelNames = Array.from(new Set(utils.flatten(socketChannelNamesArray)));
                                     
                                     ////console.log(socket.channelNames);
                                  
@@ -1037,7 +1035,8 @@
                         //res.send("User not found");
                   });
                  
-        });
+        });*/
+        
         
         
         socket.on('decline-channel-invitation', function (data) {
@@ -1084,37 +1083,207 @@
         
         socket.on('enter-channel', function (data) {
   
-         ////console.log('enter-channel');
+        var channelIdArray = [];
+        var channelNameArray = [];
+        
+         console.log('enter-channel');
          ////console.log(data);
          
             var channelId = data.channelId;
             socket.join(channelId);
-       
+            channelIdArray.push(channelId);
+  
             var channel = Channel.build();
             
             channel.retrieveById(channelId, function(channels) {
                 
-                    if (channels) {
-                        
-                        socket.emit('entered-channel-details', {channelId: channelId, channelName: channels.name});
-                        
-                        var usersInChannel = JSON.parse(channels.usersInChannel);
+                if (channels) {
+                    
+                  usersInChannel = JSON.parse(channels.usersInChannel);
+                  usersInChannel.push(data.userEnteringChannel.toString());
       
-                            var user = User.build();
-       
-                               user.findAllWhere(usersInChannel, function(users) {
-                                       
+                  var uniqueUsersInChannel = Array.from(new Set(usersInChannel));
+
+                    channel.usersInChannel = JSON.stringify(uniqueUsersInChannel);
+
+                    channel.name = channels.name;
+                    
+                    channel.updateById(channelId, function(success) {
+                            
+                            if (success) {
+                                //////console.log(success);
+
+                                 socketChannelIdsArray = [];
+                                if (typeof socket.channelIds === "undefined") {
+                                    ////console.log('socket channelids undefined');
+                                    socketChannelIdsArray.push(channelId);
+                                } else {
+                                    ////console.log('socket channelids NOT undefined');
+                                    socketChannelIdsArray.push(socket.channelIds);
+                                    socketChannelIdsArray.push(channelId);
+                                }
+                                
+                                socket.channelIds = Array.from(new Set(utils.flatten(socketChannelIdsArray)));            
+                                                                                    
+                                 socket.emit('entered-channel-details', {channelId: channelId, channelName: channels.name});
+                                 
+                                 channelNameArray.push(channels.name);
+                                 
+                                 var usersInChannel = JSON.parse(channels.usersInChannel);
+               
+                                    var user = User.build();
+                
+                                    user.retrieveById(data.userEnteringChannel, function(users) {
+                
                                         if (users) {
-                                        
-                                            updateConnectedClientsInChannel(JSON.stringify(channelId), JSON.stringify(channels.name));
+                                            
+                                            var channelsForUserArray = [];
+                                            ////console.log('usersinchannel' + users.inChannels);
+                                            
+                                            if(typeof users.inChannels === 'undefined' || users.inChannels == null || users.inChannels == "null") {
+                                               
+                                                ////console.log('no inChannel');
+                                                 channelsForUserArray.push(channelId.toString());
                                                 
-                                                /*//console.log('emitting channel clients: ' + channels.name+JSON.stringify(users));
+                                            } else {
                                                 
-                                                io.to(channels.name).emit('connected-clients-in-channel', {
-                                                    usersInChannel: JSON.stringify(users),
-                                                    channelName: channels.name
-                                                });*/
-                                  
+                                                //console.log('already inChannel');
+                                                
+                                                var parsedInChannels = JSON.parse(users.inChannels);
+                                                ////console.log(parsedInChannels);
+                                                for(i = 0; i < parsedInChannels.length; i++) {
+                                                    channelsForUserArray.push(parsedInChannels[i].toString());
+                                                }
+                                                
+                                                channelsForUserArray.push(channelId.toString());
+                                                
+                                            }
+                                            
+                                                    user.status = "online";
+                                                    user.socketId = socket.id;
+                                                    
+                                                    var uniqueChannelsForUserArray = Array.from(new Set(utils.flatten(channelsForUserArray)));
+                                                    
+                                                    user.inChannels = JSON.stringify(uniqueChannelsForUserArray);
+                                                    user.currentChannel = channelId.toString();
+                                                    
+                                                    user.updateById(data.userEnteringChannel, function(success) {
+                                                        
+                                                            if (success) {
+                                                                
+                                             
+                                                            user.findAllWhere(usersInChannel, function(users) {
+                                                                    
+                                                                     if (users) {
+                                                                     
+                                                                         updateConnectedClientsInChannel(JSON.stringify(channelIdArray), JSON.stringify(channelNameArray));
+                                                                             
+                                                                             /*//console.log('emitting channel clients: ' + channels.name+JSON.stringify(users));
+                                                                             
+                                                                             io.to(channels.name).emit('connected-clients-in-channel', {
+                                                                                 usersInChannel: JSON.stringify(users),
+                                                                                 channelName: channels.name
+                                                                             });*/
+                                                               
+                                                                    } else {
+                                                                      //res.send(401, "User not found");
+                                                                    }
+                                                                    
+                                                              }, function(error) {
+                                                                    //res.send("User not found");
+                                                              });
+                                 
+                                            
+                                                                 channel.retrieveAll(function(channelsTwo) {
+                                                                                             
+                                                                         if (channelsTwo) {
+                                                                             
+                                                                             var channelArray = [];
+                                                                             var allChannelsArray = [];
+                                                                             
+                                                                                 for(i = 0; i < channelsTwo.length; i++) {
+                                                                                                       
+                                                                                 if (channelsTwo[i].createdByUserId == data.userEnteringChannel) {
+                                                                                    channelArray.push(channelsTwo[i]);
+                                                                                 }
+                                                                                 
+                                                                                 allChannelsArray.push(channelsTwo[i]);
+                                                            
+                                                                             }                                            
+                                                                                              
+                                                                             var uniqueChannelArray = Array.from(new Set(channelArray));
+                                                                             var uniqueAllChannelsArray = Array.from(new Set(allChannelsArray));
+                                                                             
+                                                                                 //////console.log(channelArray);
+                                                                                 //console.log('emitting user-channels: ' + JSON.stringify(uniqueChannelArray));
+                                                                                 
+                                                                                 socket.emit('user-channels', {
+                                                                                   availableChannels: JSON.stringify(uniqueChannelArray)
+                                                                                 });
+                                                                                
+                                                                                //socket.emit('available-channels', {availableChannels: JSON.stringify(uniqueAllChannelsArray) });
+                                                                                
+                                                                                 var channelArray = [];
+                                                                                 var allChannelsArray = [];
+                                                                                 
+                                                                                 
+                                                                           //io.sockets.emit('available-channels', {availableChannels: JSON.stringify(channels) });      
+                                                                         
+                                                                         } else {
+                                                                           //res.send(401, "User not found");
+                                                                         }
+                                                                         
+                                                                   }, function(error) {
+                                                                         //res.send("User not found");
+                                                                   });
+                             
+                                                    
+                                            
+                                                                     var message = Message.build();
+                                              
+                                                                      message.findAllWhere(channelId, null, function(messages) {
+                                                                          
+                                                                          if (messages) {
+                                                                                     
+                                                                                 socket.emit('emptyMessages');
+                                                                                     
+                                                                                 for(i = 0; i < messages.length; i++) {
+                                                                                     
+                                                                                     //console.log('emitting mess ' + messages[i].message);
+                                                                                     
+                                                                                     socket.emit('message', {
+                                                                                         channelId: messages[i].channelId,
+                                                                                         messageId: messages[i].id,
+                                                                                         message: messages[i].message,
+                                                                                         username: messages[i].username,
+                                                                                         userId: messages[i].userId,
+                                                                                         userColour: messages[i].userColour
+                                                                                     });
+                                                                                     
+                                                                                     
+                                                                                 }
+                                                                                 
+                                                                                            
+                                                                         } else {
+                                                                           //res.send(401, "User not found");
+                                                                         }
+                                                                         
+                                                                   }, function(error) {
+                                                                         //res.send("User not found");
+                                                                   });
+                                                
+                                       
+                                                    } else {
+                                                      //res.send(401, "User not found");
+                                                    }
+                                                    
+                                                    
+                                              }, function(error) {
+                                                    //res.send("User not found");
+                                              });
+                                                                       
+                                                                                
+                                               //res.json({ message: 'User updated!' });
                                        } else {
                                          //res.send(401, "User not found");
                                        }
@@ -1122,101 +1291,37 @@
                                  }, function(error) {
                                        //res.send("User not found");
                                  });
-    
-               
-                                    channel.retrieveAll(function(channelsTwo) {
-                                                                
-                                            if (channelsTwo) {
-                                                
-                                                var channelArray = [];
-                                                var allChannelsArray = [];
-                                                
-                                                    for(i = 0; i < channelsTwo.length; i++) {
-                                                                          
-                                                    if (JSON.parse(channelsTwo[i].usersInChannel).indexOf(data.userEnteringChannel) != -1 ) {
-                                                       channelArray.push(channelsTwo[i]);
-                                                    }
-                                                    
-                                                    allChannelsArray.push(channelsTwo[i]);
                                
-                                                }                                            
-                                                                 
-                                                var uniqueChannelArray = Array.from(new Set(channelArray));
-                                                var uniqueAllChannelsArray = Array.from(new Set(allChannelsArray));
-                                                
-                                                    //////console.log(channelArray);
-                                                    ////console.log('emitting available-channels: ' + JSON.stringify(uniqueChannelArray));
-                                                    
-                                                    socket.emit('user-channels', {
-                                                      availableChannels: JSON.stringify(uniqueChannelArray)
-                                                    });
-                                                   
-                                                   socket.emit('available-channels', {availableChannels: JSON.stringify(uniqueAllChannelsArray) });
-                                                   
-                                                    var channelArray = [];
-                                                    var allChannelsArray = [];
-                                                    
-                                                    
-                                              //io.sockets.emit('available-channels', {availableChannels: JSON.stringify(channels) });      
-                                            } else {
-                                              //res.send(401, "User not found");
-                                            }
-                                            
-                                      }, function(error) {
-                                            //res.send("User not found");
-                                      });
-
-           
-           
-                                    var message = Message.build();
-             
-                                     message.findAllWhere(channelId, null, function(messages) {
-                                         
-                                         if (messages) {
-                                                    
-                                                socket.emit('emptyMessages');
-                                                    
-                                                for(i = 0; i < messages.length; i++) {
-                                                    
-                                                    //console.log('emitting mess ' + messages[i].message);
-                                                    
-                                                    socket.emit('message', {
-                                                        channelId: messages[i].channelId,
-                                                        messageId: messages[i].id,
-                                                        message: messages[i].message,
-                                                        username: messages[i].username,
-                                                        userId: messages[i].userId,
-                                                        userColour: messages[i].userColour
-                                                    });
-                                                    
-                                                    
-                                                }                                                 
-                                                
-                                         } else {
-                                           //res.send(401, "User not found");
-                                         }
-                                         
-                                   }, function(error) {
-                                         //res.send("User not found");
-                                   });
-                
-       
-                    } else {
-                      //res.send(401, "User not found");
+     
+                                    //var channelsForUser = [];  
+                            } else {
+                              //res.send(401, "User not found");
+                            }
+                            
+                      }, function(error) {
+                            //res.send("User not found");
+                      });
+                    
+                     
+                   } else {
+   
                     }
-                    
-                    
               }, function(error) {
-                    //res.send("User not found");
+                 
               });
-
-            
-        });
+                         
+        
+              
+            //var channelIdArray = [];
+            //var channelNameArray = [];
+        
+    });
         
             
             socket.on('set-volume', function (data) {
                socket.emit('set-volume', { newVolume: data.newVolume}); 
             });
+            
             
   
              socket.on('message', function (data) {
@@ -1245,7 +1350,7 @@
               message.add(function(success) {
                            
                    //socket.broadcast.emit('message', { message: message, sender: sender });
-                  io.to(activeChannelId).emit('message', {
+                    io.to(activeChannelId).emit('message', {
                         channelId: data.activeChannelId,
                         message: data.message,
                         username: username,
@@ -1259,11 +1364,13 @@
                     channel.retrieveById(data.activeChannelId, function(channels) {
                           
                               if (channels) {				
-                                    //console.log('message count updated');
-                                  io.to(activeChannelId).emit('message-count-updated', {
-                                    channelId: data.activeChannelId,
-                                    messageCount: channels.messageCount
-                                  });
+                                    
+                                //console.log('message count updated');
+                                
+                                    io.to(activeChannelId).emit('message-count-updated', {
+                                      channelId: data.activeChannelId,
+                                      messageCount: channels.messageCount
+                                    });
                               
                               } else {
                                
@@ -1387,7 +1494,84 @@
             });
     
         
+        
     /////AUDIO STREAMS/////
+    
+    socket.on('listen-to-featured-stream', function(data) {
+        
+        //console.log(data);
+        
+        var requestedStreamId = data.requestedStreamId;
+        
+            var stream = Stream.build();
+            
+            stream.retrieveById(requestedStreamId, function(streams) {
+                
+                    if (streams) {				
+                                                             
+                        const Writable = require('stream').Writable;
+                            
+                            var buffer = [];
+                     
+                            const socketSendWritableOffline = new Writable({
+                                
+                              write(chunk, encoding, callback) {
+                                
+                                buffer.push(chunk);
+                    
+                                if(buffer.length >= 10) {
+                                    
+                                    var bufferConcat = Buffer.concat(buffer);
+                                    
+                                            socket.emit('audio', { buffer: bufferConcat});
+                                              
+                                   buffer = [];
+                                }
+                            
+                                callback();
+                              }
+                            
+                        });
+                                  
+                                    
+                            var parameters = {
+                                       userColour: "",
+                                       audioType: "audio/mp3",
+                                       //socketindex: socketIndex,
+                                       username: streams.streamedByUsername,
+                                       sender: "",
+                                       name: streams.filename
+                                       };
+                                                                                                               
+                            socket.emit('audio-file-incoming', parameters);
+                            
+                            var offlineFile = fs.createReadStream(config.filePaths.audioPath + "/" + requestedStreamId + ".mp3");
+                                   
+                            offlineFile.pipe(socketSendWritableOffline);
+        
+        
+                    } else {
+                    
+                    }
+                    
+                    
+              }, function(error) {
+                  
+              });
+
+        
+                     
+    });
+    
+    
+    socket.on('stop-featured-audio-stream', function (data) {
+
+            ////console.log('Stopping stream from stop message OUTSIDE stream');   
+            
+            socket.emit('stop-audio-stream');
+
+    });
+    
     
     ss(socket).on('audio-file', function(inbound_stream, data) {
             
@@ -1475,7 +1659,6 @@
                                                     
                                                 //socket.emit('emptyMessages');
                                             
-                                                    
                                                     //console.log('emitting mess ' + messages[i].message);
                                                     
                                                     io.sockets.emit('available-streams', {
@@ -1498,14 +1681,19 @@
                           });
        
        
-                    startStream(streamId);
+                    startStream(inbound_stream, data, streamId);
                     
               },
+              
               function(err) {
                   ////console.log("New message NOT written to database");
               });
 
-         
+   
+            return inbound_stream;
+        
+
+    });
                         
             /*var decoder = new lame.Decoder();
                       
@@ -1522,9 +1710,11 @@
             });*/
             
             
-         function startStream(streamId) {
-                     
-            var offlineFile = fs.createWriteStream(audioPath + "/" + streamId + ".mp3");
+            
+         function startStream(inbound_stream, data, streamId) {
+            
+            var mimeType = data.type;          
+            var offlineFile = fs.createWriteStream(config.filePaths.audioPath + "/" + streamId + ".mp3");
       
             const Writable = require('stream').Writable;
                 
@@ -1535,24 +1725,23 @@
                   write(chunk, encoding, callback) {
                     
                     buffer.push(chunk);
-                     //////console.log(chunk);
-                     
+                    
                     offlineFile.write(chunk);
         
                     if(buffer.length >= 40) {
                         
                         var bufferConcat = Buffer.concat(buffer);
                         
-                          if(data.liveStream === "true") {      
-
-                                    socket.broadcast.to(data.activeChannelId).emit('audio', { buffer: bufferConcat});
-                               
-                               } else {
+                            if(data.liveStream === "true") {      
+    
+                                socket.broadcast.to(data.activeChannelId).emit('audio', { buffer: bufferConcat});
+                                   
+                            } else {
+                                    
+                                io.to(data.activeChannelId).emit('audio', { buffer: bufferConcat});
+                                    
+                            }
                                 
-                                    io.to(data.activeChannelId).emit('audio', { buffer: bufferConcat});
-                                
-                               }
-                            
                              //socket.broadcast.emit('audio', { buffer: bufferConcat});                      
                               
                        buffer = [];
@@ -1563,8 +1752,9 @@
                 
                 });
                     
+                    
             //not using this right now, but could come in handy!      
-            const Transform = require('stream').Transform;
+            /*const Transform = require('stream').Transform;
               
             const transformWav = new Transform({
               write(chunk, encoding, callback) {
@@ -1573,7 +1763,7 @@
             
                 callback();
               }
-            });
+            });*/
             
 
               if (mimeType === 'audio/wav/stream') {
@@ -1619,238 +1809,226 @@
                 }
                 
                 
-                                 ////console.log('sending stream to client(s): '  + data.name);
-                            
-                        socket.on('stop-audio-stream', function (data) {
-                            
-                            var proc = require('child_process').spawn('sox');
-                            proc.kill('SIGINT');
-                 
-                            ////console.log('Stopping stream from stop message INSIDE stream');  
-           
-                            inbound_stream.read(0);
-                            inbound_stream.push(null);
-                            inbound_stream.end();
-                            inbound_stream.destroy();
-                            
-                            //offlineFile.end();
-
-                            buffer = [];
-                            
-                            var stream = Stream.build();	
-                      
-                                stream.state = "offline";
-                                
-                                stream.updateStateById(streamId, function(success) {
-                          
-                                    if (success) {
-
-                                                stream.retrieveAll(function(streams) {
-                                                    
-                                                    if (streams) {
-                                                               
-                                                           //socket.emit('emptyMessages');
-                                                       
-                                                               
-                                                               //console.log('emitting mess ' + messages[i].message);
-                                                               
-                                                               io.sockets.emit('available-streams', {
-                                                                   availableStreams: JSON.stringify(streams)
-                                                               });
-                                                                                                              
-                                                           
-                                                    } else {
-                                                      //res.send(401, "User not found");
-                                                    }
-                                                    
-                                              }, function(error) {
-                                                    //res.send("User not found");
-                                              });
-                                     
-                                                    
-                                    } else {
-                                        
-                                            ////console.log("User not found");
-                                            
-                                    }
-                                    
-                              }, function(error) {
-                                
-                              });
-                            
-                            //socket.disconnect();
-
-                        });
-    
-                           
-                        inbound_stream.on('end', function() {
-                                ////console.log('Inbound audio stream ended: ' + data.name);
-                                                      
-                                var stream = Stream.build();	
-                      
-                                stream.state = "offline";
-                                
-                                stream.updateStateById(streamId, function(success) {
-                          
-                                    if (success) {
-               
-                                              stream.retrieveAll(function(streams) {
-                                                    
-                                                    if (streams) {
-                                                               
-                                                           //socket.emit('emptyMessages');
-                                                       
-                                                               
-                                                               //console.log('emitting mess ' + messages[i].message);
-                                                               
-                                                               io.sockets.emit('available-streams', {
-                                                                   availableStreams: JSON.stringify(streams)
-                                                               });
-                                                                                                              
-                                                           
-                                                    } else {
-                                                      //res.send(401, "User not found");
-                                                    }
-                                                    
-                                              }, function(error) {
-                                                    //res.send("User not found");
-                                              });
-                                              
-                                                    
-                                    } else {
-                                        
-                                            ////console.log("User not found");
-                                            
-                                    }
-                                    
-                              }, function(error) {
-                                
-                              });
-                            
-                        });
-                
-        }
-         
-
-                
-                
-                      return inbound_stream;
-                      
-                });
-                 
-         
-         
-                socket.on('disconnect', function() {
-                        
-                    var proc = require('child_process').spawn('sox');
-                    proc.kill('SIGINT');
-
-                            var user = User.build();	
-                  
-                            user.socketId = socket.id;
-                            user.status = "offline";
-                            //user.username = username;
-                        
-                            
-                            user.updateById(socket.userId, function(success) {
-                      
-                                if (success) {
-                                    
-                                        //socket.emit('socket-info', { socketIndex: socketIndex, socketId: socket.id, userId: userId });
-                                        
-                                        //var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
-                                        
-                                        //////console.log('emit connected clients');
-                                        
-                                            user.retrieveAll(function(users) {
-                            
-                                            if (users) {
-                                             ////console.log('emitting clients on disconnect: ' + JSON.stringify(users));
-                                                io.sockets.emit('connected-clients', {
-                                           
-                                                    connectedUsers: JSON.stringify(users)
-                                                });
-                                                                            
-                                               ////console.log(socket.channelIds);
-                                               if(typeof socket.channelIds !== "undefined" && typeof socket.channelNames !== "undefined") {
-                                                
-                                                    updateConnectedClientsInChannel(JSON.stringify(socket.channelIds), JSON.stringify(socket.channelNames));
-                                               }
-                                               
-                                                                                                
-                                                    var stream = Stream.build();	
-                                                
-                                                          stream.state = "offline";
-                                                          
-                                                          stream.updateStateByStreamerId(socket.userId, function(success) {
-                                                    
-                                                              if (success) {
-                                         
-                                                                        stream.retrieveAll(function(streams) {
-                                                            
-                                                                            if (streams) {
-                                                                                       
-                                                                                   //socket.emit('emptyMessages');
-                                                                               
-                                                                                       
-                                                                                       //console.log('emitting mess ' + messages[i].message);
-                                                                                       
-                                                                                       io.sockets.emit('available-streams', {
-                                                                                           availableStreams: JSON.stringify(streams)
-                                                                                       });
-                                                                                                                                      
-                                                                                   
-                                                                            } else {
-                                                                              //res.send(401, "User not found");
-                                                                            }
-                                                                            
-                                                                      }, function(error) {
-                                                                            //res.send("User not found");
-                                                                      });
-                                                                                                    
-                                                              } else {
-                                                                  
-                                                                      ////console.log("User not found");
-                                                                      
-                                                              }
-                                                              
-                                                        }, function(error) {
-                                                          
-                                                        });
-                                
-                                
-                                        } else {
-                                          //res.send(401, "User not found");
-                                        }
-                                                        
-                                                        
-                                    }, function(error) {
-                                      //res.send("User not found");
-                                   });
-                                           
-                                                
-                                } else {
-                                    
-                                        ////console.log("User not found");
-                                        
-                                }
-                                
-                          }, function(error) {
-                            
-                          });
-                          
-
-                      
-                });
+                        ////console.log('sending stream to client(s): '  + data.name);
                    
-                         
-                socket.on('stop-audio-stream', function (data) {
+               socket.on('stop-audio-stream', function (data) {
+                   
+                   var proc = require('child_process').spawn('sox');
+                   proc.kill('SIGINT');
+        
+                   ////console.log('Stopping stream from stop message INSIDE stream');  
+  
+                   inbound_stream.read(0);
+                   inbound_stream.push(null);
+                   inbound_stream.end();
+                   inbound_stream.destroy();
+                   
+                   //offlineFile.end();
 
-                    ////console.log('Stopping stream from stop message OUTSIDE stream');   
+                   buffer = [];
+                   
+                   var stream = Stream.build();	
+             
+                       stream.state = "offline";
+                       
+                       stream.updateStateById(streamId, function(success) {
+                 
+                           if (success) {
+
+                                       stream.retrieveAll(function(streams) {
+                                           
+                                           if (streams) {
+                                                      
+                                                  //socket.emit('emptyMessages');       
+                                                      //console.log('emitting mess ' + messages[i].message);
+                                                      io.sockets.emit('available-streams', {
+                                                          availableStreams: JSON.stringify(streams)
+                                                      });                                                                                         
+                                                  
+                                           } else {
+                                             //res.send(401, "User not found");
+                                           }
+                                           
+                                     }, function(error) {
+                                           //res.send("User not found");
+                                     });
+                            
+                                           
+                           } else {
+                               
+                                   ////console.log("User not found");
+                                   
+                           }
+                           
+                     }, function(error) {
+                       
+                     });
+                   
+                   //socket.disconnect();
+
+               });
+
+                  
+               inbound_stream.on('end', function() {
+                       ////console.log('Inbound audio stream ended: ' + data.name);
+                                             
+                       var stream = Stream.build();	
+             
+                       stream.state = "offline";
+                       
+                       stream.updateStateById(streamId, function(success) {
+                 
+                           if (success) {
+      
+                                     stream.retrieveAll(function(streams) {
+                                           
+                                           if (streams) {
+                                                      
+                                                  //socket.emit('emptyMessages');
+  
+                                                      //console.log('emitting mess ' + messages[i].message);
+                                                      
+                                                      /*io.sockets.emit('available-streams', {
+                                                          availableStreams: JSON.stringify(streams)
+                                                      });*/
+                                                                                                                                                   
+                                           } else {
+                                             //res.send(401, "User not found");
+                                           }
+                                           
+                                     }, function(error) {
+                                           //res.send("User not found");
+                                     });
+                                     
+                                           
+                           } else {
+                               
+                                   ////console.log("User not found");
+                                   
+                           }
+                           
+                     }, function(error) {
+                       
+                     });
+                   
+               });
+               
+       
+       }
+
+       
+         
+         
+        socket.on('disconnect', function() {
+                
+            var proc = require('child_process').spawn('sox');
+            proc.kill('SIGINT');
+
+                    var user = User.build();	
+          
+                    user.socketId = socket.id;
+                    user.status = "offline";
+                    //user.username = username;
+                                 
+                    user.updateById(socket.userId, function(success) {
+              
+                        if (success) {
+                            
+                                //socket.emit('socket-info', { socketIndex: socketIndex, socketId: socket.id, userId: userId });
+                                
+                                //var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
+                                
+                                //////console.log('emit connected clients');
+                                
+                                    user.retrieveAll(function(users) {
                     
-                    io.sockets.emit('stop-audio-stream');
+                                    if (users) {
+                                     ////console.log('emitting clients on disconnect: ' + JSON.stringify(users));
+                                        io.sockets.emit('connected-clients', {
+                                   
+                                            connectedUsers: JSON.stringify(users)
+                                        });
+                                                                    
+                                       ////console.log(socket.channelIds);
+                                       if(typeof socket.channelIds !== "undefined" && typeof socket.channelNames !== "undefined") {
+                                        
+                                            updateConnectedClientsInChannel(JSON.stringify(socket.channelIds), JSON.stringify(socket.channelNames));
+                                       }
+                                       
+                                                                                        
+                                            var stream = Stream.build();	
+                                        
+                                                  stream.state = "offline";
+                                                  
+                                                  stream.updateStateByStreamerId(socket.userId, function(success) {
+                                            
+                                                      if (success) {
+                                 
+                                                                stream.retrieveAll(function(streams) {
+                                                    
+                                                                    if (streams) {
+                                                                               
+                                                                           //socket.emit('emptyMessages');                               
+                                                                               
+                                                                               //console.log('emitting mess ' + messages[i].message);
+                                                                               
+                                                                               io.sockets.emit('available-streams', {
+                                                                                   availableStreams: JSON.stringify(streams)
+                                                                               });
+                                                                                                                              
+                                                                           
+                                                                    } else {
+                                                                      //res.send(401, "User not found");
+                                                                    }
+                                                                    
+                                                              }, function(error) {
+                                                                    //res.send("User not found");
+                                                              });
+                                                                                            
+                                                      } else {
+                                                          
+                                                              ////console.log("User not found");
+                                                              
+                                                      }
+                                                      
+                                                }, function(error) {
+                                                  
+                                                });
+                        
+                        
+                                } else {
+                                  //res.send(401, "User not found");
+                                }
+                                                
+                                                
+                            }, function(error) {
+                              //res.send("User not found");
+                           });
+                                   
+                                        
+                        } else {
+                            
+                                ////console.log("User not found");
+                                
+                        }
+                        
+                  }, function(error) {
+                    
+                  });
+                  
 
-                });
+              
+        });
+           
+           
+                 
+            socket.on('stop-audio-stream', function (data) {
+    
+                ////console.log('Stopping stream from stop message OUTSIDE stream');   
+                
+                io.sockets.emit('stop-audio-stream');
+    
+            });
     
                 
     });
@@ -1863,6 +2041,6 @@
     
     
     io.sockets.on('disconnect',function(){
-          ////console.log('SocketIO client disconnected - all sockets');
+        //console.log('SocketIO client disconnected - all sockets');
     });
         

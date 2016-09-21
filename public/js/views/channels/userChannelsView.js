@@ -38,7 +38,7 @@ var UserChannelsView = Backbone.View.extend({
         
         this.undelegateEvents();
 	this.$el.removeData().unbind();
-        
+        this.$el.empty();
         //this.$el.empty().off(); 
         //this.stopListening();
         

@@ -35,6 +35,7 @@ var ChannelsModalView = Backbone.View.extend({
 
         this.render();
         
+
     },
   
     render: function(){
@@ -65,16 +66,20 @@ var ChannelsModalView = Backbone.View.extend({
                             joinChannelId: this.options.joinChannelId,
                             modalHeaderContent: this.options.modalHeaderContent,
                             targetUsername: this.options.targetUsername,
-			    targetUserId: this.options.targetUserId ,
+			    targetUserId: this.options.targetUserId,
 			    createChannelFromUserClass: this.options.createChannelFromUserClass,
-			    createChannelClass: this.options.createChannelClass
+			    createChannelClass: this.options.createChannelClass,
+			    chooseExistingChannelClass: this.options.chooseExistingChannelClass,
+			    createChannelSubmitClass: this.options.createChannelSubmitClass,
+			    userChannelIdArray: this.options.userChannelIdArray,
+			    userChannelNameArray: this.options.userChannelNameArray
                             };
                             
        var compiledTemplate = _.template( $("#channels_modal_template").html(), parameters);                     
        this.$el.html( compiledTemplate);
        
        $('.channels-modal').modal();
-       
+	 
             $('.channels-modal').on('hidden.bs.modal', function () {
 		console.log('hidden channels modal handler');
 		self.destroy();
@@ -83,11 +88,52 @@ var ChannelsModalView = Backbone.View.extend({
     },
 
     events: {
-   
+	
+     "keyup .create-channel-from-users-name" : "channelNameChanging",
      "click #create-channel-from-users": "createChannelFromUsers",
-     "click #create-channel": "createChannel",
+     "click .show-create-channel-form": "showCreateChannelForm",
+     "click .create-channel": "createChannel",
+     "click .enter-channel": "enterChannel",
      "submit #create-channel-with-user-form" : "createChannel"
      
+    },
+    
+        
+    enterChannel: function(e) {
+	
+	console.log('enterchannel');
+	     
+	var requestedChannelId = $('.select-existing-channel option:selected').val();
+	//var requestedChannelName = $(e.currentTarget).data('channel-name');
+
+	$('.channels-modal').modal("hide");
+	   
+	var router = new Router();
+	router.navigate("channels/" + requestedChannelId, {trigger: "true"}); 
+	
+      
+    },
+    
+    showCreateChannelForm: function(e) {
+
+	$('.select-existing-channel-div').addClass("hidden");
+	$('#create-channel-with-user-form').removeClass("hidden");
+	$('#create-channel').removeClass('enter-channel')
+	.addClass('create-channel')
+	.prop('disabled', true);
+    	
+    
+    },
+    
+    channelNameChanging: function(e) {
+	
+	var channelNameLength = $(e.currentTarget).val().length;
+        
+        if (channelNameLength > 2) {
+             $('#create-channel').prop('disabled', false);
+        } else {
+             $('#create-channel').prop('disabled', true);
+        }
     },
     
     createChannel: function(e) {
@@ -116,7 +162,7 @@ var ChannelsModalView = Backbone.View.extend({
         //$('.modal').modal("toggle");
     },
     
-    createChannelFromUsers: function(e) {
+    /*createChannelFromUsers: function(e) {
                 
         console.log('create channel from users');
         e.preventDefault();
@@ -173,12 +219,6 @@ var ChannelsModalView = Backbone.View.extend({
         var myUsername = localStorage.getItem("username");
         var myUserId = localStorage.getItem("userId");
         var mySocketId = localStorage.getItem("socketId");
-
-        /*socket.emit('join-channel', {
-                                joiningChannelId: invitedChannelId,
-                                joinerUserId: myUserId,
-                                joinerUsername: myUsername
-                                });*/
         
     },
     
@@ -189,7 +229,7 @@ var ChannelsModalView = Backbone.View.extend({
 	setTimeout(function(){
 	    $('.channels-modal').modal("hide");
 	}, 3000);
-    },
+    },*/
     
     channelReady: function(data) {
     

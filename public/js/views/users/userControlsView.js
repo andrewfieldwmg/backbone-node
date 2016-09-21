@@ -6,6 +6,8 @@ var UserControlsView = Backbone.View.extend({
            
     initialize: function(options){
         
+	console.log('user controls init');
+	
         var self = this;
         
         this.options = options;
@@ -13,6 +15,10 @@ var UserControlsView = Backbone.View.extend({
                
             socket.on('channel-ready', function(data) {
                 self.channelReady(data);
+            });
+	    
+	    socket.on('user-channels', function(data) {
+                console.log(data);
             });
                             
             this.render = _.wrap(this.render, function(render) {
@@ -64,18 +70,38 @@ var UserControlsView = Backbone.View.extend({
         //var channelsFormView = new ChannelsFormView();
         //channelsFormView.render();
         	
-	if (localStorage.getItem("channelsModalViewLoaded") =="false") {
+	if (localStorage.getItem("channelsModalViewLoaded") == "false") {
         
 	    console.log('channels modal view NOT loaded, so proceeding');
         	
 	    console.log('open channel modal');
         
+	if(localStorage.getItem("userChannelIds")) {
+	    var chooseExistingChannelClass = "";
+	    var createChannelClass = "hidden";
+	    var createChannelSubmitClass = "enter-channel";
+	    var userChannelIdArray = JSON.parse(localStorage.getItem("userChannelIds"));
+	    var userChannelNameArray = JSON.parse(localStorage.getItem("userChannelNames"));
+	    var modalHeaderContent = "Choose a <strong>Stream Channel</strong>";
+	} else {
+	    var chooseExistingChannelClass = "hidden";
+	    var createChannelClass = "";
+	    var createChannelSubmitClass = "create-channel";
+	    var userChannelIdArray = null;
+	    var userChannelNameArray = null;
+	    var modalHeaderContent = "Create a <strong>Stream Channel</strong>";
+	}
+	
 	    var parameters = {
-			    modalHeaderContent: "Create a <strong>New Channel</strong>",
+			    modalHeaderContent: modalHeaderContent,
 			    targetUsername: "",
 			    targetUserId: "",
                             createChannelFromUserClass: "hidden",
-			    createChannelClass: ""
+			    createChannelClass: createChannelClass,
+			    chooseExistingChannelClass: chooseExistingChannelClass,
+			    createChannelSubmitClass: createChannelSubmitClass,
+			    userChannelIdArray: userChannelIdArray,
+			    userChannelNameArray: userChannelNameArray
                             };
 				
 	    var channelsModalView = new ChannelsModalView(parameters);
@@ -111,6 +137,7 @@ var UserControlsView = Backbone.View.extend({
                         createdByUserModel: myUserModel
                         });
 	
+	 
         //$('#create-channel-from-users').hide();
         //$('.modal').modal("toggle");
     },
@@ -120,6 +147,7 @@ var UserControlsView = Backbone.View.extend({
     
 	var self = this;
 	
+	console.log(data);
 	/*if(localStorage.getItem("channelName")) {
 	    var channelNameArray = JSON.parse(localStorage.getItem("channelName"));
 	} else {
@@ -142,6 +170,31 @@ var UserControlsView = Backbone.View.extend({
 	 var uniqueChannelIdsArray = Array.from(new Set(channelIdArray));
 	 localStorage.setItem('channelIds', JSON.stringify(uniqueChannelIdsArray));
 	 
+	 
+		if (data.createdByUserId == localStorage.getItem("userId")) {
+		   
+		//CHANNEL IDS 
+		    if(localStorage.getItem("userChannelIds")) {
+			var userChannelIdArray = JSON.parse(localStorage.getItem("userChannelIds"));
+		    } else {
+			var userChannelIdArray = [];
+		    }
+		    
+		     userChannelIdArray.push(data.channelId.toString());
+		     var uniqueUserChannelIdArray = Array.from(new Set(userChannelIdArray));
+		     localStorage.setItem('userChannelIds', JSON.stringify(uniqueUserChannelIdArray));
+		
+		//CHANNEL NAMES
+		    if(localStorage.getItem("userChannelNames")) {
+			var userChannelNameArray = JSON.parse(localStorage.getItem("userChannelNames"));
+		    } else {
+			var userChannelNameArray = [];
+		    }
+		    
+		     userChannelNameArray.push(data.channelName.toString());
+		     var uniqueUserChannelNameArray = Array.from(new Set(userChannelNameArray));
+		     localStorage.setItem('userChannelNames', JSON.stringify(uniqueUserChannelNameArray));
+		}
 	 
 	 //localStorage.setItem("activeChannelName", data.channelName);
 	 //localStorage.setItem("activeChannelId", data.channelId);

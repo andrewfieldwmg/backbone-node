@@ -14,7 +14,7 @@ var AvailableStreamsView = Backbone.View.extend({
                 self.availableStreamsUpdated(data);
             });
             
-            socket.on('message-count-updated', function (data) {
+            socket.on('message-count-updated-available-streams', function (data) {
                  self.socketMessageCountUpdated(data);
              });
 	    

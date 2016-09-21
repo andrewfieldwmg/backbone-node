@@ -22,9 +22,10 @@ var StreamTableItemView = Backbone.View.extend({
 			    createdAt: this.options.createdAt,
 			    channelId: this.options.channelId,
 			    channelName: this.options.channelName,
-			    listenButtonClass: this.options.listenButtonClass
+			    listenButtonClass: this.options.listenButtonClass,
+			    stopButtonClass: this.options.stopButtonClass
                             };
- 
+
         var compiledTemplate = _.template( $("#stream_table_item_template").html(), parameters);
         
         return compiledTemplate;
@@ -32,10 +33,9 @@ var StreamTableItemView = Backbone.View.extend({
     },
 
     events: {
-      
+
     }
    
-    
-    
+  
 });
        

@@ -59,6 +59,7 @@ var AudioPlayerView = Backbone.View.extend({
        var compiledTemplate = _.template( $("#audio_player_template").html(), parameters);
        this.$el.html( compiledTemplate );
         
+	this.$el.addClass('marginbottom45');
     },
 
     events: {

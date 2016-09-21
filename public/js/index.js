@@ -25,19 +25,30 @@ $(document).on('ready', function() {
 
         //localStorage.clear();
         
+        //APP
+        localStorage.setItem("appControlsViewLoaded", "false");
+        localStorage.setItem("streamState", "stopped");
+        
+        //USERS
+        localStorage.setItem('connectedClientsViewLoaded', "false");
+        localStorage.setItem('contactsViewLoaded', "false");
+        localStorage.setItem("clientsInChannelViewLoaded", "false");
+        
+        //CHANNEL
         localStorage.setItem("availableChannelsViewLoaded", "false");
         localStorage.setItem("userChannelsViewLoaded", "false");
         
-        localStorage.setItem("channelsModalViewLoaded", "false");
-        localStorage.setItem("acceptInvitationViewLoaded", "false");
-        
+        //MESSAGES
         localStorage.setItem("messageFormViewLoaded", "false");
         localStorage.setItem("messagesViewLoaded", "false");
-        
-        localStorage.setItem("appControlsViewLoaded", "false");
-        
-        localStorage.setItem("clientsInChannelViewLoaded", "false");
-        localStorage.setItem("streamState", "stopped");
+    
+        //STREAMS
+        localStorage.setItem('availableStreamsViewLoaded', "false");
+        localStorage.setItem('featuredStreamsViewLoaded', "false");
+          
+        //MODALS
+        localStorage.setItem("channelsModalViewLoaded", "false");
+        localStorage.setItem("acceptInvitationViewLoaded", "false");
              
         var router = new Router();
         Backbone.history.start({pushState: true});
@@ -70,12 +81,10 @@ function initSocketIo() {
          
          socket.on('socket-info', function(data) {
             
-            var socketIndex = data.socketIndex;
             var socketId = data.socketId;
             var userId = data.userId;
             var userColour = data.userColour;
              
-            localStorage.setItem('socketIndex', socketIndex);
             localStorage.setItem('socketId', socketId);
             localStorage.setItem('userId', userId);
             localStorage.setItem('userColour', userColour);
@@ -85,7 +94,7 @@ function initSocketIo() {
                   
          socket.on('socket-model', function(data) {
             
-             var userModel = data.userModel;
+            var userModel = data.userModel;
             localStorage.setItem('userModel', userModel);
             
          });

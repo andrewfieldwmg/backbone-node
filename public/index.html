@@ -46,21 +46,22 @@
                     <h2 class="text-danger"><strong>Error!</strong> Your browser doesn't support the Web Audio API.</h2>
                 </div>
                 
-                <div id="audio_player_container"></div>       
-                  <div id="username_form_container"></div>
+                     
+                <div id="username_form_container"></div>
             
                 <div class="col-sm-8 content">
+                    <div id="audio_player_container"></div>  
                     <div id="app_controls_container"></div>
                     <div id="message_form_container"></div>
                     <div id="messages_container"></div>
                     <div id="available_channels_container"></div>
-                    <div id="available_streams_container"></div>
-                    <div id="featured_streams_container"></div> 
+                    <!--<div id="available_streams_container"></div>-->
+                    <div id="featured_streams_container"></div>
+                    <div id="connected_clients_container"></div>
                 </div>
                 
                 <div class="col-sm-4 sidebar">
                     <div id="user_controls_container"></div>
-                    <div id="connected_clients_container"></div>
                     <div id="clients_in_channel_container"></div>   
                     <div id="contacts_container"></div>
                     <div id="user_channels_container"></div>
@@ -125,68 +126,76 @@
                         </div>
                     
                     </div>
-                    </div>
                 </div>
             </p>   
         </script>
             
             
         <script type="text/template" id="username_form_template">
-            <p>   
-                <form id="username-form" class="form signup-form" action="">                   
-                   <div class="input-group input-group-lg">
-                     <input type="text" class="form-control user-signup" id="username" placeholder="First things first - choose a username!">
-                     <span class="input-group-btn">
-                       <button class="btn btn-primary" id="submit-username" type="submit">Go!</button>
-                     </span>
-                   </div>
-               </form>
-                
-            <form id="user-genre-form" class="form signup-form" action="" style="display: none">                   
-                   <div class="input-group input-group-lg">
-                     <input type="text" class="form-control user-signup" id="user-genre" placeholder="What's your primary genre?">
-                     <span class="input-group-btn">
-                       <button class="btn btn-primary" id="submit-user-genre" type="submit">Go!</button>
-                     </span>
-                   </div>
-            </form>
             
-            <form id="user-location-form" class="form signup-form" action="" style="display: none">                   
-                   <div class="input-group input-group-lg">
-                     <input type="text" class="form-control user-signup" id="user-location" placeholder="Where are you?">
-                     <span class="input-group-btn">
-                       <button class="btn btn-primary" id="submit-user-location" type="submit">Go!</button>
-                     </span>
-                   </div>
-            </form>
-              
-            <form id="user-email-form" class="form signup-form" action="" style="display: none">                   
-                   <div class="input-group input-group-lg">
-                     <input type="text" class="form-control user-signup" id="user-email" placeholder="Email address for logging in?">
-                     <span class="input-group-btn">
-                       <button class="btn btn-primary" id="submit-user-email" type="submit">Go!</button>
-                     </span>
-                   </div>
-            </form>
-            
-            <form id="user-profile-image-form" class="form signup-form" action="" style="display: none">      
-                  <div class="input-group input-group-lg">
-                    
-                    <button class="btn btn-primary" id="open-profile-image-input" type="submit">Upload a profile picture</button>
-                    <input class="form-control user-profile-image hidden" id="user-profile-image" placeholder="Upload a profile picture" type="file" accept="image/jpeg, image/png, image/bpm">
-       
-                   </div>
-            </form>
+            <div class="panel panel-default">
+               <div class="panel-heading">
+                   <h2><strong>Welcome to listentome.io!</strong></h2></div>
+               
+                       <div class="panel-body">
+                                         
+                           <form id="username-form" class="form signup-form" action="">                   
+                              <div class="input-group input-group-lg">
+                                <input type="text" class="form-control user-signup" id="username" placeholder="First things first - choose a username!">
+                                <span class="input-group-btn">
+                                  <button class="btn btn-primary" id="submit-username" type="submit">Go!</button>
+                                </span>
+                              </div>
+                          </form>
+   
+                            <form id="user-genre-form" class="form signup-form" action="" style="display: none">                   
+                                   <div class="input-group input-group-lg">
+                                     <input type="text" class="form-control user-signup" id="user-genre" placeholder="What's your primary genre?">
+                                     <span class="input-group-btn">
+                                       <button class="btn btn-primary" id="submit-user-genre" type="submit">Go!</button>
+                                     </span>
+                                   </div>
+                            </form>
+                            
+                            <form id="user-location-form" class="form signup-form" action="" style="display: none">                   
+                                   <div class="input-group input-group-lg">
+                                     <input type="text" class="form-control user-signup" id="user-location" placeholder="Where are you?">
+                                     <span class="input-group-btn">
+                                       <button class="btn btn-primary" id="submit-user-location" type="submit">Go!</button>
+                                     </span>
+                                   </div>
+                            </form>
+                              
+                            <form id="user-email-form" class="form signup-form" action="" style="display: none">                   
+                                   <div class="input-group input-group-lg">
+                                     <input type="text" class="form-control user-signup" id="user-email" placeholder="Email address for logging in?">
+                                     <span class="input-group-btn">
+                                       <button class="btn btn-primary" id="submit-user-email" type="submit">Go!</button>
+                                     </span>
+                                   </div>
+                            </form>
+                            
+                            <form id="user-profile-image-form" class="form signup-form" action="" style="display: none">      
+                                  <div class="input-group input-group-lg">
+                                    
+                                    <button class="btn btn-primary" id="open-profile-image-input" type="submit">Upload a profile picture</button>
+                                    <input class="form-control user-profile-image hidden" id="user-profile-image" placeholder="Upload a profile picture" type="file" accept="image/jpeg, image/png, image/bpm">
                        
-            <form id="user-password-form" class="form signup-form" action="" style="display: none">                   
-                   <div class="input-group input-group-lg">
-                     <input type="password" class="form-control user-signup" id="user-password" placeholder="Finally - choose a memorable password!">
-                     <span class="input-group-btn">
-                       <button class="btn btn-primary" id="submit-user-password" type="submit">Go!</button>
-                     </span>
+                                   </div>
+                            </form>
+                                       
+                            <form id="user-password-form" class="form signup-form" action="" style="display: none">                   
+                                   <div class="input-group input-group-lg">
+                                     <input type="password" class="form-control user-signup" id="user-password" placeholder="Finally - choose a memorable password!">
+                                     <span class="input-group-btn">
+                                       <button class="btn btn-primary" id="submit-user-password" type="submit">Go!</button>
+                                     </span>
+                                   </div>
+                            </form>
+               
                    </div>
-            </form>               
-            </p>
+             </div>
+
         </script>
         
         <script type="text/template" id="user_controls_template">  
@@ -194,10 +203,10 @@
                     <div class="panel-heading"><h2><strong>User Panel</strong></h2></div>
                     
                         <div class="panel-body">
-                            <div class="padding10">
-                                    <button type="button" class="btn btn-primary user-control-button create-channel" data-toggle="tooltip" data-placement="right" title="Start Streaming">Start Streaming!</button>
-                                    <button type="button" class="btn btn-info user-control-button edit-account" data-toggle="tooltip" data-placement="right" title="Edit Account">Edit Account</button>
-                                    <button type="button" class="btn btn-danger user-control-button open-help" data-toggle="tooltip" data-placement="right" title="Help Me!">Help Me!</button>
+                            <div class="btn-toolbar">
+                                    <button type="button" class="btn btn-primary user-control-button create-channel" data-toggle="tooltip" data-placement="right" title="Start Streaming">Stream!</button>
+                                    <button type="button" class="btn btn-info user-control-button edit-account" data-toggle="tooltip" data-placement="right" title="Edit Account">Account</button>
+                                    <button type="button" class="btn btn-danger user-control-button open-help" data-toggle="tooltip" data-placement="right" title="Help Me">Help Me</button>
                             </div>
                         </div>
                 </div>
@@ -210,7 +219,7 @@
             </li>
        </script>
                         
-        
+                            
         <script type="text/template" id="message_form_template">                
              
                 <form class="form" action="">                   
@@ -221,11 +230,10 @@
                      </span>
                    </div>
                 </form>
-           
         </script>
+                   
                        
             <script type="text/template" id="app_controls_template">
-             
                    <div class="btn-group-horizontal button-wrapper">             
                         <div class="col-xs-3">            
                             <i class="fa fa-microphone action-icon" data-toggle="tooltip" title="Record Live Audio" id="start-recording" title="Record Live Audio" aria-hidden="true"></i>
@@ -249,12 +257,10 @@
                             <i class="fa fa-ban action-icon pull-right" data-toggle="tooltip" title="Stop All Audio" id="stop" title="Stop All Audio" aria-hidden="true"></i>
                         </div>             
                    </div>
-             
             </script>
 
         
             <script type="text/template" id="connected_clients_template">
-              
                     <div class="panel panel-default">
                         <div class="panel-heading">  
                             <h2><strong>Who's Online?</strong></h2>
@@ -275,6 +281,7 @@
                     </div>
                 </div>
             </script>
+    
     
             <script type="text/template" id="clients_in_channel_template">
             
@@ -314,8 +321,7 @@
            </script>
                
             
-            <script type="text/template" id="contacts_template">
-                
+            <script type="text/template" id="contacts_template">      
                 <div class="panel panel-default">
                         <div class="panel-heading">  
                             <h2><strong>Your Contacts</strong></h2>
@@ -341,7 +347,6 @@
                              </table>   
                     </div>
                 </div>
-
             </script>
        
        
@@ -359,22 +364,18 @@
             
                                      
             <script type="text/template" id="messages_template">
-                
                 <div class="panel panel-default">
-                        <div class="panel-heading">  
-                             <h2><strong>Feedback</strong></h2>
-                           
-                            </h2>
-                        </div>
-                        <div class="panel-body">
-        
-                    <ul class="list-group scrollable" id="message-results">
-                        <li class="list-group-item small feedback-placeholder"><em>Feedback will appear here!</em></li>
-                    </ul>
-              
+                    <div class="panel-heading">  
+                        <h2><strong>Feedback</strong></h2>
+                    </div>
+                    <div class="panel-body">
+    
+                        <ul class="list-group scrollable" id="message-results">
+                            <li class="list-group-item small feedback-placeholder"><em>Feedback will appear here!</em></li>
+                        </ul>
+          
                     </div>
                 </div>
-     
             </script>
             
                    
@@ -398,8 +399,7 @@
                         <tbody id="available-channels"></tbody>
                     </table>  
                     </div>
-                </div>
-                            
+                </div>                 
             </script>
             
             
@@ -414,9 +414,9 @@
                 </tr>
            </script>
             
-            
-        <script type="text/template" id="available_streams_template">
-                <div class="panel panel-default">
+
+            <script type="text/template" id="featured_streams_template">
+                         <div class="panel panel-default">
                         <div class="panel-heading">  
                                <h2 id="available-streams-list-header"><strong>Live Streams</strong></h2>
                         </div>
@@ -454,11 +454,7 @@
                     </table> 
                     </div>
                 </div>
-            </script>
-        
-            
-            <script type="text/template" id="featured_streams_template">
-                
+                         
                 <div class="panel panel-default">
                         <div class="panel-heading">  
                                   <h2 id="featured-streams-list-header"><strong>Featured Streams</strong>
@@ -505,13 +501,13 @@
             <script type="text/template" id="stream_table_item_template">         
                 <tr data-channel-id="<%= streamId%>">
                 
-                    <td class="hidden" data-user-id=""><%= streamId %></td>
-                    <td class="" data-user-id=""><%= streamName %> </td>
-                    <td class="" data-user-id="">
-                         <img class="img-responsive td-image-center" src="<%= profileImageSrc %>" data-toggle="tooltip" title="<%= <%= streamedByUsername %>">
+                    <td class="hidden"><%= streamId %></td>
+                    <td><%= streamName %> </td>
+                    <td>
+                         <img class="img-responsive td-image-center" src="<%= profileImageSrc %>" data-toggle="tooltip" title="<%= streamedByUsername %>">
                     </td>
-                    <td class="" data-user-id=""><%= streamGenre %></td>
-                    <td class="" data-user-id="">
+                    <td><%= streamGenre %></td>
+                    <td>
                     
                     <span class="badge message-counter" data-toggle="tooltip" title="<%= upvotes %> Messages" data-channel-id="<%= streamId%>"><%= upvotes %></span>
                                 
@@ -533,11 +529,12 @@
                     var diff = endTime.diff(startTime, 'minutes');
                     %>
                         
-                    <td class="" data-user-id=""><%= convertToHoursAndMinutes(diff) %></td>
-                    <td class="" data-user-id="">
-                        <i class="fa fa-headphones <%= listenButtonClass %>" data-channel-id="<%= channelId %>" data-channel-name="<%= channelName%>" data-toggle="tooltip" title="Listen" aria-hidden="true"></i>
+                    <td><%= convertToHoursAndMinutes(diff) %></td>
+                    <td>
+                        <i class="fa fa-headphones <%= listenButtonClass %>" data-stream-id="<%= streamId%>" data-channel-id="<%= channelId %>" data-channel-name="<%= channelName%>" data-toggle="tooltip" title="Listen" aria-hidden="true"></i>
+                        <i class="fa fa-stop-circle <%= stopButtonClass %>" style="display: none" data-stream-id="<%= streamId%>" data-channel-id="<%= channelId %>" data-channel-name="<%= channelName%>" data-toggle="tooltip" title="Stop" aria-hidden="true"></i>
                     </td>
-                      <td class="" data-user-id="">
+                      <td>
                         <i class="fa fa-rocket enter-channel" data-channel-id="<%= channelId%>" data-channel-name="<%= channelName%>" data-toggle="tooltip" title="Join" aria-hidden="true"></i>
                     </td>
                 </tr>
@@ -593,6 +590,7 @@
                         </div>
                         <div class="modal-body">
                          
+                         
                             <div class="input-group input-group-lg w-100">
                                  <input type="text" class="form-control stream-genre" placeholder="What genre is your stream?">              
                                 <input class="form-control <%= fileInputClass %>" id="audio-file" type="file" accept="audio/mp3, audio/wav">
@@ -615,10 +613,10 @@
                           <button type="button" id="close-invitation-modal" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                           </button>
-                          <h1 class="modal-title">Welcome to <strong>listentome.io!</strong></h1>
+                          <h1 class="modal-title"><strong>Congrats</strong> - you're now a part of the action!</h1>
                         </div>
                         <div class="modal-body">
-                            <p><h1 class="text-wrap">You're now part of a growing online community, giving producers and artists <strong>real time</strong> musical feedback on their latest creations.</h1></p>           
+                            <p><h1 class="text-wrap">You've just joined a growing online community, giving producers and artists <strong>real time</strong> musical feedback on their latest creations.</h1></p>           
                         </div>
                         
                         <div class="modal-footer">
@@ -642,22 +640,47 @@
                           </button>
                           <h1 class="modal-title"><%= modalHeaderContent %></h1>
                         </div>
-                        <div class="modal-body">
-    
-                        <form id="create-channel-with-user-form" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>" class="form  <%= textInputClass %>" action="">                   
-                           <div class="input-group input-group-lg w-100">
-                             <input type="text" class="form-control create-channel-from-users-name <%= textInputClass %>" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>" placeholder="To help you find your feedback later, enter a name here">
-                            <h1>
-                                <span class="create-channel-from-users-result" style="display: none"></span>
-                            </h1>
-                           </div>
-                        </form>
+                        
+                    <div class="modal-body">
+                        
+                                  
+            <div class="input-group select-existing-channel-div <%= chooseExistingChannelClass %>">
+            <select class="form-control select-existing-channel" id="sel1">
+            
+                  
+            <% if(userChannelIdArray) { %>
+            
+                <% for(i = 0; i < userChannelIdArray.length; i++) { %>
+                <option value="<%= userChannelIdArray[i] %>"><%= userChannelNameArray[i] %></option>
+                <% }
+            
+            }
+            
+            %>
+            
+            </select>
+            <span class="input-group-btn">
+                    <button class="btn btn-default show-create-channel-form" type="button">Or Create New</button>
+               </span>
+            </div>
+                            
+                            
+            <form id="create-channel-with-user-form" class="<%= createChannelClass %>" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>" class="form  <%= textInputClass %>" action="">                   
+               <div class="input-group input-group-lg w-100">
+                 <input type="text" class="form-control create-channel-from-users-name <%= textInputClass %>" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>" placeholder="To help you find your feedback later, enter a name here">
+                <h1>
+                    <span class="create-channel-from-users-result" style="display: none"></span>
+                </h1>
+               </div>
+            </form>
+                            
+                        
                         </div>
                         
                         <div class="modal-footer">
-                          <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
-                          <button type="submit" class="btn btn-primary <%= createChannelFromUserClass %>" id="create-channel-from-users" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>">Send Request!</button>
-                          <button type="submit" class="btn btn-primary <%= createChannelClass %>" id="create-channel">Go!</button>
+                          <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-primary <%= createChannelFromUserClass %>" id="create-channel-from-users" data-target-user-id="<%= targetUserId %>" data-target-user-name="<%= targetUsername %>">Send Request!</button>-->
+                          <button type="submit" class="btn btn-primary <%= createChannelSubmitClass %>" id="create-channel">Go!</button>
                           </form>
             
                         </div>
@@ -740,8 +763,8 @@
             <script src="/js/views/users/channelUserListItemView.js"></script>
             
             <!-- Streams -->
-            <script src="/js/views/streams/availableStreamsView.js"></script>
-            <script src="/js/views/streams/featuredStreamsView.js"></script>
+            <!--<script src="/js/views/streams/availableStreamsView.js"></script>-->
+            <script src="/js/views/streams/streamsView.js"></script>
             <script src="/js/views/streams/streamTableItemView.js"></script>
             
             <!-- Channels -->

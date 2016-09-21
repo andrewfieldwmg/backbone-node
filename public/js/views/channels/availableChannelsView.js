@@ -10,13 +10,13 @@ var AvailableChannelsView = Backbone.View.extend({
             
             var self = this;
             
-            socket.on('available-channels', function(data) {
+            /*socket.on('available-channels', function(data) {
                 self.availableChannelsUpdated(data);
             });
             
             socket.on('message-count-updated', function (data) {
                  self.socketMessageCountUpdated(data);
-             });
+             });*/
         
             this.render = _.wrap(this.render, function(render) {
                        this.beforeRender();

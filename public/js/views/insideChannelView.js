@@ -7,13 +7,13 @@ var InsideChannelView = Backbone.View.extend({
         this.options = options;
 
 	//socket.emit('get-channel-name', {channelId: this.options.channelId});
-       
-        socket.emit("enter-channel", {
-	    channelId: this.options.channelId,
-	    //channelName: localStorage.getItem("activeChannelName"),
-	    userEnteringChannel: localStorage.getItem("userId")
-	});
-
+  
+	if (localStorage.getItem("channelIds").indexOf(this.options.channelId) == -1) {
+	  	var router = new Router();
+		router.navigate("home", {trigger: "true"});
+		return;
+	} 
+  
 	 socket.on('entered-channel-details', function(data) {
 	    localStorage.setItem("activeChannelId", data.channelId);
 	    localStorage.setItem("activeChannelName", data.channelName);
@@ -49,6 +49,7 @@ var InsideChannelView = Backbone.View.extend({
             messagesView.afterRender();
         }
         
+	
 	//APP CONTROLS
 	
          if (localStorage.getItem("appControlsViewLoaded") == "false") {
@@ -56,13 +57,15 @@ var InsideChannelView = Backbone.View.extend({
 	    appControlsView.afterRender();
 	 }
 
-	//ROOMS
+	 
+	//CHANNELS
 	
-	if (localStorage.getItem("userChannelsViewLoaded") == "false") {
+	if (localStorage.getItem("userChannelsViewLoaded") === "false") {
 	    var userChannelsView = new UserChannelsView();
 	    userChannelsView.afterRender();
 	}
 
+	
 	//USERS
 		
     	var connectedClientsView = new ConnectedClientsView();
@@ -72,22 +75,35 @@ var InsideChannelView = Backbone.View.extend({
 	    var userControlsView = new UserControlsView();
 	    userControlsView.destroy();
 	}
-	    
-	
-	//if (localStorage.getItem("contactsViewLoaded") == "false") {
+	    	
+	if (localStorage.getItem("contactsViewLoaded") == "false") {
 	    var contactsView = new ContactsView();
 	    contactsView.afterRender();
-	//}
+	}
 	
-	//if (localStorage.getItem("clientsInChannelViewLoaded") == "false") {
+	if (localStorage.getItem("clientsInChannelViewLoaded") == "false") {
 	    var clientsInChannelView = new ClientsInChannelView({channelid: this.options.channelId});
 	    clientsInChannelView.afterRender();
-	//}
+	}
 	
 	
 	//STREAMS
 	
-	$('.create-channel-div').hide();
+	//$('.create-channel-div').hide();
+	//var availableStreamsView = new AvailableStreamsView();
+	//availableStreamsView.afterRender();
+
+	var streamsView = new StreamsView();
+	streamsView.afterRender();
+	
+	
+	    //new AudioPlayerView({streamName : "No Stream Loaded"});
+			    
+        socket.emit("enter-channel", {
+	    channelId: this.options.channelId,
+	    //channelName: localStorage.getItem("activeChannelName"),
+	    userEnteringChannel: localStorage.getItem("userId")
+	});
 	
     },
   

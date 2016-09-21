@@ -55,7 +55,7 @@ var AppControlsView = Backbone.View.extend({
         "change #audio-file": "startFileStream",
         "click #send-file": "openSendFile",
         "change #file": "sendFile",
-        "click #listen" : "listenToStreams"
+        "click #listen": "listenToStreams"
      
     },
     

@@ -73,6 +73,8 @@ var ClientsInChannelView = Backbone.View.extend({
     
     connectedClientsInChannelUpdated: function(data) {
                
+	    console.log("connected clients in room UPDATED:::");
+	    
 	    var channelClientsTable = $('.channel-clients-table').DataTable();    
 	    channelClientsTable.destroy();
 	    
@@ -80,17 +82,19 @@ var ClientsInChannelView = Backbone.View.extend({
 	    
 	    var otherUsersInChannel = [];
             var usersInChannel = JSON.parse(data.usersInChannel);
-
+	    
             for(i = 0; i < usersInChannel.length; i++) {
 		
-	    if (usersInChannel[i].inChannels != null && usersInChannel[i].inChannels.indexOf(localStorage.getItem("activeChannelId")) != -1) {
+	    if (usersInChannel[i].inChannels != null && usersInChannel[i].currentChannel == localStorage.getItem("activeChannelId")) {
 	     
                 if(usersInChannel[i].username == localStorage.getItem("username")) {
                        var salutation = "<strong>You</strong> have";
+		       var actionIconsClass = "hidden";
                 } else {
 			otherUsersInChannel.push(usersInChannel[i].username);
                         var salutation = "<strong>" + usersInChannel[i].username +  "</strong> has";
-                }
+			var actionIconsClass = "";
+		}
                                   
 		if (usersInChannel[i].status === 'online') {
 		       var contentFromUsername = salutation + ' joined this channel';
@@ -101,14 +105,14 @@ var ClientsInChannelView = Backbone.View.extend({
 		    
 		        var parameters = {
                             connectedUserId: usersInChannel[i].id,
-                            connectedUsername: usersInChannel[i].name,
+                            connectedUsername: usersInChannel[i].username,
 			    profileImageSrc: config.filePaths.userProfileImageDir + "/" + usersInChannel[i].id + "_profile.jpg",
                             cssClass: "connected-client-list",
                             time: "",
                             connectedUserMessage: "",
                             contentName: "",
                             loaderClass: "hidden",
-                            actionIconsClass: "hidden",
+                            actionIconsClass: actionIconsClass,
                             userLocation: usersInChannel[i].userLocation,
                             userGenre: usersInChannel[i].userGenre
                         };
@@ -116,18 +120,21 @@ var ClientsInChannelView = Backbone.View.extend({
              
                         var userListItemView = new UserListItemView(parameters);   
                         $('#clients-in-channel').append(userListItemView.afterRender());
-			$('.user-list-action-td').hide();
-			
-			
-			$('.channel-clients-table').DataTable({
-			       responsive: true,
-			       "pageLength": 5
-			       });
+			//$('.user-list-action-td').hide();
+
 	     
 		}
-		  
+
             }
 	    
+	    		  
+		  		    	
+	    $('.channel-clients-table').DataTable({
+		   responsive: true,
+		   "pageLength": 5
+		   });
+		
+			
 	    /*if (otherUsersInChannel.length < 1) {
 		$('#app_controls_container').addClass("disabled");
 	    } else {

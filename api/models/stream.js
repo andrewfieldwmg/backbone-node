@@ -11,6 +11,7 @@ var DataTypes = require("sequelize");
         channelId: DataTypes.STRING,
         channelName: DataTypes.STRING,
         state: DataTypes.STRING,
+        streamTime: DataTypes.STRING,
         genre: DataTypes.STRING,
         upvotes: DataTypes.INTEGER
       }, {
@@ -42,6 +43,7 @@ var DataTypes = require("sequelize");
                     var channelId = this.channelId;
                     var channelName = this.channelName;
                     var state = this.state;
+                    var streamTime = this.streamTime;
                     var genre = this.genre;
                     var upvotes = this.upvotes;
                     
@@ -52,6 +54,7 @@ var DataTypes = require("sequelize");
                                channelId: channelId,
                                channelName: channelName,
                                state: state,
+                               streamTime: streamTime,
                                genre: genre,
                                upvotes: upvotes
                                })
@@ -66,6 +69,7 @@ var DataTypes = require("sequelize");
                     var channelId = this.channelId;
                     var channelName = this.channelName;
                     var state = this.state;
+                    var streamTime = this.streamTime;
                     var genre = this.genre;
                     var upvotes = this.upvotes;
                     
@@ -76,6 +80,7 @@ var DataTypes = require("sequelize");
                                 channelId: channelId,
                                 channelName: channelName,
                                 state: state,
+                                streamTime: streamTime,
                                 genre: genre,
                                 upvotes: upvotes
                                 },
