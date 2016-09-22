@@ -20,7 +20,13 @@ var UserControlsView = Backbone.View.extend({
 	    socket.on('user-channels', function(data) {
                 console.log(data);
             });
-                            
+	    
+	      
+	    socket.on("private-message-count", function(data) {
+		self.updatePrivateMessageCount(data);
+            });
+
+		      
             this.render = _.wrap(this.render, function(render) {
                            this.beforeRender();
                            render();						
@@ -29,6 +35,8 @@ var UserControlsView = Backbone.View.extend({
                   
 
         this.render();
+	
+	socket.emit("count-private-messages", {userId: localStorage.getItem("userId")});
         
     },
   
@@ -61,8 +69,36 @@ var UserControlsView = Backbone.View.extend({
 
     events: {
    
-     "click .create-channel": "openCreateChannelForm"
+     "click .create-channel": "openCreateChannelForm",
+     "click .open-private-messages" : "openPrivateMessages"
      
+    },
+    
+    updatePrivateMessageCount: function(data) {
+	
+	console.log('private messages updated');
+	
+	if (data.updateType == "new") {
+	    
+	      $('.private-message-counter').html(data.messageCount)
+	     .css('background-color', 'orange')
+	     .css('color', 'black')
+	     .animate({ 'zoom': 1.3 }, 100).animate({ 'zoom': 1.0 }, 100)
+	     .attr('title', 'New Messages!');
+	     
+	} else {
+	    
+	    $('.private-message-counter').html(data.messageCount);
+	}
+		
+    },
+    
+    openPrivateMessages: function(e) {
+	
+	    console.log('open priv mess');
+	    var privateMessagesModalView = new PrivateMessagesModalView();
+	    privateMessagesModalView.afterRender();
+	    
     },
     
     openCreateChannelForm: function(e) {

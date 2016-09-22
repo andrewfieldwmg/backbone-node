@@ -35,6 +35,7 @@
     var Channel = require("./models/channel.js");
     var File = require("./models/file.js");
     var Stream = require("./models/stream.js");
+    var PrivateMessage = require("./models/privateMessage.js");
 
 
     //FILE TRANSFER//
@@ -601,6 +602,116 @@
            return this.replace(/\\(.)/mg, "$1");
        }
 
+        
+
+        socket.on("count-private-messages", function(data) {
+           
+            var privateMessage = PrivateMessage.build();
+           
+            privateMessage.countUserMessages(data.userId, function(privateMessages) {
+                                                    
+                        if (privateMessages) {
+                        
+                         console.log(privateMessages.length);
+                         socket.emit("private-message-count", {
+                            messageCount: privateMessages.length,
+                            updateType: "old"
+                            });
+                         
+                       } else {
+                         //res.send(401, "User not found");
+                       }
+                       
+                 }, function(error) {
+                       //res.send("User not found");
+                 });
+                            
+        });
+        
+        
+        socket.on("get-private-messages", function(data) {
+           
+            var privateMessage = PrivateMessage.build();
+           
+            privateMessage.findAllWhereRecipientId(data.userId, null, function(privateMessages) {
+                                                    
+                        if (privateMessages) {
+                                      
+                            socket.emit("user-private-messages", {
+                               privateMessages: JSON.stringify(privateMessages)
+                               });
+                         
+                       } else {
+                         //res.send(401, "User not found");
+                       }
+                       
+                 }, function(error) {
+                       //res.send("User not found");
+                 });
+                            
+        });
+        
+        
+        
+        socket.on("user-contact-request", function(data) {
+        
+            var messageContent = "I'd like to add you to my Contacts List.";
+            
+                var privateMessage = PrivateMessage.build({
+                                    messageContent: messageContent,
+                                    messageType: "Contact Request",
+                                    recipientUserId: data.recipientUserId,
+                                    recipientUsername: data.recipientUsername,
+                                    senderUserId: data.senderUserId,
+                                    senderUsername: data.senderUsername,
+                                    status: "unread"
+                                    });
+              
+                privateMessage.add(function(success) {
+                           
+                    privateMessage.countUserMessages(data.recipientUserId, function(privateMessages) {
+                                                    
+                        if (privateMessages) {
+                                                  
+                                var user = User.build();
+                                
+                                user.retrieveById(data.recipientUserId, function(users) {
+                                        
+                                        if (users) {
+                         
+                                                io.to(users.socketId).emit("private-message-count", {
+                                                    messageCount: privateMessages.length,
+                                                    updateType: "new"
+                                                    });
+                                   
+                                
+                                        } else {
+                                          //res.send(401, "User not found");
+                                        }
+                                        
+                                  }, function(error) {
+                                        //res.send("User not found");
+                                  });
+                
+                         
+                       } else {
+                         //res.send(401, "User not found");
+                       }
+                       
+                 }, function(error) {
+                       //res.send("User not found");
+                 });
+                            
+                            
+                            
+                },
+                function(err) {
+                    ////console.log("New message NOT written to database");
+                });
+
+            
+        });
+        
         
         /*socket.on('create-channel-and-invite-user-in', function (data) {
             

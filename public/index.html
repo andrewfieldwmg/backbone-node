@@ -68,6 +68,8 @@
                 </div>
                 
                 <div id="welcome_modal_container"></div>
+                <div id="user_actions_modal_container"></div>
+                <div id="private_messages_modal_container"></div>
                 <div id="channels_modal_container"></div>
                 <div id="invitation_modal_container"></div>
                 <div id="start_stream_modal_container"></div>
@@ -206,18 +208,86 @@
                             <div class="btn-toolbar">
                                     <button type="button" class="btn btn-primary user-control-button create-channel" data-toggle="tooltip" data-placement="right" title="Start Streaming">Stream!</button>
                                     <button type="button" class="btn btn-info user-control-button edit-account" data-toggle="tooltip" data-placement="right" title="Edit Account">Account</button>
+                               
+                                     <button type="button" class="btn user-control-button open-private-messages" data-toggle="tooltip" data-placement="right" title="Private Messages">
+                                        Messages <span class="badge private-message-counter" data-toggle="tooltip" title="Private Messages">0</span>
+                                    </button>
                                     <button type="button" class="btn btn-danger user-control-button open-help" data-toggle="tooltip" data-placement="right" title="Help Me">Help Me</button>
                             </div>
                         </div>
                 </div>
         </script>
          
+         
+            <script type="text/template" id="private_messages_modal_template">
+                <div class="modal fade private-messages-modal">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" id="close-private-messages-modal" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                          <h1 class="modal-title">Your <strong>Private Messages</strong></h1>
+                        </div>
+                        <div class="modal-body">
+
+                        
+                            <table class="private-messages-table table table-striped table-bordered display nowrap" width="100%">
+                              <thead class="private-messages-table-head" style="display: none">
+                                  <tr>
+                                      <th>Time</th>
+                                      <th>From</th>
+                                      <th>Message</th>
+                                      <th></th>
+                                      <th></th>
+                                  </tr>
+                              </thead>
+                              <tbody id="private-messages">
+                                 <tr>
+                                      <td colspan="5">No private messages.
+                                              <!--<div class="padding10 create-channel-div">
+                                                  <button type="button" class="btn btn-primary create-channel" data-toggle="tooltip" data-placement="right" title="Create New Channel">Create A Channel</button>
+                                              </div>-->
+                                      </td>
+                                      <td style="display: none;"></td>
+                                      <td style="display: none;"></td>
+                                      <td style="display: none;"></td>
+                                      <td style="display: none;"></td>
+                                      
+                                  </tr>  
+                              </tbody>
+                          </table>
+                                   
+                        
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                        </div>
+                      </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                  </div><!-- /.modal -->
+            </script>
+                        
                   
-        <script type="text/template" id="clients_in_channel_list_item_template">
-            <li class="list-group-item <%= cssClass %>" data-user-id="<%= userId %>"><strong><%= time %></strong> <%= contentFromUsername %> <strong><%= contentName %></strong>
-            <i class="fa fa-plus pull-right <%= actionIconsClass %>" data-toggle="tooltip" title="Connect With <%= userName %>!" aria-hidden="true" data-user-name="<%= userName %>" data-user-id="<%= userId %>"></i>
-            </li>
-       </script>
+            <script type="text/template" id="private_message_table_item_template">         
+                <tr>
+                    <td><%= moment(timeSent).format("MM-DD-YYYY")%></td>
+                    <td><%= senderUsername%></td>
+                    <td><%= messageContent%></td>
+                    <td class="" data-user-id="">
+                        <button class="btn btn-primary <%=positiveButtonClass %>" type="submit"><%=positiveButtonText %></button>
+                    </td>
+                      <td class="" data-user-id="">
+                        <button class="btn btn-warning delete-message" type="submit">Delete</button>
+                    </td> 
+                </tr>
+            </script>
+            
+            
+            <script type="text/template" id="clients_in_channel_list_item_template">
+                <li class="list-group-item <%= cssClass %>" data-user-id="<%= userId %>"><strong><%= time %></strong> <%= contentFromUsername %> <strong><%= contentName %></strong>
+                <i class="fa fa-plus pull-right <%= actionIconsClass %>" data-toggle="tooltip" title="Connect With <%= userName %>!" aria-hidden="true" data-user-name="<%= userName %>" data-user-id="<%= userId %>"></i>
+                </li>
+           </script>
                         
                             
         <script type="text/template" id="message_form_template">                
@@ -300,6 +370,7 @@
                                      <th>Actions</th>
                                     </tr>
                                 </thead>
+                                
                                     <tbody id="clients-in-channel"></tbody>
                          </table>
                     </div>
@@ -315,7 +386,12 @@
                     <td class="<%= cssClass %>" data-user-id="<%= userId %>"><%= userGenre %></td>
                     <td class="<%= cssClass %>" data-user-id="<%= userId %>"><%= userLocation %></td>
                     <td class="user-list-action-td <%= cssClass %>" data-user-id="<%= userId %>">
-                    <i class="fa fa-plus <%= actionIconsClass %>" data-toggle="tooltip" title="Connect With <%= userName %>!" aria-hidden="true" data-user-name="<%= userName %>" data-user-id="<%= userId %>"></i>
+                    
+                    <i class="fa fa-plus <%=actionIconsClass%>" data-toggle="tooltip" title="Open Actions" aria-hidden="true"
+                            data-user-name="<%= userName %>" data-user-id="<%= userId %>"
+                            data-user-location="<%= userLocation %>" data-user-genre="<%=userGenre%>"
+                            data-user-joined-date="<%=userJoinedDate %>">  
+                    </i>
                     </td>
                 </tr>
            </script>
@@ -629,7 +705,50 @@
                   </div><!-- /.modal -->
             </script>
             
-               
+            
+            <script type="text/template" id="user_actions_modal_template">
+                <div class="modal fade user-actions-modal">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" id="close-user-actions-modal" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                          <h1 class="modal-title">All About: <strong><%= username %></strong></h1>
+                        </div>
+                        <div class="modal-body">
+                            
+                              <p>
+                                <h2 class="text-wrap">
+                                Favourite Genre: <strong><%= userGenre %></strong>
+                                </h2>
+                            </p>
+                              
+                            <p>
+                                <h2 class="text-wrap">
+                                Location: <strong><%= userLocation %></strong>
+                                </h2>
+                            </p>
+                            
+                              <p>
+                                <h2 class="text-wrap">
+                                Joined Date: <strong><%= moment(userJoinedDate).format("MM-DD-YYYY") %></strong>
+                                </h2>
+                            </p>
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-info pull-left listen-to-users-streams" data-target-user-id="<%= userId%>">Listen To <%= username%>'s Latest Streams</button>
+                            <button type="button" class="btn btn-primary send-friendship-request"
+                            data-target-user-id="<%= userId%>" data-target-user-name="<%= username%>">Send Contact Request</button>
+                        </div>
+                      </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                  </div><!-- /.modal -->
+            </script>
+            
+            
+            
             <script type="text/template" id="channels_modal_template">
                 <div class="modal fade channels-modal">
                     <div class="modal-dialog" role="document">
@@ -784,6 +903,8 @@
     
             <!-- Modals -->
             <script src="/js/views/modals/welcomeModalView.js"></script>
+            <script src="/js/views/modals/userActionsModalView.js"></script>
+            <script src="/js/views/modals/privateMessagesModalView.js"></script>
             <script src="/js/views/modals/channelsModalView.js"></script>
             <script src="/js/views/modals/acceptInvitationModalView.js"></script>
             <script src="/js/views/modals/startStreamModalView.js"></script>

@@ -20,6 +20,9 @@ var ConnectedClientsView = Backbone.View.extend({
                 self.openRoomInvitation(data);
             });
 
+	      socket.on('user-contact-request', function(data) {
+                self.openContactInvitation(data);
+            });
     
              this.render = _.wrap(this.render, function(render) {
                        this.beforeRender();
@@ -61,7 +64,34 @@ var ConnectedClientsView = Backbone.View.extend({
      
     },
     
+    openContactInvitation: function(data) {
+    
+    //console.log('invitation ro toom');
         
+        if (localStorage.getItem("acceptInvitationViewLoaded") =="false") {
+        
+        //console.log('accept invitation view NOT loaded');
+        
+            var parameters = {
+			invitedByUsername: data.requesterUsername,
+			invitedByUserId: data.requesterUserId,
+			joinRoomId: "",
+			invitationTo: "Connect",
+			};
+                                
+            var invitationModalView = new InvitationModalView(parameters);
+            invitationModalView.afterRender();
+            
+        } else {
+            
+            //console.log('accept invitation view ALREADY loaded');
+            
+        }
+        
+        //$('.create-room-from-users').hide();
+        //$('.accept-room-invitation').show();
+    },
+    
     openRoomInvitation: function(data) {
     
     //console.log('invitation ro toom');
@@ -141,14 +171,15 @@ var ConnectedClientsView = Backbone.View.extend({
                 if (connectedUsers[i].status === 'online') {
                         
                         var connectedUserId = connectedUsers[i].id;
-                        var connectedUsername = connectedUsers[i].username;
-                        
-                        if(connectedUsername == localStorage.getItem("username")) {
+             
+                        if(connectedUsers[i].username == localStorage.getItem("username")) {
                            var connectedUserMessage = "<strong>You</strong> are connected";
                            var actionIconsClass = "hidden";
+			   var connectedUsername = "You";
                         } else {
                             var connectedUserMessage = "<strong>" + connectedUsername + "</strong> is connected";  
-                            var actionIconsClass = "open-create-room-modal";
+                            var actionIconsClass = "open-user-actions";
+			    var connectedUsername = connectedUsers[i].username;
                         }
                         
                         var parameters = {
@@ -162,7 +193,8 @@ var ConnectedClientsView = Backbone.View.extend({
                             loaderClass: "hidden",
                             actionIconsClass: actionIconsClass,
                             userLocation: connectedUsers[i].userLocation,
-                            userGenre: connectedUsers[i].userGenre
+                            userGenre: connectedUsers[i].userGenre,
+			    userJoinedDate: connectedUsers[i].joinedDate
                             };
                             
              

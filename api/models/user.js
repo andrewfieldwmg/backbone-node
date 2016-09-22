@@ -14,7 +14,8 @@ var DataTypes = require("sequelize");
         status: DataTypes.STRING,
         userColour: DataTypes.STRING,
         inChannels: DataTypes.STRING,
-        currentChannel: DataTypes.STRING
+        currentChannel: DataTypes.STRING,
+        userContacts: DataTypes.STRING
       }, {
         
         instanceMethods: {
@@ -68,6 +69,21 @@ var DataTypes = require("sequelize");
                                  status: status,
                                  inChannels: inChannels,
                                  currentChannel: currentChannel
+                                 }, {id: id} )
+                            .success(onSuccess).error(onError);
+                },
+                
+                updateContacts: function(user_id, onSuccess, onError) {
+                      
+                    var id = user_id;
+                    var userContacts = this.userContacts;
+                    
+                    //var shasum = crypto.createHash('sha1');
+                    //shasum.update(password);
+                    //password = shasum.digest('hex');
+                    
+                    User.update({
+                               userContacts: userContacts
                                  }, {id: id} )
                             .success(onSuccess).error(onError);
                 },

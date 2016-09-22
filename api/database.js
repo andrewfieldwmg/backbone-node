@@ -9,7 +9,7 @@ var password = config.password ? config.password : null;
                 config.user,
                 config.password,
                 {
-                        logging: false,
+                        logging: console.log,
                         define: {
                                 timestamps: false
                         }

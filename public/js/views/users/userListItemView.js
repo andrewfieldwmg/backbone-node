@@ -50,7 +50,8 @@ var UserListItemView = Backbone.View.extend({
                             loaderClass: this.options.loaderClass,
                             actionIconsClass: this.options.actionIconsClass,
 			    userLocation: this.options.userLocation,
-                            userGenre: this.options.userGenre
+                            userGenre: this.options.userGenre,
+			    userJoinedDate: this.options.userJoinedDate
                             };
         
         var compiledTemplate = _.template( $("#user_table_item_template").html(), parameters);
@@ -60,9 +61,34 @@ var UserListItemView = Backbone.View.extend({
 
     events: {
    
-     "click .open-create-channel-modal": "openCreateChannelModal"
-
+	"click .open-create-channel-modal": "openCreateChannelModal",
+	"click .open-user-actions": "openUserActions"
     },
+    
+        
+    openUserActions: function(e) {
+	    
+	var clickedUserId = $(e.currentTarget).data('user-id');
+	var clickedUserName = $(e.currentTarget).data('user-name');
+	var clickedUserGenre = $(e.currentTarget).data('user-genre');
+	var clickedUserLocation = $(e.currentTarget).data('user-location');
+	var clickedUserJoinedDate = $(e.currentTarget).data('user-joined-date');
+	
+	
+	    var parameters = {
+		clickedUserId: clickedUserId,
+		clickedUserName: clickedUserName,
+		clickedUserGenre: clickedUserGenre,
+		clickedUserLocation: clickedUserLocation,
+		clickedUserJoinedDate: clickedUserJoinedDate
+	    };
+	    
+	    var userActionsModalView = new UserActionsModalView(parameters);
+	    userActionsModalView.afterRender();
+            
+     
+    },
+    
     
     openCreateChannelModal: function(e) {
 	
