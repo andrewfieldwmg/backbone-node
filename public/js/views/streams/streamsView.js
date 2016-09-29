@@ -143,13 +143,19 @@ var StreamsView = Backbone.View.extend({
 			$('.featured-streams-table').DataTable({
 			       responsive: true,
 			       "pageLength": 5,
-			       "order": [[ 0, "desc" ]]
+			       "order": [[ 0, "desc" ]],
+			        "oLanguage": {
+				"sEmptyTable": "No featured streams found"
+				}
 			       });
 			
 			$('.available-streams-table').DataTable({
 			    responsive: true,
 			    "pageLength": 5,
-			    "order": [[ 0, "desc" ]]
+			    "order": [[ 0, "desc" ]],
+			     "oLanguage": {
+			    "sEmptyTable": "No live streams found"
+			    }
 		       });
                     
             }

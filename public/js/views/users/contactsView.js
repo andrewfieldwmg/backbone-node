@@ -9,6 +9,12 @@ var ContactsView = Backbone.View.extend({
             this.options = options;
             
             var self = this;
+	    
+	          
+	    socket.on("user-contacts-updated", function(data) {
+		self.userContactsUpdated(data);
+            });
+	    
 
              this.render = _.wrap(this.render, function(render) {
                        this.beforeRender();
@@ -46,27 +52,57 @@ var ContactsView = Backbone.View.extend({
 
     events: {
    
-        "click .add-to-channel": "addToChannel"
+        "click .add-to-channel": "addToChannel",
+	"click .open-user-actions": "openUserActions"
      
     },
     
-    contactsUpdated: function(data) {
+    
+        
+    openUserActions: function(e) {
+	   
+	   console.log('open user actions');
+	   
+	if (localStorage.getItem("userActionsModalViewLoaded") == "false") {
+	    
+	    var clickedUserId = $(e.currentTarget).data('user-id'); 
+	    socket.emit("get-user", {userId: clickedUserId });
+		    
+	    socket.on ('get-user-success', function (data) {
+    
+		var userModel = JSON.parse(data.userModel);
+		
+		    var parameters = {
+			clickedUserId: userModel.id,
+			clickedUserName: userModel.username,
+			clickedUserGenre: userModel.userGenre,
+			clickedUserLocation: userModel.userLocation,
+			clickedUserJoinedDate: userModel.joinedDate
+		    };
+		    
+		    var userActionsModalView = new UserActionsModalView(parameters);
+		    userActionsModalView.afterRender();
+		    
+		    $('.send-friendship-request').hide();
+		
+	    });
+	
+	} else {
+	    console.log('user actions modal ALREADY loaded');
+	            
+	}
      
-            //console.log('connected clients message received');
+    },
+        
+
+    userContactsUpdated: function(data) {
+     
+            console.log('update contacts message received');
             
             var userContacts = JSON.parse(data.userContacts);
-            //var connectedUsernames = JSON.parse(data.connectedUsernames);
-            //var connectedUserIds = JSON.parse(data.connectedUserIds);
-            
-            //var socketId = localStorage.getItem("socketId").toString();
-            //var socketIndex = connectedSocketIds.indexOf(socketId);
-            //var socketCss = getSocketCss(socketIndex);
-                 //console.log(userContacts);
 
-            if (userContacts.length === 0) {
-                      
-                
-            } else {
+            var dataTable = $('.contacts-table').DataTable();    
+	    dataTable.destroy();
                             
 		$('#contacts').html('');
 		
@@ -85,10 +121,11 @@ var ContactsView = Backbone.View.extend({
                            var actionIconsClass = "hidden";
                         } else {
                             var connectedUserMessage = "<strong>" + connectedUsername + "</strong> is connected";  
-                            var actionIconsClass = "open-create-channel-modal";
+                            var actionIconsClass = "open-user-actions";
                         }
                         
                         var parameters = {
+			    profileImageSrc: config.filePaths.userProfileImageDir + "/" + connectedUserId + "_profile.jpg",
                             connectedUserId: connectedUserId,
                             connectedUsername: connectedUsername,
                             cssClass: "connected-client-list",
@@ -110,9 +147,14 @@ var ContactsView = Backbone.View.extend({
 
             	//var channelsView = new ChannelsView();
                 //channelsView.afterRender();                     
-     
-            }
-
+     	
+			$('.contacts-table').DataTable({
+			       responsive: true,
+			       "pageLength": 5,
+			        "oLanguage": {
+				"sEmptyTable": "You have no contacts"
+				}
+			       });
             
     },
     

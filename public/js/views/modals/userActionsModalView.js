@@ -30,7 +30,7 @@ var UserActionsModalView = Backbone.View.extend({
         this.undelegateEvents();
 	this.$el.removeData().unbind();
         
-        //this.$el.empty().off(); 
+        this.$el.empty().off(); 
         //this.stopListening();
         
     },
@@ -39,7 +39,7 @@ var UserActionsModalView = Backbone.View.extend({
         
 	var self = this;
 	
-        //localStorage.setItem('channelsModalViewLoaded', "true");
+       localStorage.setItem('userActionsModalViewLoaded', "true");
 
             var parameters = {
 		userId: this.options.clickedUserId,
@@ -50,14 +50,27 @@ var UserActionsModalView = Backbone.View.extend({
 	    };
             
        var compiledTemplate = _.template( $("#user_actions_modal_template").html(), parameters);                     
-       this.$el.html( compiledTemplate);
+      this.$el.html(compiledTemplate);
        
        $('.user-actions-modal').modal();
        
             $('.user-actions-modal').on('hidden.bs.modal', function () {
+		console.log('user actions modal hidden');
+		$('.modal-backdrop').remove();
+		$("body").removeClass("modal-open").css("padding-right", "0px");
 		self.destroy();
 	    });
 	    
+	      	    
+	    /*$(document).on('click', '[data-dismiss="modal"]', function(){
+	        $('.user-actions-modal').hide();
+	     //$('#user_actions_modal_container').empty();
+	       $('.modal-backdrop').remove(); // removes all modal-backdrops
+	       $("body").removeClass("modal-open");
+	       	self.destroy();
+	    });*/
+
+		    
     },
 
     events: {
@@ -94,15 +107,16 @@ var UserActionsModalView = Backbone.View.extend({
 	
 	//$('.invitation-modal').modal("hide");
 	
-        //localStorage.setItem('channelsModalViewLoaded', "false");
+        localStorage.setItem('userActionsModalViewLoaded', "false");
         
         //this.undelegateEvents();
-        this.undelegateEvents();
-	this.$el.removeData().unbind();
+        //this.undelegateEvents();
+	this.$el.empty();
+	//this.$el.removeData().unbind();
         //return this;
         //Backbone.View.prototype.remove.call(this);
-        var router = new Router();
-        router.navigate("home", {trigger: "true"});
+        //var router = new Router();
+        //router.navigate("home", {trigger: "true"});
       
     }
     

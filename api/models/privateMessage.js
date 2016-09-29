@@ -43,7 +43,7 @@ var DataTypes = require("sequelize");
                 
                 countUserMessages: function(recipientUserId, onSuccess, onError) {
                     
-                    PrivateMessage.findAll({where: {recipientUserId: recipientUserId }})
+                    PrivateMessage.findAll({where: {recipientUserId: recipientUserId, status: "unread" }})
                        .success(onSuccess).error(onError);
                 },
                 
@@ -75,19 +75,18 @@ var DataTypes = require("sequelize");
                         .save().success(onSuccess).error(onError);
                 },
                
-                updateStatusById: function(messageId, onSuccess, onError) {
+                updateStatusById: function(private_message_id, onSuccess, onError) {
                       
-                    var id = messageId;
                     var status = this.status;
                     
                      PrivateMessage.update({
                         status: status
-                        }, {id: id} )
+                        }, {id: private_message_id} )
                             .success(onSuccess).error(onError);
                 },
                
-                removeById: function(user_id, onSuccess, onError) {
-                    PrivateMessage.destroy({id: user_id}).success(onSuccess).error(onError);	
+                removeById: function(private_message_id, onSuccess, onError) {
+                    PrivateMessage.destroy({id: private_message_id}).success(onSuccess).error(onError);	
                 }
 
             }

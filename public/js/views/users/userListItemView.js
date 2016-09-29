@@ -67,25 +67,35 @@ var UserListItemView = Backbone.View.extend({
     
         
     openUserActions: function(e) {
+	   
+	   console.log('open user actions');
+	   
+	if (localStorage.getItem("userActionsModalViewLoaded") == "false") {
 	    
-	var clickedUserId = $(e.currentTarget).data('user-id');
-	var clickedUserName = $(e.currentTarget).data('user-name');
-	var clickedUserGenre = $(e.currentTarget).data('user-genre');
-	var clickedUserLocation = $(e.currentTarget).data('user-location');
-	var clickedUserJoinedDate = $(e.currentTarget).data('user-joined-date');
+	    var clickedUserId = $(e.currentTarget).data('user-id'); 
+	    socket.emit("get-user", {userId: clickedUserId });
+		    
+	    socket.on ('get-user-success', function (data) {
+    
+		var userModel = JSON.parse(data.userModel);
+		
+		    var parameters = {
+			clickedUserId: userModel.id,
+			clickedUserName: userModel.username,
+			clickedUserGenre: userModel.userGenre,
+			clickedUserLocation: userModel.userLocation,
+			clickedUserJoinedDate: userModel.joinedDate
+		    };
+		    
+		    var userActionsModalView = new UserActionsModalView(parameters);
+		    userActionsModalView.afterRender();
+		
+	    });
 	
-	
-	    var parameters = {
-		clickedUserId: clickedUserId,
-		clickedUserName: clickedUserName,
-		clickedUserGenre: clickedUserGenre,
-		clickedUserLocation: clickedUserLocation,
-		clickedUserJoinedDate: clickedUserJoinedDate
-	    };
-	    
-	    var userActionsModalView = new UserActionsModalView(parameters);
-	    userActionsModalView.afterRender();
-            
+	} else {
+	    console.log('user actions modal ALREADY loaded');
+	            
+	}
      
     },
     

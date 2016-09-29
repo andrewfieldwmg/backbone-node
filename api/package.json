@@ -13,6 +13,7 @@
     "lame": "^1.2.4",
     "mysql": "~2.5.0",
     "node-wav": "0.0.1",
+    "nodemailer": "^2.6.4",
     "nodemon": "^1.10.0",
     "ogg": "^1.2.5",
     "pied-piper": "^0.1.1",

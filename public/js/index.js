@@ -47,6 +47,7 @@ $(document).on('ready', function() {
         localStorage.setItem('featuredStreamsViewLoaded', "false");
           
         //MODALS
+         localStorage.setItem("userActionsModalViewLoaded", "false");
         localStorage.setItem("channelsModalViewLoaded", "false");
         localStorage.setItem("acceptInvitationViewLoaded", "false");
              
@@ -60,8 +61,13 @@ $(document).on('ready', function() {
         'placement' : 'bottom'
     });
     
-    
-
+    	    
+      	    
+	/*$(document).on('click', '[data-dismiss="modal"]', function(){
+	   $('.modal').hide(); // hide the modal 
+	//$('#modal-dynamic-content').empty(); // empties dynamic content
+	   $('.modal-backdrop').remove(); // removes all modal-backdrops
+	});*/
 });
 
 

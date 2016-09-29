@@ -64,7 +64,9 @@ var PrivateMessagesModalView = Backbone.View.extend({
 
     events: {
 
-     
+    "click .delete-message": "deleteMessage",
+    "click .accept-contact-request": "acceptContactRequest"
+      
     },
     
     loadPrivateMessages: function(data) {
@@ -81,28 +83,65 @@ var PrivateMessagesModalView = Backbone.View.extend({
        
             for(i = 0; i < privateMessages.length; i++) {
                 
+                if (privateMessages[i].status == 'unread') {
+                 
                     var parameters = {
+                                messageId: privateMessages[i].id,
                                 timeSent: privateMessages[i].timeSent,
                                 senderUsername: privateMessages[i].senderUsername,
+				senderUserId: privateMessages[i].senderUserId,
                                 messageContent: privateMessages[i].messageContent,
                                 status: privateMessages[i].status,
                                 positiveButtonClass: "accept-contact-request",
                                 positiveButtonText: "Accept"
                                 };
-            
-            var compiledTemplate = _.template( $("#private_message_table_item_template").html(), parameters);
-            $('#private-messages').append(compiledTemplate);
-            
+                    
+                    var compiledTemplate = _.template( $("#private_message_table_item_template").html(), parameters);
+                    $('#private-messages').append(compiledTemplate);
+                    
+                }
+                
             }
             
             	 
                  $('.private-messages-table').DataTable({
                     responsive: true,
-		    "pageLength": 5
+		    "pageLength": 5,
+		    "oLanguage": {
+		    "sEmptyTable": "No private messages found"
+		    }
 		    });  
             
         }
         
+    },
+    
+       
+    acceptContactRequest: function(e) {
+        
+        e.preventDefault();
+        
+        var requesterUserId = $(e.currentTarget).data('sender-user-id');
+        var messageId = $(e.currentTarget).data('message-id');
+	 
+        socket.emit("accept-contact-request", {
+	    userId: localStorage.getItem("userId"),
+	    requesterUserId: requesterUserId,
+	    messageId: messageId
+	    });
+
+	$('tr[data-message-id="' + messageId + '"]').fadeOut("slow");
+    },
+    
+    deleteMessage: function(e) {
+        
+        e.preventDefault();
+        
+        var messageId = $(e.currentTarget).data('message-id');
+        
+        socket.emit("delete-private-message", {messageId: messageId});
+        
+        $('tr[data-message-id="' + messageId + '"]').fadeOut("slow");
     },
     
     destroy: function() { 
@@ -117,8 +156,8 @@ var PrivateMessagesModalView = Backbone.View.extend({
 	this.$el.removeData().unbind();
         //return this;
         //Backbone.View.prototype.remove.call(this);
-        var router = new Router();
-        router.navigate("home", {trigger: "true"});
+        //var router = new Router();
+        //router.navigate("home", {trigger: "true"});
       
     }
     

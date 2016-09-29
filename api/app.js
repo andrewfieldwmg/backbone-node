@@ -36,6 +36,17 @@
     var File = require("./models/file.js");
     var Stream = require("./models/stream.js");
     var PrivateMessage = require("./models/privateMessage.js");
+     
+    //MAIL//          
+    var nodemailer = require('nodemailer');
+    
+    var smtpConfig = {
+        host: 'mail.listentome.io',
+        port: 25,
+        secure: false
+    };
+
+    var transporter = nodemailer.createTransport(smtpConfig);
 
 
     //FILE TRANSFER//
@@ -64,7 +75,8 @@
     //var connectedUserIds = [];
 
     io.sockets.on('connection', function (socket) {
-               
+
+
         //console.log('socket connected');
   
         //connectedSocketIds.push(socket.id);
@@ -350,6 +362,65 @@
         }
         
         
+    function updateUserContactsView(userId) {
+        
+            var user = User.build();
+            user.retrieveById(userId, function(userModel) {
+           
+                   if (userModel) {
+                                                                 
+                        var userSocketId = userModel.socketId;
+                                           
+                        if(userModel.userContacts !== "" && userModel.userContacts !== "null" && userModel.userContacts !== null) {
+                                             
+                           var userContactModelArray = [];
+                           
+                           var userContacts = JSON.parse(userModel.userContacts);
+                                 
+                           for(i = 0; i < userContacts.length; i++) {
+                            
+                                    var user = User.build();
+                                        
+                                    user.retrieveById(userContacts[i], function(userModel) {
+                                   
+                                           if (userModel) {
+                                                            
+                                               userContactModelArray.push(userModel);
+                                               
+                                               callback(userContactModelArray);
+                                             
+                                                    
+                                           } else {
+                            
+                                           }
+                                     }, function(error) {
+                                        
+                                    });
+        
+                            
+                            }
+                           
+                                function callback(userContactModelArray) {
+     
+                                  io.to(userSocketId).emit("user-contacts-updated", {userContacts: JSON.stringify(userContactModelArray) });
+                                }
+                                    
+                           
+                        }
+                            
+                             
+                   } else {
+    
+                   }
+                   
+                   
+             }, function(error) {
+                
+            });
+    
+            
+    }
+        
         
     socket.on('check-user-status', function (data) {
         
@@ -368,7 +439,27 @@
             });
     
     });
+       
+       
+        socket.on('get-user', function (data) {
+        
+            var user = User.build();
+            user.retrieveById(data.userId, function(userModel) {
+           
+                   if (userModel) {
+                                    
+                        socket.emit('get-user-success', {userModel: JSON.stringify(userModel)});
+                            
+                   } else {
+    
+                   }
+             }, function(error) {
+                
+            });
+    
+    });     
             
+    
         
     socket.on('refresh-connection', function(data) {
        
@@ -381,7 +472,26 @@
         var userColour = data.userColour;
         
         if(userId !== "null" && username !== "null") {
+                    
+                var mailOptions = {
+                    from: '"listentome.io" <no-reply@listentome.io>', // sender address
+                    to: 'andyfield83@gmail.com', // list of receivers
+                    subject: username + ' has just connected!', // Subject line
+                    text: username + ' has just connected!', // plaintext body
+                    html: '<b>' + username + ' has just connected!</b>' // html body
+                };
+
             
+                // send mail with defined transport object//
+                
+                /*transporter.sendMail(mailOptions, function(error, info){
+                    if(error){
+                        console.log(error);
+                    }
+                    console.log('Message sent: ' + info.response);
+                });*/
+
+    
                 ////console.log('already registered');
                 
             //if the user has an ID and a username
@@ -465,6 +575,9 @@
                                         socket.emit('socket-model', {
                                              userModel: JSON.stringify(userModel)
                                         });
+                                        
+                                                    
+                                        updateUserContactsView(userId);
                      
                                     } else {
                    
@@ -652,6 +765,42 @@
         });
         
         
+        socket.on("delete-private-message", function(data) {
+           
+            var privateMessage = PrivateMessage.build();
+                                                
+                 privateMessage.status = "deleted";
+    
+                 privateMessage.updateStatusById(data.messageId, function(success) {
+                     
+                         if (success) {	
+                                    
+                                    privateMessage.countUserMessages(data.userId, function(privateMessages) {
+                                                    
+                                        if (privateMessages) {
+                          
+                                         socket.emit("private-message-count", {
+                                            messageCount: privateMessages.length,
+                                            updateType: "new"
+                                            });
+                                         
+                                       } else {
+                                         //res.send(401, "User not found");
+                                       }
+                                       
+                                 }, function(error) {
+                                       //res.send("User not found");
+                                 });
+                                            
+                         } else {
+                           //res.send(401, "User not found");
+                         }
+                   }, function(error) {
+                         //res.send("User not found");
+                   });
+                            
+        });
+        
         
         socket.on("user-contact-request", function(data) {
         
@@ -713,6 +862,156 @@
         });
         
         
+        socket.on("accept-contact-request", function(data) {
+        
+        var requesteeUserId = data.userId;
+        var requesterUserId = data.requesterUserId;
+        var messageId = data.messageId;
+        
+            var user = User.build();
+            
+            user.retrieveById(requesteeUserId, function(users) {
+                
+                    if (users) {
+                        
+                        var userContactsArray = [];
+                        ////console.log('usersinchannel' + users.inChannels);
+                        
+                        if(typeof users.userContacts === 'undefined' ||  users.userContacts == "" || users.userContacts == null || users.userContacts == "null") {
+                           
+                            ////console.log('no inChannel');
+                             userContactsArray.push(requesterUserId.toString());
+                            
+                        } else {
+                            
+                            ////console.log('already inChannel');
+                            
+                            var parsedUserContacts = JSON.parse(users.userContacts);
+                            ////console.log(parsedInChannels);
+                            for(i = 0; i < parsedUserContacts.length; i++) {
+                                userContactsArray.push(parsedUserContacts[i].toString());
+                            }
+                            
+                            userContactsArray.push(requesterUserId.toString());
+                            
+                        }
+                            var uniqueUserContactsArray = Array.from(new Set(userContactsArray));
+                            
+                            user.userContacts = JSON.stringify(uniqueUserContactsArray);
+                            
+                            user.updateContacts(requesteeUserId, function(success) {
+                                
+                                    if (success) {	
+                                            //var channelsForUser = [];
+                                            socket.emit("user-contact-completed", {requesterUserId: requesterUserId});
+                                            
+                                                var privateMessage = PrivateMessage.build();
+                                        
+                                                    privateMessage.status = "completed";
+                                       
+                                                    privateMessage.updateStatusById(messageId, function(success) {
+                                                        
+                                                            if (success) {	
+                                                                       
+                                                                       privateMessage.countUserMessages(data.userId, function(privateMessages) {
+                                                                                       
+                                                                           if (privateMessages) {
+                                                             
+                                                                            socket.emit("private-message-count", {
+                                                                               messageCount: privateMessages.length,
+                                                                               updateType: "new"
+                                                                               });
+                                                                            
+                                                                             updateUserContactsView(data.userId);
+                                                                            
+                                                                          } else {
+                                                                            //res.send(401, "User not found");
+                                                                          }
+                                                                          
+                                                                    }, function(error) {
+                                                                          //res.send("User not found");
+                                                                    });
+                                                                               
+                                                            } else {
+                                                              //res.send(401, "User not found");
+                                                            }
+                                                      }, function(error) {
+                                                            //res.send("User not found");
+                                                      });
+                 
+                 
+                                    } else {
+                                      //res.send(401, "User not found");
+                                    }
+                                    
+                                    
+                              }, function(error) {
+                                    //res.send("User not found");
+                              });
+                         
+     
+                    } else {
+   
+                    }
+              }, function(error) {
+                 
+              });
+            
+            
+            
+                user.retrieveById(requesterUserId, function(users) {
+                
+                    if (users) {
+                        
+                        var userContactsArray = [];
+
+                        if(typeof users.userContacts === 'undefined' ||  users.userContacts == "" || users.userContacts == null || users.userContacts == "null") {
+                           
+                             userContactsArray.push(requesteeUserId.toString());
+                            
+                        } else {
+                            
+                            var parsedUserContacts = JSON.parse(users.userContacts);
+                            for(i = 0; i < parsedUserContacts.length; i++) {
+                                userContactsArray.push(parsedUserContacts[i].toString());
+                            }
+                            
+                            userContactsArray.push(requesteeUserId.toString());
+                            
+                        }
+                                                             
+                           var uniqueUserContactsArray = Array.from(new Set(userContactsArray));
+                            
+                            user.userContacts = JSON.stringify(uniqueUserContactsArray);
+                            
+                            user.updateContacts(requesterUserId, function(success) {
+                                
+                                    if (success) {	
+                                            //var channelsForUser = [];
+                                            updateUserContactsView(requesterUserId);
+                                            
+                                    } else {
+                                      //res.send(401, "User not found");
+                                    }
+                                    
+                                    
+                              }, function(error) {
+                                    //res.send("User not found");
+                              });
+                         
+     
+                    } else {
+   
+                    }
+              }, function(error) {
+                 
+              });
+            
+            
+            
+        });
+          
+            
         /*socket.on('create-channel-and-invite-user-in', function (data) {
             
             var usersInChannel = [];

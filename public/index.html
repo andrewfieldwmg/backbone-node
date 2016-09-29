@@ -230,8 +230,7 @@
                           <h1 class="modal-title">Your <strong>Private Messages</strong></h1>
                         </div>
                         <div class="modal-body">
-
-                        
+            
                             <table class="private-messages-table table table-striped table-bordered display nowrap" width="100%">
                               <thead class="private-messages-table-head" style="display: none">
                                   <tr>
@@ -269,15 +268,15 @@
                         
                   
             <script type="text/template" id="private_message_table_item_template">         
-                <tr>
+                <tr data-message-id="<%=messageId%>">
                     <td><%= moment(timeSent).format("MM-DD-YYYY")%></td>
                     <td><%= senderUsername%></td>
                     <td><%= messageContent%></td>
                     <td class="" data-user-id="">
-                        <button class="btn btn-primary <%=positiveButtonClass %>" type="submit"><%=positiveButtonText %></button>
+                        <button class="btn btn-primary <%=positiveButtonClass %>" data-message-id="<%=messageId%>" data-sender-user-id="<%= senderUserId%>" type="submit"><%=positiveButtonText %></button>
                     </td>
                       <td class="" data-user-id="">
-                        <button class="btn btn-warning delete-message" type="submit">Delete</button>
+                        <button class="btn btn-warning delete-message" data-message-id="<%=messageId%>" type="submit">Delete</button>
                     </td> 
                 </tr>
             </script>
@@ -387,10 +386,7 @@
                     <td class="<%= cssClass %>" data-user-id="<%= userId %>"><%= userLocation %></td>
                     <td class="user-list-action-td <%= cssClass %>" data-user-id="<%= userId %>">
                     
-                    <i class="fa fa-plus <%=actionIconsClass%>" data-toggle="tooltip" title="Open Actions" aria-hidden="true"
-                            data-user-name="<%= userName %>" data-user-id="<%= userId %>"
-                            data-user-location="<%= userLocation %>" data-user-genre="<%=userGenre%>"
-                            data-user-joined-date="<%=userJoinedDate %>">  
+                    <i class="fa fa-plus <%=actionIconsClass%>" data-toggle="tooltip" title="Open Actions" aria-hidden="true" data-user-id="<%= userId %>">  
                     </i>
                     </td>
                 </tr>
@@ -410,14 +406,16 @@
                                          <!--<th>Time</th>-->
                                          <th>Who</th>
                                          <th>Genre</th>
+                                         <th>Location</th>
                                          <th>Actions</th>
                                      </tr>
                                  </thead>
                                  <tbody id="contacts">
                                      <tr>
-                                         <td colspan="3" class="" data-user-id="">You have no contacts!</td>
+                                         <td colspan="4" class="" data-user-id="">You have no contacts!</td>
                                          <td style="display: none;"></td>
                                          <td style="display: none;"></td>
+                                          <td style="display: none;"></td>
                                      </tr>       
                                  </tbody>
                              </table>   
@@ -429,9 +427,10 @@
             <script type="text/template" id="contact_table_item_template">         
                 <tr>
                     <!--<<td class="<%= cssClass %>" data-user-id="<%= userId %>"><%= time %></td>-->
-                    <td class="" data-user-id="">userName</td>
-                    <td class="" data-user-id="">userLocation</td>
-                    <td class="" data-user-id="">userGenre</td>
+                    <td>
+                         <img class="img-responsive td-image-center" src="<%= profileImageSrc %>" data-toggle="tooltip" title="<%= userName %>">
+                    </td>
+                    <td class="" data-user-id=""><%= userGenre %></td>
                     <td class="" data-user-id="">
                     <i class="fa fa-plus <%= actionIconsClass %>" data-toggle="tooltip" title="Connect With <%= userName %>!" aria-hidden="true" data-user-name="<%= userName %>" data-user-id="<%= userId %>"></i>
                     </td>
@@ -707,18 +706,20 @@
             
             
             <script type="text/template" id="user_actions_modal_template">
-                <div class="modal fade user-actions-modal">
+               <div>
+                
+               <div class="modal fade user-actions-modal">
                     <div class="modal-dialog" role="document">
                       <div class="modal-content">
                         <div class="modal-header">
-                          <button type="button" id="close-user-actions-modal" class="close" data-dismiss="modal" aria-label="Close">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                           </button>
                           <h1 class="modal-title">All About: <strong><%= username %></strong></h1>
                         </div>
                         <div class="modal-body">
                             
-                              <p>
+                            <p>
                                 <h2 class="text-wrap">
                                 Favourite Genre: <strong><%= userGenre %></strong>
                                 </h2>
@@ -738,13 +739,13 @@
                         </div>
                         
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-info pull-left listen-to-users-streams" data-target-user-id="<%= userId%>">Listen To <%= username%>'s Latest Streams</button>
-                            <button type="button" class="btn btn-primary send-friendship-request"
-                            data-target-user-id="<%= userId%>" data-target-user-name="<%= username%>">Send Contact Request</button>
+                            <button type="button" class="btn btn-info pull-left listen-to-users-streams disabled" data-target-user-id="<%= userId%>">Listen To <%= username%>'s Latest Streams</button>
+                            <button type="button" class="btn btn-primary send-friendship-request" data-target-user-id="<%= userId%>" data-target-user-name="<%= username%>">Send Contact Request</button>
                         </div>
-                      </div><!-- /.modal-content -->
-                    </div><!-- /.modal-dialog -->
-                  </div><!-- /.modal -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
             </script>
             
             
