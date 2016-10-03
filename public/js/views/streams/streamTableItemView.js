@@ -23,7 +23,8 @@ var StreamTableItemView = Backbone.View.extend({
 			    channelId: this.options.channelId,
 			    channelName: this.options.channelName,
 			    listenButtonClass: this.options.listenButtonClass,
-			    stopButtonClass: this.options.stopButtonClass
+			    stopButtonClass: this.options.stopButtonClass,
+			    listenToStreamClass: this.options.listenToStreamClass
                             };
 
         var compiledTemplate = _.template( $("#stream_table_item_template").html(), parameters);

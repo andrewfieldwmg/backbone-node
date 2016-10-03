@@ -58,7 +58,7 @@ var UserChannelsView = Backbone.View.extend({
 
     events: {
    
-     "click #open-create-channel-form": "openCreateChannelForm",
+     "click .create-channel": "openCreateChannelForm",
      "click .enter-channel": "enterChannel"
      
     },
@@ -81,18 +81,38 @@ var UserChannelsView = Backbone.View.extend({
         //var channelsFormView = new ChannelsFormView();
         //channelsFormView.render();
         	
-	if (localStorage.getItem("channelsModalViewLoaded") =="false") {
+	if (localStorage.getItem("channelsModalViewLoaded") == "false") {
         
 	    console.log('channels modal view NOT loaded, so proceeding');
         	
 	    console.log('open channel modal');
         
+	if(localStorage.getItem("userChannelIds")) {
+	    var chooseExistingChannelClass = "";
+	    var createChannelClass = "hidden";
+	    var createChannelSubmitClass = "enter-channel";
+	    var userChannelIdArray = JSON.parse(localStorage.getItem("userChannelIds"));
+	    var userChannelNameArray = JSON.parse(localStorage.getItem("userChannelNames"));
+	    var modalHeaderContent = "Choose a <strong>Stream Channel</strong>";
+	} else {
+	    var chooseExistingChannelClass = "hidden";
+	    var createChannelClass = "";
+	    var createChannelSubmitClass = "create-channel";
+	    var userChannelIdArray = null;
+	    var userChannelNameArray = null;
+	    var modalHeaderContent = "Create a <strong>Stream Channel</strong>";
+	}
+	
 	    var parameters = {
-			    modalHeaderContent: "Create a <strong>New Channel</strong>",
+			    modalHeaderContent: modalHeaderContent,
 			    targetUsername: "",
 			    targetUserId: "",
                             createChannelFromUserClass: "hidden",
-			    createChannelClass: ""
+			    createChannelClass: createChannelClass,
+			    chooseExistingChannelClass: chooseExistingChannelClass,
+			    createChannelSubmitClass: createChannelSubmitClass,
+			    userChannelIdArray: userChannelIdArray,
+			    userChannelNameArray: userChannelNameArray
                             };
 				
 	    var channelsModalView = new ChannelsModalView(parameters);
@@ -105,18 +125,19 @@ var UserChannelsView = Backbone.View.extend({
         }
         
     },
+    
   
     availableChannelsUpdated: function(data) {
 
-            //console.log(data);
-     
-            var availableChannels = JSON.parse(data.availableChannels);
                   
-                if (availableChannels.length === 0) {
+                if (data.availableChannels == null) {
                     
-  
+		    $('.loading-channels-li').html('No channels found');
+		    
                 } else {
-                   
+                    
+		    var availableChannels = JSON.parse(data.availableChannels);
+			 
 		    $('#user-channels').html('');
 		
                     for(i = 0; i < availableChannels.length; i++) {

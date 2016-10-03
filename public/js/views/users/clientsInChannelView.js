@@ -66,8 +66,46 @@ var ClientsInChannelView = Backbone.View.extend({
     },
 
 
-    events: {
+     events: {
 
+	"click .open-user-actions": "openUserActions"
+     
+    },
+    
+    
+        
+    openUserActions: function(e) {
+	   
+	   console.log('open user actions');
+	   
+	if (localStorage.getItem("userActionsModalViewLoaded") == "false") {
+	    
+	    var clickedUserId = $(e.currentTarget).data('user-id'); 
+	    socket.emit("get-user", {userId: clickedUserId });
+		    
+	    socket.on ('get-user-success', function (data) {
+    
+		var userModel = JSON.parse(data.userModel);
+		
+		    var parameters = {
+			clickedUserId: userModel.id,
+			clickedUserName: userModel.username,
+			clickedUserGenre: userModel.userGenre,
+			clickedUserLocation: userModel.userLocation,
+			clickedUserJoinedDate: userModel.joinedDate
+		    };
+		    
+		    var userActionsModalView = new UserActionsModalView(parameters);
+		    userActionsModalView.afterRender();
+		    
+		    $('.send-friendship-request').show();
+		
+	    });
+	
+	} else {
+	    console.log('user actions modal ALREADY loaded');
+	            
+	}
      
     },
     
@@ -88,12 +126,16 @@ var ClientsInChannelView = Backbone.View.extend({
 	    if (usersInChannel[i].inChannels != null && usersInChannel[i].currentChannel == localStorage.getItem("activeChannelId")) {
 	     
                 if(usersInChannel[i].username == localStorage.getItem("username")) {
+		    
                        var salutation = "<strong>You</strong> have";
 		       var actionIconsClass = "hidden";
+		       var username = "You";
+		       
                 } else {
 			otherUsersInChannel.push(usersInChannel[i].username);
                         var salutation = "<strong>" + usersInChannel[i].username +  "</strong> has";
-			var actionIconsClass = "";
+			var actionIconsClass = "open-user-actions";
+			 var username = usersInChannel[i].username;
 		}
                                   
 		if (usersInChannel[i].status === 'online') {
@@ -103,9 +145,10 @@ var ClientsInChannelView = Backbone.View.extend({
 		}
 
 		    
+		    
 		        var parameters = {
                             connectedUserId: usersInChannel[i].id,
-                            connectedUsername: usersInChannel[i].username,
+                            connectedUsername: username,
 			    profileImageSrc: config.filePaths.userProfileImageDir + "/" + usersInChannel[i].id + "_profile.jpg",
                             cssClass: "connected-client-list",
                             time: "",
@@ -131,7 +174,8 @@ var ClientsInChannelView = Backbone.View.extend({
 		  		    	
 	    $('.channel-clients-table').DataTable({
 		   responsive: true,
-		   "pageLength": 5
+		   "pageLength": 5,
+		   "lengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]]
 		   });
 		
 			

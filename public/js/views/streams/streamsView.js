@@ -62,10 +62,10 @@ var StreamsView = Backbone.View.extend({
 
     events: {
    
-      "click .enter-channel": "enterChannel",
-      "click .create-channel": "createChannel",
-      "click .listen-to-featured-stream" : "listenToFeaturedStream",
-     "click .stop-featured-stream" : "stopFeaturedStream"
+	"click .enter-channel": "enterChannel",
+	"click .create-channel": "createChannel",
+	"click .listen-to-featured-stream" : "listenToFeaturedStream",
+	"click .stop-featured-stream" : "stopFeaturedStream"
     },
     
   
@@ -76,6 +76,12 @@ var StreamsView = Backbone.View.extend({
 
 	    var liveStreamsDataTable = $('.available-streams-table').DataTable();
 	    liveStreamsDataTable.destroy();
+	    
+	    if (data.availableStreams == null) {
+		
+		$('.loading-streams-td').html('No streams found');
+		
+	    } else {
 	    
             var availableStreams = JSON.parse(data.availableStreams);
                 
@@ -107,22 +113,39 @@ var StreamsView = Backbone.View.extend({
                             usersInChannel.splice(index, 1);
                         }*/
                 
+			if(availableStreams[i].streamedByUsername == localStorage.getItem("username")) {
+			   var streamedByUsername = "You";
+                        } else {
+			    var streamedByUsername = availableStreams[i].streamedByUsername;
+                        }
 
+			  var justFilename = availableStreams[i].filename.slice(0, -4);
+			  
+			  						     
+			    if (availableStreams[i].state === 'live') {
+				
+				var listenToStreamClass = "hidden";
+			    
+			    } else if (availableStreams[i].state === 'offline') {
+				
+				var listenToStreamClass = "";
+			    }
+  
                                 var parameters = {
                                         streamId: availableStreams[i].id,
-                                        streamName: availableStreams[i].filename,
+                                        streamName: justFilename,
                                         streamGenre: availableStreams[i].genre,
                                         profileImageSrc: config.filePaths.userProfileImageDir + "/" + availableStreams[i].streamedByUserId + "_profile.jpg", 
-                                        streamedByUsername: availableStreams[i].streamedByUsername,
+                                        streamedByUsername: streamedByUsername,
                                         upvotes: availableStreams[i].upvotes,
                                         createdAt: availableStreams[i].createdAt,
                                         channelId: availableStreams[i].channelId,
                                         channelName: availableStreams[i].channelName,
                                         listenButtonClass: "listen-to-featured-stream",
-					stopButtonClass: "stop-featured-stream"
+					stopButtonClass: "stop-featured-stream",
+					listenToStreamClass: listenToStreamClass
                                         };
-                                               
-					       
+                                               				       
 					                           
 			    var streamTableItemView = new StreamTableItemView(parameters);
 								     
@@ -145,20 +168,25 @@ var StreamsView = Backbone.View.extend({
 			       "pageLength": 5,
 			       "order": [[ 0, "desc" ]],
 			        "oLanguage": {
-				"sEmptyTable": "No featured streams found"
-				}
+				"sEmptyTable": "No streams found"
+				},
+				"lengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]]
 			       });
+			
 			
 			$('.available-streams-table').DataTable({
 			    responsive: true,
 			    "pageLength": 5,
 			    "order": [[ 0, "desc" ]],
 			     "oLanguage": {
-			    "sEmptyTable": "No live streams found"
-			    }
+			    "sEmptyTable": "No streams found"
+			    },
+			    "lengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]]
 		       });
                     
-            }
+		}
+	    
+	    }
 
     },
     
@@ -272,19 +300,25 @@ var StreamsView = Backbone.View.extend({
 	$.when(
 
 	).done(function() {
-              
+	    
+              	localStorage.setItem("streamState", "started");
+		
 		socket.emit("listen-to-featured-stream", {requestedStreamId: requestedStreamId });
-		playMp3Stream(socket);
+		
+		//if (localStorage.getItem("playMp3FunctionLoaded") == "false") {
+		    playMp3Stream(socket);
+		//}
 
 		    //$('.stop-featured-stream').not("[data-stream-id='" + requestedStreamId + "']").each(function(){
 			//$(this).trigger('click');
 		    //});
 		    
+		    
 		$('.listen-to-featured-stream[data-stream-id="' + requestedStreamId + '"]').hide();
 		$('.stop-featured-stream[data-stream-id="' + requestedStreamId + '"]').show();
 		//new AudioPlayerView({streamName : "Loading Live Stream..."});
 		
-		localStorage.setItem("streamState", "started");
+
         });
 	
     },

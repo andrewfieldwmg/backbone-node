@@ -6,7 +6,7 @@ var AudioPlayerView = Backbone.View.extend({
         
             console.log('new audio player view');
             
-        var audioContext = this.options.audioContext;
+        //var audioContext = this.options.audioContext;
             
               this.render = _.wrap(this.render, function(render) {
                        this.beforeRender();
@@ -64,6 +64,15 @@ var AudioPlayerView = Backbone.View.extend({
 
     events: {
    
+    },
+    
+    destroy: function() {
+	
+	this.undelegateEvents();
+	this.$el.removeData().unbind();
+        
+        this.$el.empty().off();
+	
     }
    
 });

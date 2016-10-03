@@ -94,7 +94,7 @@ var UserActionsModalView = Backbone.View.extend({
                         recipientUsername: recipientUsername
                     });
         
-        $(e.currentTarget).html('Contact Request Sent!');
+        $(e.currentTarget).html('Contact Request Sent! <i class="fa fa-check"></i>');
         
         setTimeout(function(){
             $('.user-actions-modal').modal("hide");

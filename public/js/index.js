@@ -9,8 +9,8 @@ $(document).on('ready', function() {
         
     if (!isWebkit || isMobileOrTablet()) {
             
-        $('#wrong_browser').show();
-        return;
+        //$('#wrong_browser').show();
+        //return;
     }
     
     if (!initiateAudioContext) {
@@ -19,16 +19,23 @@ $(document).on('ready', function() {
         return;
     }
     
-    if (typeof io !== "undefined" && isWebkit && !isMobileOrTablet() && initiateAudioContext) {
+    //if (typeof io !== "undefined" && isWebkit && !isMobileOrTablet() && initiateAudioContext) {
     
+     if (typeof io !== "undefined" && initiateAudioContext) {
+        
         socket = initSocketIo();
 
         //localStorage.clear();
         
         //APP
         localStorage.setItem("appControlsViewLoaded", "false");
-        localStorage.setItem("streamState", "stopped");
         
+        //AUDIO
+        localStorage.setItem("streamState", "stopped");
+        localStorage.setItem("playMp3FunctionLoaded", "false");
+        localStorage.setItem("streamVolume", "1");
+        localStorage.setItem("userRole", "");
+           
         //USERS
         localStorage.setItem('connectedClientsViewLoaded', "false");
         localStorage.setItem('contactsViewLoaded', "false");
@@ -61,13 +68,7 @@ $(document).on('ready', function() {
         'placement' : 'bottom'
     });
     
-    	    
-      	    
-	/*$(document).on('click', '[data-dismiss="modal"]', function(){
-	   $('.modal').hide(); // hide the modal 
-	//$('#modal-dynamic-content').empty(); // empties dynamic content
-	   $('.modal-backdrop').remove(); // removes all modal-backdrops
-	});*/
+
 });
 
 
@@ -79,7 +80,7 @@ function initSocketIo() {
                                 "&channelName="+localStorage.getItem("channelName") +
                                 "&userColour="+localStorage.getItem("userColour");
                                 
-        var socket = io.connect({query: queryString});
+        var socket = io.connect();
                 
          socket.on('connect', function() {       
              console.log("Socket IO connected");
@@ -99,10 +100,8 @@ function initSocketIo() {
          
                   
          socket.on('socket-model', function(data) {
-            
             var userModel = data.userModel;
             localStorage.setItem('userModel', userModel);
-            
          });
          
          
@@ -115,7 +114,7 @@ function initSocketIo() {
             console.log('Connection Failed');  
         });
     
- 
+
     return socket;
 
 }

@@ -208,7 +208,8 @@ var ConnectedClientsView = Backbone.View.extend({
 		 
                  $('.connected-clients-table').DataTable({
                     responsive: true,
-		    "pageLength": 5
+		    "pageLength": 5,
+		    "lengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]]
 		    });  
             	//var roomsView = new RoomsView();
                 //roomsView.afterRender();

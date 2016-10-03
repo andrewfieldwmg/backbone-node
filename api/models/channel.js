@@ -10,7 +10,10 @@ var DataTypes = require("sequelize");
         createdByUserId: DataTypes.STRING,
         usersInChannel: DataTypes.STRING,
         messageCount: DataTypes.INTEGER,
-        userModelsInChannel: DataTypes.TEXT
+        userModelsInChannel: DataTypes.TEXT,
+        currentStreamId: DataTypes.INTEGER,
+        currentStreamName: DataTypes.STRING,
+        currentStreamStatus: DataTypes.STRING
       }, {
         
         instanceMethods: {
@@ -20,8 +23,8 @@ var DataTypes = require("sequelize");
                             .success(onSuccess).error(onError);	
                 },
               
-                retrieveById: function(user_id, onSuccess, onError) {
-                    Channel.find({where: {id: user_id}}, {raw: true})
+                retrieveById: function(channel_id, onSuccess, onError) {
+                    Channel.find({where: {id: channel_id}}, {raw: true})
                             .success(onSuccess).error(onError);	
                 },
                 
@@ -50,9 +53,9 @@ var DataTypes = require("sequelize");
                             .save().success(onSuccess).error(onError);
                 },
                
-                updateById: function(user_id, onSuccess, onError) {
+                updateById: function(channel_id, onSuccess, onError) {
                       
-                    var id = user_id;
+                    var id = channel_id;
                     var name = this.name;
                     var channelGenre = this.channelGenre;
                     var usersInChannel = this.usersInChannel;
@@ -66,6 +69,45 @@ var DataTypes = require("sequelize");
                         }, {id: id} )
                             .success(onSuccess).error(onError);
                 },
+                
+                
+                updateStreamById: function(channel_id, onSuccess, onError) {
+                      
+                    var id = channel_id;
+                    var currentStreamId = this.currentStreamId;
+                    var currentStreamName = this.currentStreamName;
+                    var currentStreamStatus = this.currentStreamStatus;
+
+                     Channel.update({
+                        currentStreamId: currentStreamId,
+                        currentStreamName: currentStreamName,
+                        currentStreamStatus: currentStreamStatus
+                        }, {id: id} )
+                            .success(onSuccess).error(onError);
+                },
+                
+                         
+                updateStreamStatusByStreamId: function(stream_id, onSuccess, onError) {
+                      
+                    var currentStreamStatus = this.currentStreamStatus;
+
+                     Channel.update({
+                        currentStreamStatus: currentStreamStatus
+                        }, {currentStreamId: stream_id} )
+                            .success(onSuccess).error(onError);
+                },
+                
+                
+                updateStreamStatusByStreamerId: function(streamer_id, onSuccess, onError) {
+                      
+                    var currentStreamStatus = this.currentStreamStatus;
+
+                     Channel.update({
+                        currentStreamStatus: currentStreamStatus
+                        }, {createdByUserId: streamer_id} )
+                            .success(onSuccess).error(onError);
+                },
+                
                 
                 incrementMessageCount: function(channel_id) {
                       

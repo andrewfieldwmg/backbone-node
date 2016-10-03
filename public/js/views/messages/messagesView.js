@@ -70,7 +70,8 @@ var MessagesView = Backbone.View.extend({
         var parameters = {username: localStorage.getItem("username")};
         var compiledTemplate = _.template( $("#messages_template").html(), parameters);
         this.$el.html( compiledTemplate );
-
+         
+	 
     },
 
     events: {
@@ -81,15 +82,20 @@ var MessagesView = Backbone.View.extend({
 
     socketMessageReceived: function(data) {
          
-         //console.log('message received');
+         console.log('message received');
 
+	 if (data.message == null) {
+	    
+	     $('.feedback-placeholder').html('Feedback will appear here');
+	     
+	 }
+	 
         if (data.channelId != localStorage.getItem("activeChannelId")) {
             
             return;
         
         } else {
-        
-         $('.feedback-placeholder').hide();
+    
          
         //var socketIndex = data.socketindex;
         
@@ -120,7 +126,7 @@ var MessagesView = Backbone.View.extend({
 		$('#message-results').append(listItemView.render());
 	    }
 
-
+         $('.feedback-placeholder').hide();
   
             scrollToBottom();
             playSound();
@@ -223,7 +229,18 @@ var MessagesView = Backbone.View.extend({
         
         //var socketIndex = data.socketindex;
         //var socketCss = getSocketCss(socketIndex);
-        
+        console.log(data);
+	            
+	if (localStorage.getItem("userId") != data.userId) {
+	    
+	    localStorage.setItem('userRole', 'listener');
+	    
+				$('#start-recording').addClass('disabled');
+				$('#start-file-stream').addClass('disabled');
+				$('#send-file').addClass("disabled");
+	
+	}
+			
         var cssClass = "list-item-" + data.userColour;
         
         var audioType = data.audioType;

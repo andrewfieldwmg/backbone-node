@@ -121,7 +121,9 @@ var StartStreamModalView = Backbone.View.extend({
         ss.createBlobReadStream(file).pipe(stream);
 
         localStorage.setItem('streamState', '');
-        
+	
+        localStorage.setItem('userRole', 'streamer');
+    
         var cssClass = "list-item-" + localStorage.getItem("userColour");
         
         var parameters = {
@@ -139,15 +141,21 @@ var StartStreamModalView = Backbone.View.extend({
     
         //});
         
-                $('#stop').on('click', function(e) {
+                $('#stop-all-audio').on('click', function(e) {
              
                    console.log('stop clicked');
                    
                   e.stopPropagation();
              
-                  socket.emit('stop-audio-stream');
+                    socket.emit('stop-audio-stream', {
+                        userRole: localStorage.getItem("userRole"),
+                        activeChannelId: localStorage.getItem("activeChannelId")
+                    });
                          
                   localStorage.setItem('streamState', 'stopped');
+		  
+		    var audioPlayer = new AudioPlayerView({streamName : "" });
+                    audioPlayer.destroy();
                                                 
                });
                 

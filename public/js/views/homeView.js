@@ -6,7 +6,7 @@ var NewHomeView = Backbone.View.extend({
         
         this.options = options;
 		 		 
-	 $('#stop').trigger('click');
+	 //$('#stop').trigger('click');
 	 
 	 $("#audio_player_container").empty().removeClass("marginbottom45");
 	
@@ -77,8 +77,7 @@ var NewHomeView = Backbone.View.extend({
 	
 
 	//WELCOME?
-        if (this.options.showWelcome === true) {
-            
+        if (this.options.showWelcome === true) {     
                 var welcomeModalView = new WelcomeModalView();
                 welcomeModalView.afterRender();
         }
@@ -126,7 +125,6 @@ var NewHomeView = Backbone.View.extend({
     
     destroy: function() { 
 
-        
         //this.undelegateEvents();
         this.undelegateEvents();
 	this.$el.removeData().unbind();

@@ -8,6 +8,7 @@ var AppControlsView = Backbone.View.extend({
         
             var self = this;
             
+	    
              socket.on("stop-audio-stream", function(data) {
                  self.socketStopAudioStream(data); 
               });          
@@ -62,7 +63,7 @@ var AppControlsView = Backbone.View.extend({
     startLiveStream: function(data) {
 	
       $.when(
-               $('#stop').triggerHandler('click')
+               $('#stop-all-audio').triggerHandler('click')
         ).done(function() {
 	            
 		var parameters = {
@@ -83,7 +84,7 @@ var AppControlsView = Backbone.View.extend({
         console.log('open file stream');
         
         $.when(
-               $('#stop').triggerHandler('click')
+               $('#stop-all-audio').triggerHandler('click')
         ).done(function() {
 	            
 		var parameters = {
@@ -152,7 +153,7 @@ var AppControlsView = Backbone.View.extend({
         //audioStreamSocketIo(socket); 
  
         $.when(
-               $('#stop').triggerHandler('click')
+               $('#stop-all-audio').triggerHandler('click')
        ).done(function() {
                     playMp3Stream(socket);
                     new AudioPlayerView({streamName : "Loading Live Stream..."});
@@ -166,7 +167,12 @@ var AppControlsView = Backbone.View.extend({
         
          if(localStorage.getItem("streamState") !== "stopped") {
             
-             $('#stop').trigger('click');
+             $('#stop-all-audio').trigger('click');
+	     
+	     $('#start-recording').removeClass('disabled');
+	     $('#start-file-stream').removeClass('disabled');
+	     $('#send-file').removeClass("disabled");
+	     
                     console.log('stream state started, so triggered stop button');
              } else {
                     console.log('stream state already stopped, so didnt trigger stop button');

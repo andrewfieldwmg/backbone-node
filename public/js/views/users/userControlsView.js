@@ -18,7 +18,7 @@ var UserControlsView = Backbone.View.extend({
             });
 	    
 	    socket.on('user-channels', function(data) {
-                console.log(data);
+                //console.log(data);
             });
 	    
 	      
@@ -76,7 +76,7 @@ var UserControlsView = Backbone.View.extend({
     
     updatePrivateMessageCount: function(data) {
 	
-	console.log('private messages updated');
+	//console.log('private messages updated');
 	
 	if (data.updateType == "new") {
 	    
@@ -95,7 +95,7 @@ var UserControlsView = Backbone.View.extend({
     
     openPrivateMessages: function(e) {
 	
-	    console.log('open priv mess');
+	    //console.log('open priv mess');
 	    var privateMessagesModalView = new PrivateMessagesModalView();
 	    privateMessagesModalView.afterRender();
 	    
@@ -108,9 +108,9 @@ var UserControlsView = Backbone.View.extend({
         	
 	if (localStorage.getItem("channelsModalViewLoaded") == "false") {
         
-	    console.log('channels modal view NOT loaded, so proceeding');
+	    //console.log('channels modal view NOT loaded, so proceeding');
         	
-	    console.log('open channel modal');
+	    //console.log('open channel modal');
         
 	if(localStorage.getItem("userChannelIds")) {
 	    var chooseExistingChannelClass = "";
@@ -145,7 +145,7 @@ var UserControlsView = Backbone.View.extend({
             
         } else {
             
-            console.log('channels modal view ALREADY loaded');
+            //console.log('channels modal view ALREADY loaded');
             
         }
         
@@ -153,7 +153,7 @@ var UserControlsView = Backbone.View.extend({
     
     createChannel: function(e) {
                 
-        console.log('create channel');
+        //console.log('create channel');
         e.preventDefault();
         e.stopPropagation();
         
@@ -183,7 +183,7 @@ var UserControlsView = Backbone.View.extend({
     
 	var self = this;
 	
-	console.log(data);
+	//console.log(data);
 	/*if(localStorage.getItem("channelName")) {
 	    var channelNameArray = JSON.parse(localStorage.getItem("channelName"));
 	} else {
@@ -235,7 +235,7 @@ var UserControlsView = Backbone.View.extend({
 	 //localStorage.setItem("activeChannelName", data.channelName);
 	 //localStorage.setItem("activeChannelId", data.channelId);
      
-        console.log('channel ready');
+        //console.log('channel ready');
      
 	var router = new Router();
 	router.navigate("channels/" + data.channelId, {trigger: "true"});

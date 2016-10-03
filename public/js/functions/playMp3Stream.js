@@ -1,6 +1,8 @@
 function playMp3Stream(socket) {
        
     console.log("PLAY MP3 FUNCTION CALLED");
+    
+    localStorage.setItem("playMp3FunctionLoaded", "true");
         
        // HERE WE DO THE FILE UPLOAD / STREAM WITH SS
        
@@ -36,7 +38,7 @@ function playMp3Stream(socket) {
               return;
           
           } else {
-                         
+                
                   var gainNode = audioContext.createGain();
                                       
                   if(localStorage.getItem("streamVolume")) {
@@ -197,14 +199,19 @@ function playMp3Stream(socket) {
       
                                                  
                       
-                  $('#stop').on('click', function(e) {
+                $('#stop-all-audio').on('click', function(e) {
                 
-                      console.log('stop clicked');
+                    console.log('stop clicked');
                       
                     e.stopPropagation();
                 
-                     socket.emit('stop-audio-stream');
+                     socket.emit('stop-audio-stream', {
+                        userRole: localStorage.getItem("userRole"),
+                        activeChannelId: localStorage.getItem("activeChannelId")
+                        });
                      
+                      //$('.stop-featured-stream').trigger('click');
+                      
                      //$('#message-results').append('<li class="list-group-item">Outbound stream stopped</li>')
                        
                      localStorage.setItem('streamState', 'stopped');
@@ -213,6 +220,9 @@ function playMp3Stream(socket) {
                           
                               //playMp3Stream(socket);
                             console.log('close promise resolved');
+                            
+                            var audioPlayer = new AudioPlayerView({streamName : "" });
+                            audioPlayer.destroy();
 
                         });
              
