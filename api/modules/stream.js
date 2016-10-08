@@ -6,7 +6,7 @@ module.exports = {
 
              stream.retrieveAll(function(streams) {
                  
-                 if (streams) {
+                 if (streams.length > 0) {
                             
                         //socket.emit('emptyMessages');
                          

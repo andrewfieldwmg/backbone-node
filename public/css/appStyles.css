@@ -263,3 +263,19 @@ table  {
 .onepointeight {
     font-size: 1.8em;
 }
+
+.upvote-stream {
+    position: absolute;
+    right: 0;
+    font-size: 30px;
+    color: white;
+    padding: 17px;
+    opacity: 0.6;
+    
+}
+
+
+.upvote-stream:hover {
+    transform: scale(1.1);
+    opacity: 1.0; 
+}

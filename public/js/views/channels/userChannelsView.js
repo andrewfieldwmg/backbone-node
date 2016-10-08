@@ -7,16 +7,7 @@ var UserChannelsView = Backbone.View.extend({
     initialize: function(){
 
             //console.log('channels view init');
-            
-            var self = this;
-            
-            socket.on('user-channels', function(data) {
-                self.availableChannelsUpdated(data);
-            });
-            
-            socket.on('message-count-updated', function (data) {
-                 self.socketMessageCountUpdated(data);
-             });
+
         
             this.render = _.wrap(this.render, function(render) {
                        this.beforeRender();
@@ -36,6 +27,9 @@ var UserChannelsView = Backbone.View.extend({
     
     beforeRender: function () {
         
+	socket.off('user-channels');
+        socket.off('message-count-updated');
+	
         this.undelegateEvents();
 	this.$el.removeData().unbind();
         this.$el.empty();
@@ -53,7 +47,16 @@ var UserChannelsView = Backbone.View.extend({
             
             $('#channels-list-header').html('Other Channels');
         }*/
-        
+                    
+            var self = this;
+            
+            socket.on('user-channels', function(data) {
+                self.availableChannelsUpdated(data);
+            });
+            
+            socket.on('message-count-updated', function (data) {
+                 self.socketMessageCountUpdated(data);
+             });
     },
 
     events: {

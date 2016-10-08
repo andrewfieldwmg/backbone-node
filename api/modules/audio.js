@@ -95,13 +95,14 @@ module.exports = {
                         var streamId = success.id;
                            //////console.log('File successfully uploaded: ' + cleanName);
                         var message = Message.build({
-                                        message: "Audio Stream: " + data.name,
+                                        message: "Audio Stream: " + justFilename,
                                         userId: data.userId,
                                         username: data.username,
                                         userColour: data.userColour,
                                         socketId: socket.id,
                                         channelId: data.activeChannelId,
-                                        channelName: data.activeChannelName
+                                        channelName: data.activeChannelName,
+                                        messageType: "stream"
                                         });
           
                         message.add(function(success) {                 
@@ -112,7 +113,8 @@ module.exports = {
                                         userId: data.userId,
                                         username: data.username,
                                         sender: data.sender,
-                                        name: justFilename
+                                        name: justFilename,
+                                        streamId: streamId
                                         };
                                         
                                if(data.liveStream === "true") {      
@@ -135,7 +137,9 @@ module.exports = {
                                                         channel.currentStreamId = streamId;
                                                         channel.currentStreamName = justFilename;
                                                         channel.currentStreamStatus = "started";
-                                                         
+                                                        channel.currentStreamerId = data.userId;
+                                                        channel.currentStreamerName = data.username;
+                                                          
                                                         channel.updateStreamById(data.activeChannelId, function(success) {
                                                             
                                                                 if (success) {	
@@ -449,6 +453,55 @@ module.exports = {
                         socket.emit('stop-audio-stream');
                 }
           
+        },
+        
+        upvoteStream: function(io, socket, data, User, Message, Stream, Channel) {
+                
+                 var stream = Stream.build(); 
+                stream.incrementUpvoteCount(data.streamId);
+                                             
+                        stream.retrieveById(data.streamId, function(streams) {
+                              
+                                  if (streams) {
+                                                                          
+                                        var parameters = {
+                                                streamId: data.streamId,
+                                                upvoteCount: streams.upvotes
+                                        };
+                                                             
+                                
+                                        io.sockets.emit("stream-upvotes-updated", parameters);
+                
+                                  } else {
+                                   
+                                  }
+                                  
+                            }, function(error) {
+                                 
+                            });
+      
+                
+        },
+        
+        
+        updateCurrentStreamTime: function(io, socket, data, Channel) {
+                
+                var channel = Channel.build(); 
+
+                channel.currentStreamTime = data.currentStreamTime;
+                 
+                channel.updateStreamTimeById(data.channelId, function(success) {
+                    
+                        if (success) {	
+                                
+                        } else {
+                         
+                        }
+                  }, function(error) {
+                        
+                });
+                 
+                
         }
         
         

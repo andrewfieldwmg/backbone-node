@@ -19,7 +19,8 @@ var ListItemView = Backbone.View.extend({
                             time: this.options.time,
                             contentFromUsername: this.options.contentFromUsername,
                             contentName: this.options.contentName,
-                            loaderClass: this.options.loaderClass
+                            loaderClass: this.options.loaderClass,
+                            messageIcon: this.options.messageIcon
                             };
         
         var compiledTemplate = _.template( $("#list_item_template").html(), parameters);

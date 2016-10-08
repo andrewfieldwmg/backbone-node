@@ -9,6 +9,10 @@ var MessagesView = Backbone.View.extend({
              socket.on('message', function (data) {
                  self.socketMessageReceived(data);
              });
+	     
+	    socket.on('message-history', function (data) {
+                 self.updateMessageHistory(data);
+             });
      
              socket.on("sent-file-incoming", function(data) {
                  self.socketFileIncoming(data);
@@ -26,12 +30,15 @@ var MessagesView = Backbone.View.extend({
                  self.socketAudioStreamIncoming(data); 
               });
       
-      
     	    socket.on("emptyMessages", function(data) {
                 $('#message-results').html();
               });
 
-	      
+	    socket.on("stream-upvotes-updated", function(data) {
+                 self.streamUpvotesUpdated(data); 
+              });
+      
+      
             this.render = _.wrap(this.render, function(render) {
                        this.beforeRender(); 
                        render();						
@@ -95,21 +102,26 @@ var MessagesView = Backbone.View.extend({
             return;
         
         } else {
-    
-         
-        //var socketIndex = data.socketindex;
-        
-        var cssClass = "list-item-" + data.userColour;
-        
-        if(data.username == localStorage.getItem("username")) {
-            var senderName = "You";  
-        } else {
-             var senderName = data.username;  
-        }
-         
+	
+	
 	    if($('.list-group-item[data-id="'+ data.messageId + '"]').length) {
                 console.log('that message already exists');
+		
 	    } else {
+		
+	    var cssClass = "list-item-" + data.userColour;
+	    
+	    if(data.username == localStorage.getItem("username")) {
+		var senderName = "You";  
+	    } else {
+		 var senderName = data.username;  
+	    }
+	     
+	    if(data.messageType == "stream") {    	
+		var messageIcon = '<i class="fa fa-music"></i>';
+	    } else if(data.messageType == "message") {
+		 var messageIcon = '<i class="fa fa-envelope"></i>';  
+	    }
 		
 		var parameters = {
 				messageId: data.messageId,
@@ -118,13 +130,83 @@ var MessagesView = Backbone.View.extend({
 				time: time,
 				contentFromUsername: senderName + ":",
 				contentName: data.message,
-				loaderClass: "hidden"
+				loaderClass: "hidden",
+				messageIcon: messageIcon
 				};
 		
 		var listItemView = new ListItemView(parameters);
 		
 		$('#message-results').append(listItemView.render());
 	    }
+
+         $('.feedback-placeholder').hide();
+  
+            scrollToBottom();
+            playSound();
+        }
+        
+    },
+    
+    
+    updateMessageHistory: function(data) {
+        
+	 if (data.messages == null) {
+	    
+	     $('.feedback-placeholder').html('Feedback will appear here');
+	     return;
+	 }
+	 
+        if (data.channelId != localStorage.getItem("activeChannelId")) {
+            
+            return;
+        
+        } else {
+    
+	    var messageHistory = JSON.parse(data.messages);
+
+	    for(i = 0; i < messageHistory.length; i++) {
+	
+		if($('.list-group-item[data-id="'+ messageHistory[i].id + '"]').length) {
+		    
+		    console.log('that message already exists');
+		    
+		} else {
+		    
+		    	
+		var cssClass = "list-item-" + messageHistory[i].userColour;
+		
+		if(messageHistory[i].username == localStorage.getItem("username")) {
+		    var senderName = "You";  
+		} else {
+		     var senderName = messageHistory[i].username;  
+		}
+	     
+		if(messageHistory[i].messageType == "stream") {    	
+		    var messageIcon = '<i class="fa fa-music"></i>';
+		} else if(messageHistory[i].messageType == "message") {
+		     var messageIcon = '<i class="fa fa-envelope"></i>';  
+		}
+	
+		    
+		    var parameters = {
+				    messageId: messageHistory[i].id,
+				    cssClass: cssClass,
+				    backgroundColour: messageHistory[i].userColour,
+				    time: messageHistory[i].createdAt,
+				    contentFromUsername: senderName + ":",
+				    contentName: messageHistory[i].message,
+				    loaderClass: "hidden",
+				    messageIcon: messageIcon
+				    };
+		    
+		    var listItemView = new ListItemView(parameters);
+    
+		    $('#message-results').append(listItemView.render());
+		    
+		}
+	    
+	}
+	
 
          $('.feedback-placeholder').hide();
   
@@ -248,16 +330,16 @@ var MessagesView = Backbone.View.extend({
         if (audioType === 'audio/wav/stream') {
             
             //playPcmStream(socket);
-            var audioContext = playMp3Stream(socket);
+            var audioContext = playMp3Stream(socket, 0);
              
         } else if (audioType === 'audio/wav') {
             
             //playPcmStream(socket);
-            var audioContext = playMp3Stream(socket);
+            var audioContext = playMp3Stream(socket, 0);
              
         } else if (audioType === 'audio/mp3') {
             
-            var audioContext = playMp3Stream(socket);
+            var audioContext = playMp3Stream(socket, 0);
         }
         
     
@@ -271,9 +353,10 @@ var MessagesView = Backbone.View.extend({
                             cssClass: cssClass,
 			    backgroundColour: data.userColour,
                             time: time,
-                            contentFromUsername: "Audio stream loading from " + streamAuthor + ":",
+                            contentFromUsername: 'Audio stream loading from ' + streamAuthor + ':',
                             contentName: data.name,
-                            loaderClass: ""
+                            loaderClass: "",
+			    messageIcon: '<i class="fa fa-music"></i>'
                             };
             
             var listItemView = new ListItemView(parameters);
@@ -281,7 +364,14 @@ var MessagesView = Backbone.View.extend({
             $('#message-results').append(listItemView.render());
             
 
-            new AudioPlayerView({streamName : data.name, audioContext: audioContext});
+            new AudioPlayerView({
+		streamName: data.name,
+		streamId: data.streamId,
+		userId: data.userId,
+		username: data.username,
+		profileImageSrc: config.filePaths.userProfileImageDir + "/" + data.userId + "_profile.jpg", 
+		audioContext: audioContext
+		});
                     
             localStorage.setItem('streamState', 'started');
             
@@ -289,6 +379,13 @@ var MessagesView = Backbone.View.extend({
             //playSound();
 
     },
+    
+    
+    streamUpvotesUpdated: function(data) {
+	
+	//console.log(data);
+    },
+    
     
     remove: function() {
     

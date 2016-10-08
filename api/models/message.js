@@ -11,8 +11,11 @@ var DataTypes = require("sequelize");
         userColour: DataTypes.STRING,
         socketId: DataTypes.STRING,
         channelId: DataTypes.STRING,
-        channelName: DataTypes.STRING
+        channelName: DataTypes.STRING,
+        messageType: DataTypes.STRING
       }, {
+        
+        timestamps: true,
         
         instanceMethods: {
                 
@@ -45,6 +48,7 @@ var DataTypes = require("sequelize");
                     var socketId = this.socketId;
                     var channelId = this.channelId;
                     var channelName = this.channelName;
+                    var messageType = this.messageType;
                 
                     Message.build({
                         message: message,
@@ -53,7 +57,8 @@ var DataTypes = require("sequelize");
                         userColour: userColour,
                         socketId: socketId,
                         channelId: channelId,
-                        channelName: channelName
+                        channelName: channelName,
+                        messageType: messageType
                         })
                         .save().success(onSuccess).error(onError);
                 },

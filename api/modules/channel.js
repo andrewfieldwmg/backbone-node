@@ -108,7 +108,7 @@ module.exports = {
     },
     
     
-    enterChannel: function(io, socket, data, User, Channel, Message, userModule, utils) {
+    enterChannel: function(io, socket, data, User, Channel, Message, userModule, messageModule, utils) {
         
         var channelIdArray = [];
         var channelNameArray = [];
@@ -145,9 +145,12 @@ module.exports = {
                                 }
                                 
                                 socket.channelIds = Array.from(new Set(utils.flatten(socketChannelIdsArray)));            
+                                 
+                                 
                                                                                     
                                 socket.emit('entered-channel-details', {
-                                        channel: JSON.stringify(channels)
+                                        channel: JSON.stringify(channels),
+                                        
                                 });
                                  
                                  channelNameArray.push(channels.name);
@@ -257,39 +260,8 @@ module.exports = {
                                                                    });
                              
                                                     
+                                                            messageModule.getMessageHistory(io, socket, Message, channelId);
                                             
-                                                                     var message = Message.build();
-                                              
-                                                                      message.findAllWhere(channelId, null, function(messages) {
-                                                                          
-                                                                          if (messages.length > 0) {
-                                                                                     
-                                                                                 socket.emit('emptyMessages');
-                                                                                     
-                                                                                 //for(i = 0; i < messages.length; i++) {
-                                                                                     
-                                                                                     //console.log('emitting mess ' + messages[i].message);
-                                                                                     
-                                                                                     socket.emit('message-history', {
-                                                                                         messages: JSON.stringify(messages)
-                                                                                     });
-                                                                                     
-                                                                                     
-                                                                                //}
-                                                                                 
-                                                                                            
-                                                                         } else {
-                                                                            
-                                                                               socket.emit('message-history', {
-                                                                                        messages: null
-                                                                                });
-                                                                               
-                                                                         }
-                                                                         
-                                                                   }, function(error) {
-                                                                         //res.send("User not found");
-                                                                   });
-                                                
                                        
                                                     } else {
                                                       //res.send(401, "User not found");

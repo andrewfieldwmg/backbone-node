@@ -79,7 +79,7 @@
         var channelIds = handshake.query.channelIds;
         var channelName = handshake.query.channelName;
         var userColour = handshake.query.userColour;*/
-        
+
          //USER SIGNUP//
          
         socket.on('new-username', function (data) {
@@ -155,11 +155,10 @@
         });
     
         
-        //INSTANTIATE and RE-INSTANTIATE THE APP, PRETTY MUCH//
+        //INSTANTIATE and RE-INSTANTIATE THE APP//
         
         socket.on('refresh-connection', function(data) {
             console.log('refresh connection');
-            
             connectionModule.refreshConnection(io, socket, data, User, Channel, Stream, userModule, streamModule, mailModule, utils);
         });
                    
@@ -170,11 +169,9 @@
             channelModule.createChannel(io, socket, data, Channel, User, utils);
         });
          
-
         socket.on('enter-channel', function (data) {
              console.log('enter-channel');
-             channelModule.enterChannel(io, socket, data, User, Channel, Message, userModule, utils);
-              
+             channelModule.enterChannel(io, socket, data, User, Channel, Message, userModule, messageModule, utils);
         });
         
             
@@ -193,16 +190,22 @@
                 audioModule.stopFeaturedAudioStream(io, socket);  
         });
         
-    
         ss(socket).on('audio-file', function(inboundStream, data) {
                 audioModule.processIncomingAudioStream(io, socket, data, inboundStream, Writable, Stream, Message, Channel, fs, config, SoxCommand, proc);
-        });
-    
+        });  
                                 
         socket.on('stop-audio-stream', function (data) {
                 audioModule.stopAudioStream(io, socket, data);
         });
      
+        socket.on("upvote-stream", function(data) {
+                audioModule.upvoteStream(io, socket, data, User, Message, Stream, Channel);
+        });
+        
+        socket.on("update-current-play-time", function(data) {
+                audioModule.updateCurrentStreamTime(io, socket, data, Channel);
+        });
+        
      
         //DISCONNECT//
         socket.on('disconnect', function() {

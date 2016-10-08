@@ -55,7 +55,15 @@ var AudioPlayerView = Backbone.View.extend({
           var volumeToUse = 1;
         }
         
-        var parameters = {streamName : this.options.streamName, streamVolume : volumeToUse}; 
+        var parameters = {
+	    streamName : this.options.streamName,
+	    streamId: this.options.streamId,
+	    userId: this.options.userId,
+	    username: this.options.username,
+	    profileImageSrc: this.options.profileImageSrc,
+	    streamVolume : volumeToUse
+	    };
+	    
        var compiledTemplate = _.template( $("#audio_player_template").html(), parameters);
        this.$el.html( compiledTemplate );
         
@@ -63,7 +71,34 @@ var AudioPlayerView = Backbone.View.extend({
     },
 
     events: {
-   
+	
+	"click .upvote-stream": "upvoteStream"
+    },
+    
+    upvoteStream: function(e) {
+	
+	var streamId = $(e.currentTarget).data("stream-id");
+	var streamerUserId = $(e.currentTarget).data("user-id")
+	
+	var parameters = {
+	    voterUserId: localStorage.getItem("userId"),
+	    streamerUserId: streamerUserId,
+	    streamId: streamId,
+	    channelId: localStorage.getItem("activeChannelId")
+	};
+	
+	
+	socket.emit("upvote-stream", parameters);
+	
+	$('.upvote-stream').animate({opacity: "1.0"}, 'fast')
+	.attr('title', 'Thanks for the love!')
+	.tooltip('enable')
+	.tooltip({trigger: 'manual'})
+	.tooltip('show');
+	    
+	    setTimeout(function() {
+		$('.upvote-stream').animate({opacity: "0.6"}, 'fast').tooltip('hide').tooltip('disable');
+	      }, 1500 ); 
     },
     
     destroy: function() {

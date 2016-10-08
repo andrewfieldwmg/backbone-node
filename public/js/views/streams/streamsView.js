@@ -22,6 +22,10 @@ var StreamsView = Backbone.View.extend({
                 self.channelReady(data);
             });
             
+	    socket.on("stream-upvotes-updated", function(data) {
+                 self.streamUpvotesUpdated(data); 
+            });
+		    
             this.render = _.wrap(this.render, function(render) {
                        this.beforeRender();
                        render();						
@@ -70,7 +74,7 @@ var StreamsView = Backbone.View.extend({
     
   
     featuredStreamsUpdated: function(data) {
-
+	    
             var featuredStreamsDataTable = $('.featured-streams-table').DataTable();
 	    featuredStreamsDataTable.destroy();
 
@@ -80,7 +84,8 @@ var StreamsView = Backbone.View.extend({
 	    if (data.availableStreams == null) {
 		
 		$('.loading-streams-td').html('No streams found');
-		
+		return;
+	    
 	    } else {
 	    
             var availableStreams = JSON.parse(data.availableStreams);
@@ -297,16 +302,21 @@ var StreamsView = Backbone.View.extend({
 		    $('.stop-featured-stream').trigger('click');
 	       }
 	       
+		if (typeof window.timerInterval != "undefined") {
+                        clearInterval(window.timerInterval);
+                }
+	       
 	$.when(
 
 	).done(function() {
 	    
               	localStorage.setItem("streamState", "started");
+		localStorage.setItem("userRole", "listener");
 		
 		socket.emit("listen-to-featured-stream", {requestedStreamId: requestedStreamId });
 		
 		//if (localStorage.getItem("playMp3FunctionLoaded") == "false") {
-		    playMp3Stream(socket);
+		    playMp3Stream(socket, 0);
 		//}
 
 		    //$('.stop-featured-stream').not("[data-stream-id='" + requestedStreamId + "']").each(function(){
@@ -321,11 +331,12 @@ var StreamsView = Backbone.View.extend({
 
         });
 	
+	
     },
     
     stopFeaturedStream: function(e) {
 	
-	//console.log('stop featured stream click: ' + $(e.currentTarget).data('stream-id'));
+	console.log('stop featured stream click: ' + $(e.currentTarget).data('stream-id'));
 	
 	var requestedStreamId = $(e.currentTarget).data('stream-id');
 	localStorage.setItem("streamState", "stopped");
@@ -334,15 +345,37 @@ var StreamsView = Backbone.View.extend({
 	$('.stop-featured-stream[data-stream-id="' + requestedStreamId + '"]').hide();
 	
 	socket.emit('stop-featured-audio-stream');
-                                                         
-	audioContext.close().then(function() {
-	  
-	      //playMp3Stream(socket);
-	    console.log('close promise resolved');
-
-	});
+                    
+	    if(typeof audioContext != "undefined" && audioContext.state != "closed") {
+		
+		    audioContext.close().then(function() {
+		      
+			  //playMp3Stream(socket);
+			console.log('close promise resolved');
+	    
+		    });
+		
+	    }
 	
     },
+    
+        
+    streamUpvotesUpdated: function(data) {
+	
+	console.log('stream upvotes updated');
+	
+	$('.upvote-count[data-stream-id="' + data.streamId + '"]').html(data.upvoteCount);
+	
+	$('.upvote-heart[data-stream-id="' + data.streamId + '"]')
+	.animate({zoom: "1.1"}, 'fast');
+	    
+	       setTimeout(function() {
+		$('.upvote-heart[data-stream-id="' + data.streamId + '"]')
+		.animate({zoom: "1.0"}, 'fast')
+	      }, 200 );
+	    
+    },
+    
     
     remove: function() { 
           
@@ -360,7 +393,7 @@ var StreamsView = Backbone.View.extend({
         
     destroy: function() {
         
-	console.log('featured streams destroy');
+	//console.log('featured streams destroy');
 	
         socket.off('featured-streams');
         socket.off('message-count-updated');

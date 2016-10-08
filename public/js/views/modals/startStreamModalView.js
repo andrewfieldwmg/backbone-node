@@ -124,7 +124,7 @@ var StartStreamModalView = Backbone.View.extend({
 	
         localStorage.setItem('userRole', 'streamer');
     
-        var cssClass = "list-item-" + localStorage.getItem("userColour");
+        /*var cssClass = "list-item-" + localStorage.getItem("userColour");
         
         var parameters = {
                 cssClass: cssClass,
@@ -137,27 +137,31 @@ var StartStreamModalView = Backbone.View.extend({
         
         var listItemView = new ListItemView(parameters);
         
-        $('#message-results').append(listItemView.render());
+        $('#message-results').append(listItemView.render());*/
     
         //});
         
-                $('#stop-all-audio').on('click', function(e) {
+            $('#stop-all-audio').on('click', function(e) {
              
-                   console.log('stop clicked');
-                   
-                  e.stopPropagation();
-             
-                    socket.emit('stop-audio-stream', {
-                        userRole: localStorage.getItem("userRole"),
-                        activeChannelId: localStorage.getItem("activeChannelId")
-                    });
-                         
-                  localStorage.setItem('streamState', 'stopped');
+		    if (localStorage.getItem("streamState") == "started") {
+		    
+			console.log('stop clicked');
+			
+			e.stopPropagation();
 		  
-		    var audioPlayer = new AudioPlayerView({streamName : "" });
-                    audioPlayer.destroy();
+			 socket.emit('stop-audio-stream', {
+			     userRole: localStorage.getItem("userRole"),
+			     activeChannelId: localStorage.getItem("activeChannelId")
+			 });
+			      
+		       localStorage.setItem('streamState', 'stopped');
+		       
+			 var audioPlayer = new AudioPlayerView({streamName : "" });
+			 audioPlayer.destroy();
+			 
+		    }
                                                 
-               });
+            });
                 
     },
     

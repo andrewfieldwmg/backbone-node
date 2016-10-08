@@ -18,7 +18,8 @@ module.exports = {
                                     userColour: userColour,
                                     socketId: socket.id,
                                     channelId: data.activeChannelId,
-                                    channelName: data.activeChannelName
+                                    channelName: data.activeChannelName,
+                                    messageType: "message"
                                     });
               
               message.add(function(success) {
@@ -29,7 +30,8 @@ module.exports = {
                         message: data.message,
                         username: username,
                         userId: userId,
-                        userColour: userColour
+                        userColour: userColour,
+                        messageType: "message"
                     });
                   
                     var channel = Channel.build(); 
@@ -61,6 +63,46 @@ module.exports = {
                 });
               
     
+        },
+        
+        
+        getMessageHistory: function(io, socket, Message, channelId) {
+                                                                    
+                                            
+                var message = Message.build();
+
+                 message.findAllWhere(channelId, null, function(messages) {
+                     
+                     if (messages.length > 0) {
+                                
+                            socket.emit('emptyMessages');
+                                
+                            //for(i = 0; i < messages.length; i++) {
+                                
+                                //console.log('emitting mess ' + messages[i].message);
+                                
+                                socket.emit('message-history', {
+                                    channelId: channelId,
+                                    messages: JSON.stringify(messages)
+                                });
+                                
+                                
+                           //}
+                            
+                                       
+                    } else {
+                       
+                          socket.emit('message-history', {
+                                 channelId: channelId,
+                                   messages: null
+                           });
+                          
+                    }
+                    
+              }, function(error) {
+                    //res.send("User not found");
+              });
+                 
         }
         
         

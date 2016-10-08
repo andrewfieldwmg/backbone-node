@@ -44,9 +44,17 @@ var InsideChannelView = Backbone.View.extend({
 				     
 				     socket.emit("listen-to-featured-stream", {requestedStreamId:  channel.currentStreamId });
 								 
-				     new AudioPlayerView({streamName : channel.currentStreamName });
 				     
-				     playMp3Stream(socket);
+				    new AudioPlayerView({
+					streamName: channel.currentStreamName,
+					streamId: channel.currentStreamId,
+					userId: channel.currentStreamerId,
+					username: channel.currentStreamerName,
+					profileImageSrc: config.filePaths.userProfileImageDir + "/" + channel.currentStreamerId + "_profile.jpg"
+					});
+					    
+				     
+				     playMp3Stream(socket, channel.currentStreamTime);
 				     
 			     });
 		    

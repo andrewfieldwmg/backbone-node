@@ -110,6 +110,12 @@ var DataTypes = require("sequelize");
                             .success(onSuccess).error(onError);
                 },
                 
+                incrementUpvoteCount: function(stream_id) {
+                      
+                        sequelize.query("UPDATE streams SET upvotes = upvotes + 1 WHERE id = " + stream_id).spread(function(results, metadata) {
+                        
+                        });
+                },
                 
                 removeById: function(stream_id, onSuccess, onError) {
                     Stream.destroy({id: stream_id}).success(onSuccess).error(onError);	

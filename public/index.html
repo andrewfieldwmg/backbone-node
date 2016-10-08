@@ -55,7 +55,6 @@
                     <div id="message_form_container"></div>
                     <div id="messages_container"></div>
                     <div id="available_channels_container"></div>
-                    <!--<div id="available_streams_container"></div>-->
                     <div id="featured_streams_container"></div>
                     <div id="connected_clients_container"></div>
                 </div>
@@ -89,30 +88,34 @@
             <p>
             <div class="audio-player" style="border-radius: 5px">
                 
-                <h2><%= streamName %> <i class="fa fa-refresh fa-spin" title="Loading..." aria-hidden="true" data-id=""></i></h2>
-                 
+                <div class="image-and-title" style="position: relative;">
+                    <img class="img-responsive" style="padding: 4px; border-radius: 8px" src="<%= profileImageSrc %>" data-toggle="tooltip" title="<%= username %>">
+
+                    <h2 style="margin-left: auto; margin-right: auto; top: -60px; position: relative">         
+                        <%= streamName %> <i class="fa fa-refresh fa-spin audioplayer-loading-spinner" title="Loading..." aria-hidden="true" data-id=""></i>
+                    </h2>
+                </div>
+                
                     <div id="mep_0" class="mejs-container svg mejs-audio">
                     <div class="mejs-inner">
+                        
+                    <i class="fa fa-heart upvote-stream" data-stream-id="<%= streamId %>" data-user-id="<%= userId %>"></i>
+                        
                         <div class="mejs-mediaelement">
                             <audio id="audio-player" src="" type="audio/mp3"></audio>
-                        </div><div class="mejs-layers">
-                    <div class="mejs-poster mejs-layer"></div></div>
+                        </div>
+                        
+                        <div class="mejs-layers">
+                            <div class="mejs-poster mejs-layer"></div>
+                        </div>
+                
                         <div class="mejs-controls">
-                            <div class="mejs-button mejs-playpause-button mejs-pause">
-                    <button type="button" aria-controls="mep_0" title="Play/Pause" aria-label="Play/Pause"></button></div>
-                                                        
-                            <!--<div class="mejs-time-rail" style="width: 0px;">
-                            <span class="mejs-time-total" style="width: 0px;">
-                                <span class="mejs-time-buffering" style="display: none;"></span>
-                            <span class="mejs-time-loaded" style="width: 380px;"></span>
-                            <span class="mejs-time-current" style="width: 5px;"></span>
-                            <span class="mejs-time-handle" style="left: -5px;"></span>
-                            <span class="mejs-time-float" style="display: none; left: 4px;">
-                                <span class="mejs-time-float-current">00:00</span>
-                                <span class="mejs-time-float-corner"></span></span></span
-                            </div>-->
-                               
-                            <div id="volume-controls">                           
+                            
+                            <div class="mejs-button mejs-playpause-button mejs-pause" style="margin-top: -88px">
+
+                            <button type="button" aria-controls="mep_0"  data-toggle="tooltip" title="Play/Pause"></button></div>
+
+                            <div id="volume-controls" style="display: none">                           
                                 <div class="mejs-button mejs-volume-button mejs-mute">
                                 <button type="button" aria-controls="mep_0" title="Mute Toggle" aria-label="Mute Toggle">
                                 </button>
@@ -385,7 +388,7 @@
                         <img class="img-responsive td-image-center" src="<%= profileImageSrc %>" data-toggle="tooltip" title="<%= userName %>">
                     </td>
                     <td class="<%= cssClass %>" data-user-id="<%= userId %>"><%= userGenre %></td>
-                    <td class="<%= cssClass %>" data-user-id="<%= userId %>"><%= userLocation %></td>
+                    <td class="<%= cssClass %> contact-status-td" data-user-id="<%= userId %>"><%= userLocation %></td>
                     <td class="user-list-action-td <%= cssClass %>" data-user-id="<%= userId %>">
                     
                     <i class="fa fa-plus <%=actionIconsClass%>" data-toggle="tooltip" title="Open Actions" aria-hidden="true" data-user-id="<%= userId %>"></i>
@@ -509,7 +512,7 @@
                                 <th>Title</th>
                                 <th>User</th>
                                 <th>Genre</th>
-                                <th>Feedback</th>
+                                <th>Upvotes</th>
                                 <th>Age</th>
                                 <th>Join</th>
                             </tr>
@@ -549,18 +552,17 @@
                                       <th>Title</th>
                                       <th>User</th>
                                       <th>Genre</th>
-                                      <th>Feedback</th>
+                                      <th>Upvotes</th>
                                       <th>Age</th>
                                       <th>Listen</th>
-                                      <th>Join</th>
+                                      <th>Leave Feedback</th>
                                   </tr>
                               </thead>
                               <tbody id="featured-streams">
                                  <tr>
                                       <td colspan="8" class="loading-streams-td">
                                         Loading streams... <i class="fa fa-spin fa-refresh"></i>
-                                              <!--<div class="padding10 create-channel-div">
-                                                  <button type="button" class="btn btn-primary create-channel" data-toggle="tooltip" data-placement="right" title="Create New Channel">Create A Channel</button>
+                                              <!--<div class="padding10 create  n btn-primary create-channel" data-toggle="tooltip" data-placement="right" title="Create New Channel">Create A Channel</button>
                                               </div>-->
                                       </td>
                                       <td style="display: none;"></td>
@@ -590,9 +592,9 @@
                     <td><%= streamGenre %></td>
                     <td>
    
-                        <span class="fa-stack fa-1x">
+                        <span class="fa-stack fa-1x upvote-heart" data-stream-id="<%= streamId %>">
                           <i class="fa fa-heart fa-stack-2x"></i>
-                          <span class="fa-stack-1x upvote-text small" data-toggle="tooltip" title="<%= upvotes %> Upvotes" style="color: white"><%= upvotes %></span>
+                          <span class="fa-stack-1x upvote-count small" data-stream-id="<%= streamId %>" data-toggle="tooltip" title="Upvotes" style="color: white"><%= upvotes %></span>
                         </span>                  
                     </td>
                     
@@ -654,7 +656,8 @@
        
                   
            <script type="text/template" id="list_item_template">
-                <li class="list-group-item <%= cssClass %>" data-id="<%= messageId %>" style="background-color: <%= backgroundColour %>"><strong><%= time %></strong> <%= contentFromUsername %> <strong><%= contentName %></strong>
+                <li class="list-group-item <%= cssClass %>" data-id="<%= messageId %>" style="background-color: <%= backgroundColour %>">
+                <%= messageIcon%>  <%= contentFromUsername %> <strong><%= contentName %></strong>
                 <i class="fa fa-refresh fa-spin <%= loaderClass %>" title="Loading..." aria-hidden="true" data-id=""></i>
                 </li>
            </script>
@@ -739,7 +742,7 @@
                                  
                                    <p>
                                      <h2 class="text-wrap">
-                                     Joined Date: <strong><%= moment(userJoinedDate).format("MM-DD-YYYY") %></strong>
+                                     Joined Date: <strong><%= moment(userJoinedDate).format("MM/DD/YYYY") %></strong>
                                      </h2>
                                  </p>
                              </div>
@@ -777,8 +780,7 @@
                                     <option value="<%= userChannelIdArray[i] %>"><%= userChannelNameArray[i] %></option>
                                     <% }
                                 
-                                }
-                                
+                                }            
                                 %>   
                             </select>
                                             
@@ -862,7 +864,7 @@
         <script src="/config.js"></script>
         <script src="/js/functions/utils.js"></script>
         <script src="/js/functions/playMp3Stream.js"></script>
-        <script src="/js/functions/playWavStream.js"></script>
+        <!--<script src="/js/functions/playWavStream.js"></script>-->
         <script src="/js/functions/recordStream.js"></script>
         
         <!-- START THE APP -->
@@ -875,7 +877,7 @@
                 <script src="/js/views/app/audioPlayerView.js"></script>
             
                 <!-- Users -->
-                <script src="/js/views/users/usernameFormView.js"></script>
+                <script src="/js/views/users/userSignupFormView.js"></script>
                 <script src="/js/views/users/userControlsView.js"></script>
                 <script src="/js/views/users/userListItemView.js"></script>
                 <script src="/js/views/users/connectedClientsView.js"></script>
@@ -884,7 +886,6 @@
                 <script src="/js/views/users/channelUserListItemView.js"></script>
                 
                 <!-- Streams -->
-                <!--<script src="/js/views/streams/availableStreamsView.js"></script>-->
                 <script src="/js/views/streams/streamsView.js"></script>
                 <script src="/js/views/streams/streamTableItemView.js"></script>
                 
@@ -893,7 +894,6 @@
                 <script src="/js/views/channels/userChannelsView.js"></script>
                 <script src="/js/views/channels/channelListItemView.js"></script>
                 <script src="/js/views/channels/channelTableItemView.js"></script>
-               <!--<script src="/js/views/channelsFormView.js"></script>-->
                 
                 <!-- Messages -->
                 <script src="/js/views/messages/messageFormView.js"></script>

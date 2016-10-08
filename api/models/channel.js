@@ -13,7 +13,11 @@ var DataTypes = require("sequelize");
         userModelsInChannel: DataTypes.TEXT,
         currentStreamId: DataTypes.INTEGER,
         currentStreamName: DataTypes.STRING,
-        currentStreamStatus: DataTypes.STRING
+        currentStreamStatus: DataTypes.STRING,
+        currentStreamTime: DataTypes.STRING,
+        currentStreamerId: DataTypes.INTEGER,
+        currentStreamerName: DataTypes.STRING
+
       }, {
         
         instanceMethods: {
@@ -69,24 +73,26 @@ var DataTypes = require("sequelize");
                         }, {id: id} )
                             .success(onSuccess).error(onError);
                 },
-                
-                
+                       
                 updateStreamById: function(channel_id, onSuccess, onError) {
                       
                     var id = channel_id;
                     var currentStreamId = this.currentStreamId;
                     var currentStreamName = this.currentStreamName;
                     var currentStreamStatus = this.currentStreamStatus;
+                    var currentStreamerId = this.currentStreamerId;
+                    var currentStreamerName = this.currentStreamerName;
 
                      Channel.update({
                         currentStreamId: currentStreamId,
                         currentStreamName: currentStreamName,
-                        currentStreamStatus: currentStreamStatus
+                        currentStreamStatus: currentStreamStatus,
+                        currentStreamerId: currentStreamerId,
+                        currentStreamerName: currentStreamerName
                         }, {id: id} )
                             .success(onSuccess).error(onError);
                 },
-                
-                         
+                                 
                 updateStreamStatusByStreamId: function(stream_id, onSuccess, onError) {
                       
                     var currentStreamStatus = this.currentStreamStatus;
@@ -96,7 +102,16 @@ var DataTypes = require("sequelize");
                         }, {currentStreamId: stream_id} )
                             .success(onSuccess).error(onError);
                 },
-                
+                                   
+                updateStreamTimeById: function(channel_id, onSuccess, onError) {
+                      
+                    var currentStreamTime = this.currentStreamTime;
+
+                     Channel.update({
+                        currentStreamTime: currentStreamTime
+                        }, {id: channel_id} )
+                            .success(onSuccess).error(onError);
+                },
                 
                 updateStreamStatusByStreamerId: function(streamer_id, onSuccess, onError) {
                       
@@ -107,8 +122,7 @@ var DataTypes = require("sequelize");
                         }, {createdByUserId: streamer_id} )
                             .success(onSuccess).error(onError);
                 },
-                
-                
+                 
                 incrementMessageCount: function(channel_id) {
                       
                         sequelize.query("UPDATE channels SET messageCount = messageCount + 1 WHERE id = " + channel_id).spread(function(results, metadata) {

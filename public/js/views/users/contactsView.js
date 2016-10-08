@@ -13,6 +13,11 @@ var ContactsView = Backbone.View.extend({
 		self.userContactsUpdated(data);
             });
 	    
+	      socket.on("user-status-updated", function(data) {
+		self.userStatusUpdated(data);
+            });
+	    
+	    
 
              this.render = _.wrap(this.render, function(render) {
                        this.beforeRender();
@@ -176,6 +181,12 @@ var ContactsView = Backbone.View.extend({
 			
 	    }
             
+    },
+    
+    userStatusUpdated: function(data) {
+	
+	$('.contact-status-td[data-user-id="' + data.userId + '"]').html(data.userStatus);
+	
     },
     
     destroy: function() { 

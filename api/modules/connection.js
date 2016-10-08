@@ -69,6 +69,9 @@ module.exports = {
                                             
                                              userModule.updateUserContactsView(io, socket, Channel, User, utils, userId);          
                          
+                                             io.sockets.emit("user-status-updated", {userId: userId, userStatus: "Online"});
+                
+                
                                         } else {
                        
                                         }
@@ -173,7 +176,6 @@ module.exports = {
                     streamModule.updateStreamsForUser(io, socket, Stream);
                 }
         
-        
 
             },
             
@@ -196,6 +198,9 @@ module.exports = {
                                 //var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
                                 //////console.log('emit connected clients');
                                 
+                                    io.sockets.emit("user-status-updated", {userId: socket.userId, userStatus: "Offline"});
+                
+                
                                     user.retrieveAll(function(users) {
                     
                                     if (users) {

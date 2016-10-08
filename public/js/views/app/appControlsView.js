@@ -46,6 +46,7 @@ var AppControlsView = Backbone.View.extend({
         
         localStorage.setItem("appControlsViewLoaded", "true");
         this.$el.html( this.template );
+	
         
     },
 
@@ -84,7 +85,7 @@ var AppControlsView = Backbone.View.extend({
         console.log('open file stream');
         
         $.when(
-               $('#stop-all-audio').triggerHandler('click')
+               $('#stop-all-audio').triggerHandler('click'), $('.stop-featured-stream').trigger('click')
         ).done(function() {
 	            
 		var parameters = {
@@ -155,7 +156,7 @@ var AppControlsView = Backbone.View.extend({
         $.when(
                $('#stop-all-audio').triggerHandler('click')
        ).done(function() {
-                    playMp3Stream(socket);
+                    playMp3Stream(socket, 0);
                     new AudioPlayerView({streamName : "Loading Live Stream..."});
         });
     },
@@ -174,8 +175,10 @@ var AppControlsView = Backbone.View.extend({
 	     $('#send-file').removeClass("disabled");
 	     
                     console.log('stream state started, so triggered stop button');
+		    return;
              } else {
                     console.log('stream state already stopped, so didnt trigger stop button');
+		    return;
              }
          
         /*localStorage.setItem('streamState', 'stopped');
