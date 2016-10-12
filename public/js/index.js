@@ -22,10 +22,12 @@ $(document).on('ready', function() {
     //if (typeof io !== "undefined" && isWebkit && !isMobileOrTablet() && initiateAudioContext) {
     
      if (typeof io !== "undefined" && initiateAudioContext) {
-        
+     
         socket = initSocketIo();
 
         //localStorage.clear();
+        
+        //LOCAL STORAGES
         
         //APP
         localStorage.setItem("appControlsViewLoaded", "false");
@@ -35,6 +37,7 @@ $(document).on('ready', function() {
         localStorage.setItem("playMp3FunctionLoaded", "false");
         localStorage.setItem("streamVolume", "1");
         localStorage.setItem("userRole", "");
+        localStorage.setItem("audioPlayerSliddenUp", "false");
            
         //USERS
         localStorage.setItem('connectedClientsViewLoaded', "false");
@@ -57,28 +60,25 @@ $(document).on('ready', function() {
          localStorage.setItem("userActionsModalViewLoaded", "false");
         localStorage.setItem("channelsModalViewLoaded", "false");
         localStorage.setItem("acceptInvitationViewLoaded", "false");
-             
+        
+        	//CONTROLLERS
+	localStorage.setItem("audioControllerLoaded", "false");
+        
         var router = new Router();
         Backbone.history.start({pushState: true});
-
+    
     }
     
-    $('body').tooltip({
-        selector: '[data-toggle=tooltip]',
-        'placement' : 'bottom'
-    });
-    
-
 });
 
 
 function initSocketIo() {
 
-        var queryString = "username="+localStorage.getItem("username") +
+        /*var queryString = "username="+localStorage.getItem("username") +
                                 "&userId="+localStorage.getItem("userId") +
                                 "&channelIds="+localStorage.getItem("channelIds") +
                                 "&channelName="+localStorage.getItem("channelName") +
-                                "&userColour="+localStorage.getItem("userColour");
+                                "&userColour="+localStorage.getItem("userColour");*/
                                 
         var socket = io.connect();
                 
@@ -88,21 +88,22 @@ function initSocketIo() {
          
          socket.on('socket-info', function(data) {
             
-            var socketId = data.socketId;
-            var userId = data.userId;
-            var userColour = data.userColour;
-             
-            localStorage.setItem('socketId', socketId);
-            localStorage.setItem('userId', userId);
-            localStorage.setItem('userColour', userColour);
- 
+            localStorage.setItem('socketId', data.socketId);
+            localStorage.setItem('userId', data.userId);
+            localStorage.setItem("username", data.username);
+            localStorage.setItem("userEmail", data.userEmail);
+            localStorage.setItem("userGenre", data.userGenre);
+            localStorage.setItem("userColour", data.userColour);
+            localStorage.setItem("userLocation", data.userLocation);
+            localStorage.setItem("channelIds", data.inChannels);
+  
          });
          
-                  
-         socket.on('socket-model', function(data) {
+                                                    
+         /*socket.on('socket-model', function(data) {
             var userModel = data.userModel;
             localStorage.setItem('userModel', userModel);
-         });
+         });*/
          
          
          socket.on('disconnect', function(){

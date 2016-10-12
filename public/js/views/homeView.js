@@ -8,7 +8,7 @@ var NewHomeView = Backbone.View.extend({
 		 		 
 	 //$('#stop').trigger('click');
 	 
-	 $("#audio_player_container").empty().removeClass("marginbottom45");
+	 //$("#audio_player_container").empty().removeClass("marginbottom45");
 	
 	// DESTROY / CLEAR OUT VIEWS TO STOP ZOMBIES
 	
@@ -82,20 +82,18 @@ var NewHomeView = Backbone.View.extend({
                 welcomeModalView.afterRender();
         }
 	
-	
-	socket.emit("refresh-connection", {
-		    username: localStorage.getItem("username"),
-		    userId: localStorage.getItem("userId"),
-		    channelIds: localStorage.getItem("channelIds"),
-		    channelName: localStorage.getItem("channelName"),
-		    userColour: localStorage.getItem("userColour")
-		    }
-	);
-	        
+	//CONTROLLERS
+	var audioController = new AudioController();    
 	
         localStorage.setItem("activeChannelId", "");
         localStorage.setItem("activeChannelName", "");
 
+			
+	socket.emit("refresh-connection", {
+		    userId: localStorage.getItem("userId")
+		    }
+	);
+	    
 
     },
   

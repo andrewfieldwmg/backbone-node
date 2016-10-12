@@ -267,15 +267,69 @@ table  {
 .upvote-stream {
     position: absolute;
     right: 0;
-    font-size: 30px;
+    top: 0;
+    font-size: 25px;
     color: white;
-    padding: 17px;
+    padding: 5px;
     opacity: 0.6;
     
 }
 
+.audio-player {
+    border-radius: 5px!important;
+    position: fixed!important;
+    bottom: 0!important;
+
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.stream-name-h2 {
+  margin-left: auto!important;
+  margin-right: auto!important;
+  top: -60px!important;
+  position: relative!important;
+}
+
+
+.player-buttons {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 30px;
+    color: white;
+    padding: 5px;
+    opacity: 0.6;  
+}
+
+
+.profile-player-image {
+     padding: 4px!important;
+     border-radius: 8px!important;
+}
 
 .upvote-stream:hover {
     transform: scale(1.1);
     opacity: 1.0; 
+}
+
+.player-waveform {
+    width: 70%!important;
+    height: 30px!important;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative!important;
+    margin-left: auto!important;
+    margin-right: auto!important;
+    margin-top: -57px!important;
+    color: white;
+}
+
+.paddingtop10 {
+    padding-top: 10px;
+}
+
+.waveform-image {
+    max-width: 100%!important;
+    max-height:100%!important; 
 }

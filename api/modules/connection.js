@@ -2,28 +2,36 @@ module.exports = {
     
     refreshConnection: function(io, socket, data, User, Channel, Stream, userModule, streamModule, mailModule, utils) {
         
-            var username = data.username;
-            var userId = data.userId;
-            var channelIds = data.channelIds;
-            var channelName = data.channelName;
-            var userColour = data.userColour;
+        var userId = data.userId;
+        //var username = data.username;
+        //var channelIds = data.channelIds;
+        //var channelName = data.channelName;
+        //var userColour = data.userColour;
+        
+         if(typeof userId !== "undefined" && userId !== "null" && userId !== null) {
+                   
+            var user = User.build();
             
-            if(userId !== "null" && username !== "null") {
-                        
+             user.retrieveById(userId, function(userModel) {
+        
+                if (userModel) {
+                          
+                    console.log(userModel.inChannels);
+                          
                     var mailOptions = {
                         from: '"listentome.io" <no-reply@listentome.io>', // sender address
                         to: 'andyfield83@gmail.com', // list of receivers
-                        subject: username + ' has just connected!', // Subject line
-                        text: username + ' has just connected!', // plaintext body
-                        html: '<b>' + username + ' has just connected!</b>' // html body
+                        subject: userModel.username + ' has just connected!', // Subject line
+                        text: userModel.username + ' has just connected!', // plaintext body
+                        html: '<b>' + userModel.username + ' has just connected!</b>' // html body
                     };
                     
                     //mailModule.sendMail(config, mailOptions);
                     
-                    if(typeof channelIds !== 'undefined' && channelIds !== null && channelIds !== "null") {
+                    if(typeof userModel.inChannels !== 'undefined' && userModel.inChannels !== null && userModel.inChannels !== "null") {
         
                         socketChannelIdsArray = [];    
-                        var joinedChannelIdsArray = JSON.parse(channelIds);
+                        var joinedChannelIdsArray = JSON.parse(userModel.inChannels);
                        
                         for(i = 0; i < joinedChannelIdsArray.length; i++) {
                             //socket.join(joinedChannelIdsArray[i]);
@@ -31,6 +39,7 @@ module.exports = {
                         }
                         
                         socket.channelIds = Array.from(new Set(utils.flatten(socketChannelIdsArray)));
+
                     
                     } else {
                          ////console.log('channelids is null');
@@ -40,47 +49,39 @@ module.exports = {
                         socket.userId = userId;
                             
                         //connectedUsernames.push(username);
-                        //connectedUserIds.push(userId);
-                        
-                        var user = User.build();	
+                        //connectedUserIds.push(userId);	
                           
                         user.socketId = socket.id;
                         user.status = "online";
-                        user.inChannels = channelIds;
-                        //user.username = username;
+                        user.inChannels = userModel.inChannels;
+                        user.username = userModel.inChannels;
                     
                         user.updateById(userId, function(success) {
                   
                             if (success) {
                                 
-                                user.retrieveById(userId, function(userModel) {
-                    
-                                        if (userModel) {
-                                             
-                                             socket.emit('socket-info', {
-                                                 socketId: socket.id,
-                                                 userId: userId,
-                                                 userColour: userColour
-                                                 });
-                                             
-                                            socket.emit('socket-model', {
-                                                 userModel: JSON.stringify(userModel)
-                                            });
-                                            
-                                             userModule.updateUserContactsView(io, socket, Channel, User, utils, userId);          
-                         
-                                             io.sockets.emit("user-status-updated", {userId: userId, userStatus: "Online"});
-                
-                
-                                        } else {
-                       
-                                        }
-                                  }, function(error) {
-                                     
+                                socket.emit('socket-info', {
+                                            socketId: socket.id,
+                                            userId: userId,
+                                            username: userModel.username,
+                                            userEmail: userModel.email,
+                                            userGenre: userModel.userGenre,
+                                            userColour: userModel.userColour,
+                                            userLocation: userModel.userLocation,
+                                            inChannels: userModel.inChannels
                                 });
-    
-                                
-                                //var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
+                            
+   
+                            /*socket.emit('socket-model', {
+                                 userModel: JSON.stringify(userModel)
+                            });*/
+                            
+                             userModule.updateUserContactsView(io, socket, Channel, User, utils, userId);          
+         
+                             io.sockets.emit("user-status-updated", {userId: userId, userStatus: "Online"});
+
+                             
+                                  //var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
                                 
                                     user.retrieveAll(function(users) {
                     
@@ -90,12 +91,11 @@ module.exports = {
                                                                     
                                        ////console.log(channelIds);
                                        
-                                       if(typeof channelIds !== "undefined" && channelIds !== null && channelIds !== "null"
-                                          && typeof channelName !== "undefined" && channelName !== null && channelName !== "null") {
+                                       if(typeof userModel.inChannels !== "undefined" && userModel.inChannels !== null && userModel.inChannels !== "null") {
                                         
                                         //console.log('channel ids:' + channelIds);
                                             
-                                            userModule.updateConnectedClientsInChannel(io, socket, Channel, User, utils, channelIds, channelName);                                                                                                                             
+                                            userModule.updateConnectedClientsInChannel(io, socket, Channel, User, utils, userModel.inChannels);                                                                                                                             
                                        }
          
                           
@@ -109,7 +109,7 @@ module.exports = {
                 
                                     
                         
-                        if(typeof channelName !== "undefined" && channelName !== "null" && channelName !== null) {
+                        if(typeof userModel.inChannels !== "undefined" && userModel.inChannels !== "null" && userModel.inChannels !== null) {
                                             
                                         var channel = Channel.build();
                                         
@@ -131,18 +131,16 @@ module.exports = {
                                                     var uniqueChannelArray = Array.from(new Set(channelArray));
                                                     var uniqueAllChannelArray = Array.from(new Set(allChannelsArray));
                                                     
-                                                    var parsedChannelNames = JSON.parse(channelName);
+                                                    //var parsedChannelNames = JSON.parse(channelName);
                                                     
-                                                    for(i = 0; i < parsedChannelNames.length; i++) {
-                                                        
-                                                        ////console.log('will send to: ' + parsedChannelNames[i]);
-                                                        ////console.log('will send channels: ' + JSON.stringify(uniqueChannelArray));
-                                                        
+                                                    //for(i = 0; i < parsedChannelNames.length; i++) {
+                                               
                                                         socket.emit('user-channels', {availableChannels: JSON.stringify(uniqueChannelArray) });
                                                        
-                                                    }
+                                                    //}
                                                     
                                                      socket.emit('available-channels', {availableChannels: JSON.stringify(uniqueAllChannelArray) });
+                                                     
                                                      
                                                 var channelArray = [];
         
@@ -154,52 +152,62 @@ module.exports = {
                                             
                                        });
                                         
+                                        
+                                        } else {
+                                            
+                                            socket.emit('user-channels', {availableChannels: null });
+                                            
+                                        }
+                                            
+                                            
+                                    } else {
+                                        
+                                            ////console.log("User not found");
+                                            
+                                    }
+                            
+                                }, function(error) {
+                                  
+                                });              
+                            
+                            
+                                streamModule.updateStreamsForUser(io, socket, Stream);
+                                  
+                    
                             } else {
-                                
-                                socket.emit('user-channels', {availableChannels: null });
-                                
+           
                             }
                             
-                                        
-                        } else {
                             
-                                ////console.log("User not found");
-                                
-                        }
-                        
-                  }, function(error) {
-                    
-                  });
-                        
-                        
-                        
-                    streamModule.updateStreamsForUser(io, socket, Stream);
+                      }, function(error) {
+                         
+                    });
+                             
+                      
+                         
                 }
         
 
             },
             
             
-            disconnect: function(io, socket, proc, User, Stream, Channel) {
+            disconnect: function(io, socket, proc, userModule, User, Stream, Channel, utils) {
 
                 proc.kill('SIGINT');
 
                     var user = User.build();	
-          
-                    user.socketId = socket.id;
+ 
                     user.status = "offline";
-                    //user.username = username;
-                                 
-                    user.updateById(socket.userId, function(success) {
+                     
+                    user.updateBySocketId(socket.id, function(success) {
               
                         if (success) {
-                            
+                            console.log('user updated on disconnect');
                                 //socket.emit('socket-info', { socketIndex: socketIndex, socketId: socket.id, userId: userId });
                                 //var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
                                 //////console.log('emit connected clients');
                                 
                                     io.sockets.emit("user-status-updated", {userId: socket.userId, userStatus: "Offline"});
-                
                 
                                     user.retrieveAll(function(users) {
                     
@@ -211,9 +219,10 @@ module.exports = {
                                         });
                                                                     
                                        ////console.log(socket.channelIds);
-                                       if(typeof socket.channelIds !== "undefined" && typeof socket.channelNames !== "undefined") {
+                                       if(typeof socket.channelIds !== "undefined") {
                                         
-                                            updateConnectedClientsInChannel(JSON.stringify(socket.channelIds), JSON.stringify(socket.channelNames));
+                                            //userModule.updateConnectedClientsInChannel(JSON.stringify(socket.channelIds));
+                                            userModule.updateConnectedClientsInChannel(io, socket, Channel, User, utils, JSON.stringify(socket.channelIds));                                                                                                                             
                                        }
                                        
                                                                                         
@@ -293,12 +302,8 @@ module.exports = {
                     
                   });
                         
-                
-           
-
+       
             }
         
     
 }
-    
-    

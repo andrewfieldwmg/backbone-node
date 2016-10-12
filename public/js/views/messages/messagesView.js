@@ -25,19 +25,12 @@ var MessagesView = Backbone.View.extend({
             socket.on("file-transfer-finished", function(data) {
                  self.socketSendFileDone(data);
              });
-                               
-             socket.on("audio-file-incoming", function(data) {
-                 self.socketAudioStreamIncoming(data); 
-              });
+
       
     	    socket.on("emptyMessages", function(data) {
                 $('#message-results').html();
               });
 
-	    socket.on("stream-upvotes-updated", function(data) {
-                 self.streamUpvotesUpdated(data); 
-              });
-      
       
             this.render = _.wrap(this.render, function(render) {
                        this.beforeRender(); 
@@ -304,89 +297,7 @@ var MessagesView = Backbone.View.extend({
       $('.fa-refresh').hide();
         
     },
-    
-    socketAudioStreamIncoming: function(data) {
-        
-        //console.log('audio stream incoming');
-        
-        //var socketIndex = data.socketindex;
-        //var socketCss = getSocketCss(socketIndex);
-        console.log(data);
-	            
-	if (localStorage.getItem("userId") != data.userId) {
-	    
-	    localStorage.setItem('userRole', 'listener');
-	    
-				$('#start-recording').addClass('disabled');
-				$('#start-file-stream').addClass('disabled');
-				$('#send-file').addClass("disabled");
-	
-	}
-			
-        var cssClass = "list-item-" + data.userColour;
-        
-        var audioType = data.audioType;
-        
-        if (audioType === 'audio/wav/stream') {
-            
-            //playPcmStream(socket);
-            var audioContext = playMp3Stream(socket, 0);
-             
-        } else if (audioType === 'audio/wav') {
-            
-            //playPcmStream(socket);
-            var audioContext = playMp3Stream(socket, 0);
-             
-        } else if (audioType === 'audio/mp3') {
-            
-            var audioContext = playMp3Stream(socket, 0);
-        }
-        
-    
-            if(data.username == localStorage.getItem("username")) {
-               var streamAuthor = "You";
-            } else {
-                var streamAuthor = data.username;
-            }
-                 
-            var parameters = {
-                            cssClass: cssClass,
-			    backgroundColour: data.userColour,
-                            time: time,
-                            contentFromUsername: 'Audio stream loading from ' + streamAuthor + ':',
-                            contentName: data.name,
-                            loaderClass: "",
-			    messageIcon: '<i class="fa fa-music"></i>'
-                            };
-            
-            var listItemView = new ListItemView(parameters);
-            
-            $('#message-results').append(listItemView.render());
-            
-
-            new AudioPlayerView({
-		streamName: data.name,
-		streamId: data.streamId,
-		userId: data.userId,
-		username: data.username,
-		profileImageSrc: config.filePaths.userProfileImageDir + "/" + data.userId + "_profile.jpg", 
-		audioContext: audioContext
-		});
-                    
-            localStorage.setItem('streamState', 'started');
-            
-            scrollToBottom();
-            //playSound();
-
-    },
-    
-    
-    streamUpvotesUpdated: function(data) {
-	
-	//console.log(data);
-    },
-    
-    
+ 
     remove: function() {
     
         localStorage.setItem("messagesViewLoaded", "false");

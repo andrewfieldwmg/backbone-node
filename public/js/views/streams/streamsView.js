@@ -83,14 +83,14 @@ var StreamsView = Backbone.View.extend({
 	    
 	    if (data.availableStreams == null) {
 		
+		
 		$('.loading-streams-td').html('No streams found');
 		return;
 	    
 	    } else {
 	    
             var availableStreams = JSON.parse(data.availableStreams);
-                
-	    
+                	    
                 if (availableStreams.length === 0) {
                     
                     //var channelMessage = "<strong>No channels</strong> featured";
@@ -294,6 +294,7 @@ var StreamsView = Backbone.View.extend({
 	   
     },
 
+    
     listenToFeaturedStream: function(e) {
 	
 	var requestedStreamId = $(e.currentTarget).data('stream-id');
@@ -313,22 +314,20 @@ var StreamsView = Backbone.View.extend({
               	localStorage.setItem("streamState", "started");
 		localStorage.setItem("userRole", "listener");
 		
-		socket.emit("listen-to-featured-stream", {requestedStreamId: requestedStreamId });
+		socket.emit("listen-to-featured-stream", { requestedStreamId: requestedStreamId });
 		
-		//if (localStorage.getItem("playMp3FunctionLoaded") == "false") {
-		    playMp3Stream(socket, 0);
-		//}
+		if (localStorage.getItem("playMp3FunctionLoaded") == "false") {
+		    //playMp3Stream(socket, 0);
+		}
 
 		    //$('.stop-featured-stream').not("[data-stream-id='" + requestedStreamId + "']").each(function(){
 			//$(this).trigger('click');
 		    //});
 		    
-		    
 		$('.listen-to-featured-stream[data-stream-id="' + requestedStreamId + '"]').hide();
 		$('.stop-featured-stream[data-stream-id="' + requestedStreamId + '"]').show();
 		//new AudioPlayerView({streamName : "Loading Live Stream..."});
 		
-
         });
 	
 	

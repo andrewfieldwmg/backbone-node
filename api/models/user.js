@@ -34,21 +34,82 @@ var DataTypes = require("sequelize");
                     User.find({where: {id: user_id}}, {raw: true})
                             .success(onSuccess).error(onError);	
                 },
+                
+                retrieveByEmail: function(user_email, onSuccess, onError) {
+ 
+                    User.find({where: {email: user_email}}, {raw: true})
+                            .success(onSuccess).error(onError);	
+                },
+                
+                retrieveByUsername: function(user_name, onSuccess, onError) {
+                    User.find({where: {username: user_name}}, {raw: true})
+                            .success(onSuccess).error(onError);	
+                },
               
+                retrieveByEmailAndPassword: function(user_email, user_password, onSuccess, onError) {
+ 
+                    User.find({where: {email: user_email, password: user_password}}, {raw: true})
+                            .success(onSuccess).error(onError);	
+                },
+                
                 add: function(onSuccess, onError) {
                     
-                    var username = this.username;
+                    var email = this.email;
                     var socketId = this.socketId;
                     var status = this.status;
                     var userColour = this.userColour;
                 
-                    User.build({ username: username,
+                    User.build({
+                                email: email,
                                socketId: socketId,
                                status: status,
                                userColour: userColour
-                               
                                })
                             .save().success(onSuccess).error(onError);
+                },
+                
+                updateUsernameById: function(user_id, onSuccess, onError) {
+                      
+                    var id = user_id;
+                    var username = this.username;
+
+                    User.update({
+                                username: username
+                                 }, {id: id} )
+                            .success(onSuccess).error(onError);
+                },
+                
+                updateUserGenreById: function(user_id, onSuccess, onError) {
+                      
+                    var id = user_id;
+                    var userGenre = this.userGenre;
+
+                    User.update({
+                                userGenre: userGenre
+                                 }, {id: id} )
+                            .success(onSuccess).error(onError);
+                },
+                
+                updateUserLocationById: function(user_id, onSuccess, onError) {
+                      
+                    var id = user_id;
+                    var userLocation = this.userLocation;
+
+                    User.update({
+                                userLocation: userLocation
+                                 }, {id: id} )
+                            .success(onSuccess).error(onError);
+                },
+                
+                updateUserPasswordById: function(user_id, onSuccess, onError) {
+                      
+                    var id = user_id;
+                    var password = this.password;
+
+                    User.update({
+                                password: password
+                                 }, {id: id} )
+                            .success(onSuccess).error(onError);
                 },
                 
                 updateById: function(user_id, onSuccess, onError) {

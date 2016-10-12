@@ -10,7 +10,7 @@ var Router = Backbone.Router.extend({
    
    root: function() {
       
-      if(localStorage.getItem("username")) {
+      if(localStorage.getItem("userId") !== null) {
          this.navigate("home", {trigger: "true"});
       } else {
          this.navigate("signup", {trigger: "true"});
@@ -20,18 +20,17 @@ var Router = Backbone.Router.extend({
    
    signup: function() {
      
-      if(localStorage.getItem("username")) {     
+      if(localStorage.getItem("userId") !== null) {     
          this.navigate("home", {trigger: "true"});
       } else {
           new SignupView();
       }
       
-      
    },
    
    welcome: function() {
      
-      if(localStorage.getItem("username")) {     
+      if(localStorage.getItem("userId") !== null) {     
          new NewHomeView({showWelcome: true});
       } else {
          this.navigate("signup", {trigger: "true"});
@@ -41,7 +40,7 @@ var Router = Backbone.Router.extend({
    
    home: function() {
     
-      if(localStorage.getItem("username")) {     
+      if(localStorage.getItem("userId") !== null) {    
          new NewHomeView({showWelcome: false});
       } else {
          this.navigate("signup", {trigger: "true"});
@@ -51,8 +50,13 @@ var Router = Backbone.Router.extend({
    },
    
    channel: function(channelId) {
-
-        new InsideChannelView({channelId: channelId});
+      
+      if(localStorage.getItem("userId") !== null && channelId !== null) {    
+           new InsideChannelView({channelId: channelId});
+      } else {
+            this.navigate("home", {trigger: "true"});
+      }
+      
     
    }
    

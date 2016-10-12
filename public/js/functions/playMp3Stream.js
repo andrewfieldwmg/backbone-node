@@ -6,21 +6,24 @@ function playMp3Stream(socket, currentStreamTime) {
       
       //socket.on('connect', function() {
 
-          audioContext = initiateAudioContext();
+        audioContext = initiateAudioContext();
+        
+        var audioContextLoadedTime = new Date();
+                
+        var init = 0;
+        var audioStack = [];
+        var nextTime = 0;
+
+        if (currentStreamTime > 0) {
+          var offset = currentStreamTime;
+        } else {
+          var offset = 0;
+        }
+        
+        var i = 0;
+           
+        console.log('current stream start time: ' + currentStreamTime);
           
-          var audioContextLoadedTime = new Date();
-                  
-          var init = 0;
-          var audioStack = [];
-          
-          if (currentStreamTime > 0) {
-            var nextTime = currentStreamTime;
-          } else {
-            var nextTime = 0;
-          }
-          
-          var i = 0;
-   
    
          /*function createCanvas ( w, h ) {
              var newCanvas = document.createElement('canvas');
@@ -112,10 +115,10 @@ function playMp3Stream(socket, currentStreamTime) {
                   //$('#pause').show();
             
                  
-              }  
+                }  
                
               
-          });
+            });
               
 
             function scheduleBuffers(gainNode) {
@@ -132,11 +135,12 @@ function playMp3Stream(socket, currentStreamTime) {
                        
                        gainNode.connect(audioContext.destination);
               
-                       if (nextTime == 0)
-                           nextTime = audioContext.currentTime + 0.05;  /// add 50ms latency to work well across systems - tune this if you like
+                       //if (nextTime == 0)
+                           //nextTime = audioContext.currentTime + 0.05;  /// add 50ms latency to work well across systems - tune this if you like
                            
-                         source.start(nextTime);
-                         var sourceStartTime = new Date();
+                        source.start(nextTime, offset);
+                         
+                        var sourceStartTime = new Date();
                                                                        
                         var playTimeOffset = (sourceStartTime - audioContextLoadedTime) / 1000;
                             
@@ -180,30 +184,30 @@ function playMp3Stream(socket, currentStreamTime) {
                        
             }    
                            
-                
-              $(document).on('click', '.mejs-pause', function(e) {
-                
-                    e.stopPropagation();
-                    console.log('pause clicked');
-                    audioContext.suspend();
-                    
-                   $('.mejs-playpause-button').removeClass('mejs-pause').addClass('mejs-play');
-                   
-                });
-              
-              
-                $(document).on('click', '.mejs-play', function(e) {
+                $(document).on('click', '.player-play-button', function(e) {
                   
                     e.stopPropagation();
                     console.log('play clicked');
                     audioContext.resume();
                     
-                   $('.mejs-playpause-button').removeClass('mejs-play').addClass('mejs-pause');
+                    $('.player-play-button').hide();
+                    $('.player-pause-button').show();
                     
                 });
       
-                                                 
-                      
+      
+              $(document).on('click', '.player-pause-button', function(e) {
+                
+                    e.stopPropagation();
+                    console.log('pause clicked');
+                    audioContext.suspend();
+                    
+                    $('.player-play-button').show();
+                   $('.player-pause-button').hide();
+                   
+                });
+              
+                               
                 $('#stop-all-audio').on('click', function(e) {
                 
                     console.log('stop clicked');
@@ -242,7 +246,7 @@ function playMp3Stream(socket, currentStreamTime) {
 
                         
              
-                  });
+                });
             
 
           //});

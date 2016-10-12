@@ -194,7 +194,7 @@ div.audio-player {
   border-radius: 3px;
 }
 .audio-player h2 {
-  position: absolute;
+  /*position: absolute;*/
   top: 7px;
   left: 10px;
 

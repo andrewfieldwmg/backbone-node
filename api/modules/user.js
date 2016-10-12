@@ -1,43 +1,142 @@
 module.exports = {
-        
-        processNewUsername: function(io, socket, data, User, utils) {
-                       
-                //if (userColour == "null" || userColour == "undefined") {
-                    var userColour = utils.colors[Math.floor(Math.random()*utils.colors.length)];           
-                //}
-                
-                var user = User.build({
-                                      username: data.username,
-                                      socketId: socket.id,
-                                      status: "online",
-                                      userColour: userColour
-                                      });
-                
-                user.add(function(success) {
-                    
-                    socket.emit('socket-info', {
-                        //socketIndex: socketIndex,
-                        socketId: socket.id,
-                        userId: success.id,
-                        userColour: userColour
-                        });
-                    
-                    //connectedUsernames.push(data.username);
-                    //connectedUserIds.push(success.id);
-                    
-                    socket.userId = success.id;
-           
-                    //var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
+
+        encrypt: function(crypto, algorithm, password, text) {
+          var cipher = crypto.createCipher(algorithm,password)
+          var crypted = cipher.update(text,'utf8','hex')
+          crypted += cipher.final('hex');
+          
+          return crypted;
+        },
          
-                },
+        decrypt: function(crypto, algorithm, password, text) {
+          var decipher = crypto.createDecipher(algorithm,password)
+          var dec = decipher.update(text,'hex','utf8')
+          dec += decipher.final('utf8');
+          
+          return dec;
+        },
+
+        processUserLogin: function(io, socket, data, User, crypto, algorithm, password) {
                 
-                function(err) {
-                    
-                    ////console.log("New socket user could NOT be created!");
-                    
+                var self = this;
+                
+               var encryptedPasswordInput = self.encrypt(crypto, algorithm, password, data.loginPassword);
+                
+                var user = User.build();
+                        
+                user.retrieveByEmailAndPassword(data.loginEmail, encryptedPasswordInput, function(userModel) {
+        
+                        if (userModel) {
+                                
+                                console.log('user found!');
+                                
+                               socket.emit('user-login-success', {
+                                    userModel: JSON.stringify(userModel)
+                               });
+                
+                        } else {
+                                
+                                console.log('user not found!');
+                                
+                                socket.emit('user-login-failure');
+                
+                        }
+                                                                                        
+                                                        
+                }, function(error) {
+                     
                 });
+
+        
+        },
+    
+        processNewUserEmail: function(io, socket, data, User, utils) {
+                               
+                user = User.build();
+                
+                user.retrieveByEmail(data.userEmail, function(userModel) {
+       
+                           if (userModel) {
+                                
+                               socket.emit('user-email-taken');
+                               //return;
+            
+                           } else {
+                                                        
+                                var userColour = utils.colors[Math.floor(Math.random()*utils.colors.length)];           
+                                
+                                var user = User.build({
+                                                email: data.userEmail,
+                                                socketId: socket.id,
+                                                status: "online",
+                                                userColour: userColour
+                                                });
+                                    
+                                    user.add(function(success) {
+                                        
+                                        socket.emit('user-email-stored', { userId: success.id });
+                                        socket.userId = success.id;
+                             
+                                    },
+                                    
+                                function(err) {
+                                
+                                    
+                                });
+                                
+          
+                           }                                                                                 
+                                                                   
+       
+                     }, function(error) {
+                        
+                   });
+                
                   
         
+    },
+    
+        
+    processNewUsername: function(io, socket, data, User) {
+
+        user = User.build();
+        
+        user.retrieveByUsername(data.username, function(userModel) {
+
+                   if (userModel) {
+                        console.log('user name taken');
+                       socket.emit('username-taken');
+                       
+    
+                   } else {
+                                                              
+                        var user = User.build();	
+                          
+                        user.username = data.username;
+                        
+                        user.updateUsernameById(data.userId, function(success) {
+                            
+                                if (success) {
+                                        console.log('user name stored');
+                                        socket.emit('username-stored');
+                                        
+                                } else {
+                                 
+                                }
+                          }, function(error) {
+                                
+                          });
+                  
+                        
+  
+                   }                                                                                 
+                                                           
+
+             }, function(error) {
+                
+           });
+                                              
+    
     },
     
     processNewUserGenre: function(io, socket, data, User) {
@@ -45,17 +144,15 @@ module.exports = {
                 var user = User.build();	
                   
                 user.userGenre = data.userGenre;
-                user.socketId = data.socketId;
-                user.status = "online";
-                user.password = "";
                 
-                user.updateByIdFull(data.userId, function(success) {
+                user.updateUserGenreById(data.userId, function(success) {
                     
                         if (success) {	
-                                
+                                socket.emit('user-genre-stored');
                         } else {
                          
                         }
+                        
                   }, function(error) {
                         
                   });
@@ -64,22 +161,19 @@ module.exports = {
     },
     
     processNewUserLocation: function(io, socket, data, User) {
-                                   
-                var user = User.build();	
+        
+                 var user = User.build();	
                   
-                user.userGenre = data.userGenre;
-                user.socketId = data.socketId;
-                user.status = "online";
                 user.userLocation = data.userLocation;
-                user.password = "";
-                 
-                user.updateByIdFull(data.userId, function(success) {
+                
+                user.updateUserLocationById(data.userId, function(success) {
                     
                         if (success) {	
-                                
+                                socket.emit('user-location-stored');
                         } else {
                          
                         }
+                        
                   }, function(error) {
                         
                   });
@@ -110,89 +204,34 @@ module.exports = {
                             
                             if (err) throw err
                             fs.writeFileSync(config.filePaths.userProfileImageDir + "/" + thumbnailFilename, stdout, 'binary');
-                  
+                                        
+                                socket.emit('user-profile-image-stored');
+                                         
                         });
                     
                 });
     
     
     },
+
     
-    processNewUserProfileEmail: function(io, socket, data, User) {
+    processNewUserPassword: function(io, socket, data, User, crypto, algorithm, password) {
     
-                var user = User.build();	
+                var self = this;
+                
+               var user = User.build();	
                   
-                user.userGenre = data.userGenre;
-                user.socketId = data.socketId;
-                user.status = "online";
-                user.userLocation = data.userLocation;
-                user.email = data.userEmail;
-                user.password = "";
-                 
-                user.updateByIdFull(data.userId, function(success) {
+                user.password = self.encrypt(crypto, algorithm, password, data.userPassword);
+                
+                
+                user.updateUserPasswordById(data.userId, function(success) {
                     
                         if (success) {	
-                                
+                                socket.emit('user-password-stored');
                         } else {
                          
                         }
-                  }, function(error) {
                         
-                  });
-                
-    
-    },
-    
-    processNewUserProfilePassword: function(io, socket, data, User) {
-    
-                var user = User.build();	
-                  
-                user.userGenre = data.userGenre;
-                user.socketId = data.socketId;
-                user.status = "online";
-                user.userLocation = data.userLocation;
-                user.email = data.userEmail;
-                user.password = data.userPassword;
-                
-                user.updateByIdFull(data.userId, function(success) {
-                    
-                        if (success) {	
-                                
-                            user.retrieveById(data.userId, function(userModel) {
-                    
-                                        if (userModel) {
-                                             
-                                            socket.emit('socket-model', {
-                                                 userModel: JSON.stringify(userModel)
-                                            });
-                         
-                                        } else {
-                       
-                                        }
-                                                                                                       
-                                             user.retrieveAll(function(users) {
-                                                 
-                                                     if (users) {
-                                                     
-                                                         io.sockets.emit('connected-clients', {
-                                                            connectedUsers: JSON.stringify(users)
-                                                         });
-                                                         
-                                                     } else {
-                                                       //res.send(401, "User not found");
-                                                     }
-                                               }, function(error) {
-                                                     //res.send("User not found");
-                                               });
-                                                                                
-                    
-                                  }, function(error) {
-                                     
-                                });
-                                                      
-                        } else {
-                         
-                        }
                   }, function(error) {
                         
                   });
@@ -235,7 +274,7 @@ module.exports = {
         
     },
     
-    updateConnectedClientsInChannel: function(io, socket, Channel, User, utils, channelIds, channelName) {
+    updateConnectedClientsInChannel: function(io, socket, Channel, User, utils, channelIds) {
                       
                     console.log('update connected clients function');
                                 
@@ -259,10 +298,9 @@ module.exports = {
                                 
                                 if (users) {
                                 
-                                  var channelNameArray = JSON.parse(channelName);
                                     var channelIdsArray = JSON.parse(channelIds);
                                     
-                                            for(i = 0; i < channelIdsArray.length; i++) {
+                                        for(i = 0; i < channelIdsArray.length; i++) {
                                             
                                         ////console.log(channelIdsArray[i]);
                                         //console.log('emitting clients IN CHANNEL to: ' + channelIdsArray[i] + '-' + JSON.stringify(users));
@@ -273,7 +311,7 @@ module.exports = {
                                                  });
                                             }
                                 
-                                        channelNameArray = [];
+                        
                                         users = [];
                                         
                                         } else {

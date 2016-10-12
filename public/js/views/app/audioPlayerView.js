@@ -17,7 +17,7 @@ var AudioPlayerView = Backbone.View.extend({
 
         this.render();
         
-        var volumeSlider = $('#ex1').slider();
+        /*var volumeSlider = $('#ex1').slider();
         
         volumeSlider.on('slideStop', function() {
            var newVolume = volumeSlider.slider('getValue');
@@ -26,7 +26,7 @@ var AudioPlayerView = Backbone.View.extend({
            
            localStorage.setItem('streamVolume', newVolume);
            
-        });
+        });*/
         
     },
   
@@ -43,6 +43,8 @@ var AudioPlayerView = Backbone.View.extend({
         
         this.$el.empty().off(); 
         //this.stopListening();
+	
+	//$('.audio-player').css("display", "none");
         
     },
     
@@ -61,13 +63,27 @@ var AudioPlayerView = Backbone.View.extend({
 	    userId: this.options.userId,
 	    username: this.options.username,
 	    profileImageSrc: this.options.profileImageSrc,
+	    streamImageSrc: this.options.streamImageSrc,
 	    streamVolume : volumeToUse
 	    };
 	    
        var compiledTemplate = _.template( $("#audio_player_template").html(), parameters);
        this.$el.html( compiledTemplate );
-        
-	this.$el.addClass('marginbottom45');
+  
+	//this.$el.addClass('marginbottom45');
+	
+	//var audioPlayerDisplay = $(".audio-player").css("display");
+	
+	    if(localStorage.getItem("audioPlayerSliddenUp") == "false") {
+		
+		//$('.audio-player').css("display", "block");
+		$('.audio-player').slideUp("slow", function() {
+		    $(this).css("display", "block");
+		});
+		
+		localStorage.setItem("audioPlayerSliddenUp", "true");
+	    }
+	    
     },
 
     events: {
@@ -89,16 +105,16 @@ var AudioPlayerView = Backbone.View.extend({
 	
 	
 	socket.emit("upvote-stream", parameters);
-	
-	$('.upvote-stream').animate({opacity: "1.0"}, 'fast')
-	.attr('title', 'Thanks for the love!')
-	.tooltip('enable')
-	.tooltip({trigger: 'manual'})
-	.tooltip('show');
 	    
-	    setTimeout(function() {
-		$('.upvote-stream').animate({opacity: "0.6"}, 'fast').tooltip('hide').tooltip('disable');
-	      }, 1500 ); 
+	    $('.upvote-stream').animate({opacity: "1.0"}, 'fast')
+	    .attr('title', 'Thanks for the love!')
+	    .tooltip('enable')
+	    .tooltip({trigger: 'manual'})
+	    .tooltip('show');
+		
+		setTimeout(function() {
+		    $('.upvote-stream').animate({opacity: "0.6"}, 'fast').tooltip('hide').tooltip('disable');
+		  }, 1500 ); 
     },
     
     destroy: function() {

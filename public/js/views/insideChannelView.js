@@ -64,17 +64,13 @@ var InsideChannelView = Backbone.View.extend({
 	 
 	 });
 
-		
+	 
 	socket.emit("refresh-connection", {
-	    
-		    username: localStorage.getItem("username"),
-		    userId: localStorage.getItem("userId"),
-		    channelIds:localStorage.getItem("channelIds"),
-		    channelName: localStorage.getItem("channelName"),
-		    userColour: localStorage.getItem("userColour")
-		    
-		    }
-	);
+	    //username: localStorage.getItem("username"),
+	    userId: localStorage.getItem("userId")
+	    //channelIds: localStorage.getItem("channelIds"),
+	    //userColour: localStorage.getItem("userColour")
+	});
 
 	
         /*var availableChannelsView = new AvailableChannelsView();
@@ -146,8 +142,10 @@ var InsideChannelView = Backbone.View.extend({
 	var streamsView = new StreamsView();
 	streamsView.afterRender();
 	
-	
-	//new AudioPlayerView({streamName : "No Stream Loaded"});
+	//CONTROLLERS
+	if(localStorage.getItem("audioControllerLoaded") == "false") {
+	    var audioController = new AudioController();
+	}
 			    
         socket.emit("enter-channel", {
 	    channelId: this.options.channelId,

@@ -8,6 +8,8 @@ module.exports = {
         
         listenToFeaturedStream: function(io, socket, data, Stream, Writable, fs, config) {
             
+            console.log('LISTEN TO FEATURED STREAMS');
+            
             var requestedStreamId = data.requestedStreamId;
             
                 var stream = Stream.build();
@@ -15,7 +17,20 @@ module.exports = {
                 stream.retrieveById(requestedStreamId, function(streams) {
                     
                         if (streams) {				
-                                
+                                                
+                                var parameters = {
+                                        userColour: "",
+                                        audioType: "audio/mp3",
+                                        userId: streams.streamedByUserId,
+                                        username: streams.streamedByUsername,
+                                        name: streams.filename,
+                                        streamId: requestedStreamId,
+                                        streamType: "featured"
+                                        };
+                                                      
+                                socket.emit('audio-file-incoming', parameters);
+                           
+                               
                                 var buffer = [];
                          
                                 const socketSendWritableOffline = new Writable({
@@ -36,7 +51,7 @@ module.exports = {
                                     callback();
                                   }
                                 
-                            });
+                                });
                                       
                                         
                                 var parameters = {
@@ -69,7 +84,44 @@ module.exports = {
                         
         },
         
-        processIncomingAudioStream: function(io, socket, data, inboundStream, Writable, Stream, Message, Channel, fs, config, SoxCommand, proc) {
+        
+        generateAudioWaveform: function(waveform, config, streamId, fs, utils) {
+          
+          var audioInput = config.filePaths.audioPath + "/" + streamId + ".mp3";
+          var pngOutput = config.filePaths.waveformPath + "/" + streamId + ".png";
+          
+                if (utils.fileExists(fs, pngOutput)) {
+                      
+                      console.log('waveform already exists, exiting');
+                      return;
+              
+                } else {
+                
+                      waveform(audioInput, {
+                        // options
+                        'scan': false,                  // whether to do a pass to detect duration
+                      
+                        // png options
+                        png: pngOutput,          // path to output-file, or - for stdout as a Buffer
+                        'png-width': 600,               // width of the image
+                        'png-height': 30,               // height of the image
+                        'png-color-bg': '00000000',     // bg color, rrggbbaa
+                        'png-color-center': 'ffffffff', // gradient center color, rrggbbaa
+                        'png-color-outer': 'ffffffff',  // gradient outer color, rrggbbaa
+                        
+                      }, function(err, buf) {
+                              
+                              console.log(pngOutput + ' waveform saved');
+                              
+                              fs.chmodSync(pngOutput, 0777);
+                              
+                      });
+                      
+                }
+                
+        },
+        
+        processIncomingAudioStream: function(io, socket, data, inboundStream, Writable, Stream, Message, Channel, fs, config, SoxCommand, proc, waveform, utils) {
              
             var self = this;
             
@@ -114,7 +166,8 @@ module.exports = {
                                         username: data.username,
                                         sender: data.sender,
                                         name: justFilename,
-                                        streamId: streamId
+                                        streamId: streamId,
+                                        streamType: "new"
                                         };
                                         
                                if(data.liveStream === "true") {      
@@ -197,7 +250,7 @@ module.exports = {
                           });
        
        
-                    self.startOutboundStream(io, socket, data, inboundStream, streamId, Writable, Stream, Channel, fs, config, SoxCommand, proc);
+                    self.startOutboundStream(io, socket, data, inboundStream, streamId, Writable, Stream, Channel, fs, config, SoxCommand, proc, waveform, utils);
                     
               },
               
@@ -212,11 +265,14 @@ module.exports = {
         },
         
         
-        startOutboundStream: function(io, socket, data, inboundStream, streamId, Writable, Stream, Channel, fs, config, SoxCommand, proc) {
+        startOutboundStream: function(io, socket, data, inboundStream, streamId, Writable, Stream, Channel, fs, config, SoxCommand, proc, waveform, utils) {
  
-            var mimeType = data.type;          
-            var offlineFile = fs.createWriteStream(config.filePaths.audioPath + "/" + streamId + ".mp3");
+                var self = this;
                 
+                var mimeType = data.type;
+            
+                var offlineFile = fs.createWriteStream(config.filePaths.audioPath + "/" + streamId + ".mp3");
+        
                 var buffer = [];
          
                 const socketSendWritableMp3 = new Writable({
@@ -247,22 +303,34 @@ module.exports = {
                     }
                 
                     callback();
+                                 
+                   
                   }
                 
                 });
                     
-                    
-            //not using this right now, but could come in handy!      
-            /*const Transform = require('stream').Transform;
-              
-            const transformWav = new Transform({
-              write(chunk, encoding, callback) {
              
-                this.push(new Buffer(chunk, 'binary'));
-            
-                callback();
-              }
-            });*/
+                                 
+                offlineFile.on('finish', function() {
+                        
+                        console.log('file write stream ended');
+                        
+                        self.generateAudioWaveform(waveform, config, streamId, fs, utils);
+                        
+                });
+                
+                       
+                        //not using this right now, but could come in handy!      
+                        /*const Transform = require('stream').Transform;
+                          
+                        const transformWav = new Transform({
+                          write(chunk, encoding, callback) {
+                         
+                            this.push(new Buffer(chunk, 'binary'));
+                        
+                            callback();
+                          }
+                        });*/
             
 
               if (mimeType === 'audio/wav/stream') {
@@ -286,7 +354,7 @@ module.exports = {
       
                 } else if (mimeType === 'audio/wav') {                 
                                      
-                    ////console.log('audio/wav');
+                    console.log('audio/wav');
                     
                   var command = SoxCommand();
                     
@@ -317,8 +385,8 @@ module.exports = {
                     inboundStream.pipe(socketSendWritableMp3);
                   
                 }
-                
-                
+   
+                   
                         ////console.log('sending stream to client(s): '  + data.name);
                    
                socket.on('stop-audio-stream', function (data) {
@@ -332,7 +400,8 @@ module.exports = {
                    inboundStream.end();
                    inboundStream.destroy();
                    
-                   //offlineFile.end();
+                   offlineFile.end();
+                   //offlineFile.finish();
 
                    buffer = [];
                    
@@ -395,6 +464,10 @@ module.exports = {
 
                   
                inboundStream.on('end', function() {
+
+                
+                self.generateAudioWaveform(waveform, config, streamId, fs, utils);
+                
                        ////console.log('Inbound audio stream ended: ' + data.name);
                                              
                        /*var stream = Stream.build();	
@@ -437,9 +510,7 @@ module.exports = {
                    
                });
                
-          
-            
-            
+  
         },
         
         

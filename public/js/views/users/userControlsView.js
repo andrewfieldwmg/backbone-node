@@ -196,7 +196,7 @@ var UserControlsView = Backbone.View.extend({
 	 localStorage.setItem('channelName', JSON.stringify(uniqueChannelsArray));
          */
          
-	if(localStorage.getItem("channelIds")) {
+	if(localStorage.getItem("channelIds") !== null && localStorage.getItem("channelIds") !== "null") {
 	    var channelIdArray = JSON.parse(localStorage.getItem("channelIds"));
 	} else {
 	    var channelIdArray = [];
@@ -205,12 +205,11 @@ var UserControlsView = Backbone.View.extend({
 	 channelIdArray.push(data.channelId.toString());
 	 var uniqueChannelIdsArray = Array.from(new Set(channelIdArray));
 	 localStorage.setItem('channelIds', JSON.stringify(uniqueChannelIdsArray));
-	 
-	 
+	 	 
 		if (data.createdByUserId == localStorage.getItem("userId")) {
 		   
 		//CHANNEL IDS 
-		    if(localStorage.getItem("userChannelIds")) {
+		    if(localStorage.getItem("userChannelIds") !== null) {
 			var userChannelIdArray = JSON.parse(localStorage.getItem("userChannelIds"));
 		    } else {
 			var userChannelIdArray = [];
@@ -221,7 +220,7 @@ var UserControlsView = Backbone.View.extend({
 		     localStorage.setItem('userChannelIds', JSON.stringify(uniqueUserChannelIdArray));
 		
 		//CHANNEL NAMES
-		    if(localStorage.getItem("userChannelNames")) {
+		    if(localStorage.getItem("userChannelNames") !== null) {
 			var userChannelNameArray = JSON.parse(localStorage.getItem("userChannelNames"));
 		    } else {
 			var userChannelNameArray = [];

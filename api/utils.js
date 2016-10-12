@@ -22,4 +22,16 @@ utils.getExtension = function(filename) {
         return filename.split('.').pop();
     }
     
+
+utils.fileExists = function(fs, filePath) {
+        
+        try {
+           return fs.statSync(filePath).isFile();
+        }
+        
+        catch (err) {
+           return false;
+        }
+}
+
 module.exports = utils;

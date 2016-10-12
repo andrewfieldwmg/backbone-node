@@ -21,8 +21,9 @@
     var im = require('imagemagick');
     
     //AUDIO
-    var SoxCommand = require('sox-audio');
-    
+    var SoxCommand = require('sox-audio');    
+    var waveform = require('waveform');
+
     // FILE SYSTEM and STREAMS
     var fs = require('fs');
     var path = require("path");
@@ -34,6 +35,12 @@
     //MAIL//          
     var nodemailer = require('nodemailer');
 
+    //ENCRYPTION//
+    
+    var crypto = require('crypto'),
+        algorithm = 'aes-256-ctr',
+        password = 'd6F3Efeq';
+        
     //DB MODELS//
     var User = require("./models/user.js");
     var Message = require("./models/message.js");
@@ -82,6 +89,15 @@
 
          //USER SIGNUP//
          
+        socket.on('user-login', function (data) {
+            userModule.processUserLogin(io, socket, data, User, crypto, algorithm, password);
+        });
+          
+               
+        socket.on('new-user-email', function (data) {
+                userModule.processNewUserEmail(io, socket, data, User, utils);
+         });
+        
         socket.on('new-username', function (data) {
             userModule.processNewUsername(io, socket, data, User, utils);
         });
@@ -98,13 +114,10 @@
             userModule.processNewUserProfileImage(io, socket, data, config, fs, fileStream, im);                 
         });
         
-        socket.on('new-user-email', function (data) {
-                userModule.processNewUserProfileEmail(io, socket, data, User);
+        socket.on('new-user-password', function (data) {
+            userModule.processNewUserPassword(io, socket, data, User, crypto, algorithm, password);
          });
         
-        socket.on('new-user-password', function (data) {
-            userModule.processNewUserProfilePassword(io, socket, data, User);
-         });
         
         //USER INFO//
         
@@ -191,7 +204,7 @@
         });
         
         ss(socket).on('audio-file', function(inboundStream, data) {
-                audioModule.processIncomingAudioStream(io, socket, data, inboundStream, Writable, Stream, Message, Channel, fs, config, SoxCommand, proc);
+                audioModule.processIncomingAudioStream(io, socket, data, inboundStream, Writable, Stream, Message, Channel, fs, config, SoxCommand, proc, waveform, utils);
         });  
                                 
         socket.on('stop-audio-stream', function (data) {
@@ -209,7 +222,7 @@
      
         //DISCONNECT//
         socket.on('disconnect', function() {
-                connectionModule.disconnect(io, socket, proc, User, Stream, Channel);
+                connectionModule.disconnect(io, socket, proc, userModule, User, Stream, Channel, utils);
         });
 
     });
