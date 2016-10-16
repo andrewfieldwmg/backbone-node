@@ -13,7 +13,9 @@
         <link href="/css/bootstrap-slider.css" rel="stylesheet">
         <link href="/css/animate.css" rel="stylesheet">
         <link href="/css/responsive.dataTables.min.css" rel="stylesheet">
-       <link href="https://fonts.googleapis.com/css?family=Trocchi" rel="stylesheet">
+        <link href="/css/animate.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Trocchi" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
     </head>
 
     <body>      
@@ -89,7 +91,7 @@
     <!-- TEMPLATES BELOW THIS POINT-->
         
         <script type="text/template" id="audio_player_template"> 
-            <div class="audio-player">
+            <div class="audio-player bounceInUp" style="display: inline-block">
                 
                 <div class="image-and-title">
                     <img class="img-responsive profile-player-image" src="<%= profileImageSrc %>" data-toggle="tooltip" title="<%= username %>">
@@ -98,13 +100,26 @@
                         <%= streamName %> <i class="fa fa-refresh fa-spin audioplayer-loading-spinner" title="Loading..." aria-hidden="true" data-id=""></i>
                     </h2>
                     
+                    <div id="jplayer-container"></div>
+                    
                         <div class="player-waveform">
-                            <h2>
+
                                 <% if(streamImageSrc != "") { %>
-                                    <img class="img-responsive waveform-image" src="<%= streamImageSrc %>">
+                                
+                                    <div class="waveform-image-background" style="opacity: 0.5; position: absolute; width: 100%; height: 100%; background-image: url('<%= streamImageSrc %>')"></div>
+                                    <div class="waveform-image-scroll" style="opacity: 1; position: absolute; width: 0%; height: 100%; background-image: url('<%= streamImageSrc %>')"></div>
+                                    
+                                    <input class="jp-seek-bar" id="playSeek" data-slider-id="seekSlider" type="text" data-slider-min="0" data-slider-tooltip="hide" data-slider-max="100" data-slider-step="1" data-slider-value="0" style="display: none; width: 100%; height: 100%" data="" value="">
+                                    
+                                    <!--<div id="playSeek" style="width: 100%; display: none;"></div>-->
+                                        <!--<input style="width: 100%; height: 100%" class="stream-time-slider" id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="">-->
+
                                 <% } else { %>
-                                    <small>No waveform available</small></h2>
+                                
+                                    <h2><small>No waveform available</small></h2>
+                                    
                                 <% } %>
+             
                         </div>
                 
                 </div>
@@ -865,6 +880,7 @@
 
         <!-- DEPENDENCIES -->
         <script src="/vendor/jquery-2.0.3.min.js"></script>
+        <script src="/vendor/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
         <script src="/vendor/underscore.js"></script>
 
         <!--BACKBONE-->
@@ -888,6 +904,7 @@
         <!-- APP UTILS and AUDIO FUNCTIONS -->
         <script src="/config.js"></script>
         <script src="/js/functions/utils.js"></script>
+        <script src="/vendor/jquery.jplayer.js"></script>
         <script src="/js/functions/playMp3Stream.js"></script>
         <script src="/js/functions/recordStream.js"></script>
         <script src="/vendor/moment.min.js"></script>

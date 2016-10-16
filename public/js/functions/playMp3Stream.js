@@ -13,16 +13,16 @@ function playMp3Stream(socket, currentStreamTime) {
         var init = 0;
         var audioStack = [];
         var nextTime = 0;
-
+        var i = 0;
+        
         if (currentStreamTime > 0) {
           var offset = currentStreamTime;
         } else {
           var offset = 0;
         }
-        
-        var i = 0;
-           
-        console.log('current stream start time: ' + currentStreamTime);
+       
+       console.log('offset: ' + offset);
+        //console.log('current stream start time: ' + currentStreamTime);
           
    
          /*function createCanvas ( w, h ) {
@@ -37,11 +37,10 @@ function playMp3Stream(socket, currentStreamTime) {
          
          document.body.appendChild(newCanvas);
          context = newCanvas.getContext('2d');*/
-
-            
+           
           socket.on("audio", function(data) {
  
-          //console.log('receiving audio stream via socket io stream');  
+          console.log('receiving audio stream via socket io stream');  
             
             if(localStorage.getItem("streamState") === "stopped") {
                         
@@ -112,8 +111,7 @@ function playMp3Stream(socket, currentStreamTime) {
                       });
               
           
-                  //$('#pause').show();
-            
+                  //$('#pause').show();  
                  
                 }  
                
@@ -124,7 +122,9 @@ function playMp3Stream(socket, currentStreamTime) {
             function scheduleBuffers(gainNode) {
              
                    while (audioStack.length) {
-       
+                        
+                    console.log('schedule buffers');
+                    
                       var source = audioContext.createBufferSource();
                                
                        var buffer = audioStack.shift();
@@ -135,8 +135,8 @@ function playMp3Stream(socket, currentStreamTime) {
                        
                        gainNode.connect(audioContext.destination);
               
-                       //if (nextTime == 0)
-                           //nextTime = audioContext.currentTime + 0.05;  /// add 50ms latency to work well across systems - tune this if you like
+                       if (nextTime == 0)
+                           nextTime = audioContext.currentTime + 0.05;  /// add 50ms latency to work well across systems - tune this if you like
                            
                         source.start(nextTime, offset);
                          
@@ -182,7 +182,8 @@ function playMp3Stream(socket, currentStreamTime) {
                    };
                        //audioStack = [];
                        
-            }    
+                }    
+                           
                            
                 $(document).on('click', '.player-play-button', function(e) {
                   
@@ -196,7 +197,7 @@ function playMp3Stream(socket, currentStreamTime) {
                 });
       
       
-              $(document).on('click', '.player-pause-button', function(e) {
+                $(document).on('click', '.player-pause-button', function(e) {
                 
                     e.stopPropagation();
                     console.log('pause clicked');
@@ -216,8 +217,7 @@ function playMp3Stream(socket, currentStreamTime) {
                 
                     if (typeof window.timerInterval != "undefined") {
                         clearInterval(window.timerInterval);
-                    }
-                   
+                    }             
                 
                     socket.emit('stop-audio-stream', {
                         userRole: localStorage.getItem("userRole"),
@@ -243,8 +243,7 @@ function playMp3Stream(socket, currentStreamTime) {
                             });
                     
                     }
-
-                        
+       
              
                 });
             

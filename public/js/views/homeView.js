@@ -43,7 +43,13 @@ var NewHomeView = Backbone.View.extend({
 	    var audioPlayerView = new AudioPlayerView({autoRender: false, streamName : "", audioContext: audioContext});
 	    audioPlayerView.destroy();
 	}*/
-        
+        	
+	//CONTROLLERS
+	window.audioController = new AudioController();    
+	
+        localStorage.setItem("activeChannelId", "");
+        localStorage.setItem("activeChannelName", "");
+
 	
         //USERS
 	var userControlsView = new UserControlsView();
@@ -81,12 +87,6 @@ var NewHomeView = Backbone.View.extend({
                 var welcomeModalView = new WelcomeModalView();
                 welcomeModalView.afterRender();
         }
-	
-	//CONTROLLERS
-	var audioController = new AudioController();    
-	
-        localStorage.setItem("activeChannelId", "");
-        localStorage.setItem("activeChannelName", "");
 
 			
 	socket.emit("refresh-connection", {

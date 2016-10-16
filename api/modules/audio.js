@@ -540,7 +540,6 @@ module.exports = {
                                                 upvoteCount: streams.upvotes
                                         };
                                                              
-                                
                                         io.sockets.emit("stream-upvotes-updated", parameters);
                 
                                   } else {
@@ -574,8 +573,6 @@ module.exports = {
                  
                 
         }
-        
-        
         
         
 }

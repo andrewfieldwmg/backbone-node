@@ -62,11 +62,15 @@
  
 
     //FILE TRANSFER//
-    socketApp.get('/api/download', function (req, riles) {
+    socketApp.get('/api/download', function (req, res) {
         fileModule.serveDownload(req, res, config, fs, path, mime);
     });
+    
+    // STREAM INFO VIA AJAX
+    socketApp.get('/api/getStreamInfo', function (req, res) {
+        streamModule.getStreamInfo(req, res, Stream);
+    });
 
- 
     ///SOCKET IO BELOW THIS POINT///
     
     //var connectedSocketIds = [];
@@ -171,7 +175,7 @@
         //INSTANTIATE and RE-INSTANTIATE THE APP//
         
         socket.on('refresh-connection', function(data) {
-            console.log('refresh connection');
+            //console.log('refresh connection');
             connectionModule.refreshConnection(io, socket, data, User, Channel, Stream, userModule, streamModule, mailModule, utils);
         });
                    

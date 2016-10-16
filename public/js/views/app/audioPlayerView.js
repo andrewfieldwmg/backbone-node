@@ -16,16 +16,20 @@ var AudioPlayerView = Backbone.View.extend({
                    
 
         this.render();
+
+
+        /*streamTimeSlider = $('#ex1').slider();
         
-        /*var volumeSlider = $('#ex1').slider();
-        
-        volumeSlider.on('slideStop', function() {
-           var newVolume = volumeSlider.slider('getValue');
+	    streamTimeSlider.on('slideStop', function() {
+		
+	    var streamTime = streamTimeSlider.slider('getValue');
            
-           socket.emit('set-volume', { newVolume: newVolume });
+	   console.log(streamTime);
+	   
+	    /*socket.emit('set-volume', { newVolume: newVolume });
            
-           localStorage.setItem('streamVolume', newVolume);
-           
+	    localStorage.setItem('streamVolume', newVolume);
+
         });*/
         
     },
@@ -41,7 +45,8 @@ var AudioPlayerView = Backbone.View.extend({
         this.undelegateEvents();
 	this.$el.removeData().unbind();
         
-        this.$el.empty().off(); 
+        this.$el.empty().off();
+	
         //this.stopListening();
 	
 	//$('.audio-player').css("display", "none");
@@ -74,15 +79,34 @@ var AudioPlayerView = Backbone.View.extend({
 	
 	//var audioPlayerDisplay = $(".audio-player").css("display");
 	
+	    $('.audio-player').addClass("bounceInUp");
+	
 	    if(localStorage.getItem("audioPlayerSliddenUp") == "false") {
 		
 		//$('.audio-player').css("display", "block");
-		$('.audio-player').slideUp("slow", function() {
+		/*$('.audio-player').slideUp("slow", function() {
 		    $(this).css("display", "block");
-		});
+		});*/
 		
 		localStorage.setItem("audioPlayerSliddenUp", "true");
 	    }
+	    
+	            
+	/*$(".waveform-image-scroll").resizable();
+	
+	var waveformContainerWidth = $('.player-waveform').css('width');
+	
+	$(".waveform-image-scroll").resizable( "option", "maxWidth", waveformContainerWidth );
+	
+	    $(".waveform-image-scroll").on( "resize", function(event, ui) {
+		
+		var parent = ui.element.parent();
+
+		var roundedNewWidth = Math.floor(ui.element.width() / parent.width());
+		var roundedNewWidthPercent = roundedNewWidth + "%";
+		console.log(roundedNewWidthPercent);
+		
+	    });*/
 	    
     },
 

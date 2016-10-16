@@ -41,9 +41,12 @@ var InsideChannelView = Backbone.View.extend({
 			     ).done(function() {
 				 
 				     localStorage.setItem("streamState", "started");
+				     localStorage.setItem("userRole", "listener");
 				     
+				     //window.audioController.playFeaturedStream({streamId:  channel.currentStreamId});
+    
 				     socket.emit("listen-to-featured-stream", {requestedStreamId:  channel.currentStreamId });
-								 
+							 
 				     
 				    new AudioPlayerView({
 					streamName: channel.currentStreamName,

@@ -68,8 +68,8 @@ var StreamsView = Backbone.View.extend({
    
 	"click .enter-channel": "enterChannel",
 	"click .create-channel": "createChannel",
-	"click .listen-to-featured-stream" : "listenToFeaturedStream",
-	"click .stop-featured-stream" : "stopFeaturedStream"
+	"click .listen-to-featured-stream" : "listenToFeaturedStreamJplayer",
+	"click .stop-featured-stream" : "stopFeaturedStreamJplayer"
     },
     
   
@@ -331,6 +331,38 @@ var StreamsView = Backbone.View.extend({
         });
 	
 	
+    },
+    
+        
+    listenToFeaturedStreamJplayer: function(e) {
+	
+	if(localStorage.getItem("streamState") == "started") {
+	      $('.stop-featured-stream').trigger('click');
+	}
+	       
+	var requestedStreamId = $(e.currentTarget).data('stream-id');
+
+	$('.listen-to-featured-stream[data-stream-id="' + requestedStreamId + '"]').hide();
+	$('.stop-featured-stream[data-stream-id="' + requestedStreamId + '"]').show();
+		
+	audioController.playFeaturedStream({streamId: requestedStreamId});
+    
+        localStorage.setItem("streamState", "started");
+	localStorage.setItem("userRole", "listener");
+	
+    },
+    
+    stopFeaturedStreamJplayer: function(e) {
+	
+	//console.log('stop featured stream click: ' + $(e.currentTarget).data('stream-id'));
+	
+	var requestedStreamId = $(e.currentTarget).data('stream-id');
+	localStorage.setItem("streamState", "stopped");
+	
+	$('.listen-to-featured-stream[data-stream-id="' + requestedStreamId + '"]').show();
+	$('.stop-featured-stream[data-stream-id="' + requestedStreamId + '"]').hide();
+	
+	$("#jplayer-container").jPlayer("stop");
     },
     
     stopFeaturedStream: function(e) {
