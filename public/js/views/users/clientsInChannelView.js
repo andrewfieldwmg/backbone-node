@@ -111,6 +111,8 @@ var ClientsInChannelView = Backbone.View.extend({
     
     connectedClientsInChannelUpdated: function(data) {
                
+	    var self = this;
+	    
 	    console.log("connected clients in room UPDATED:::");
 	    
 	    var channelClientsTable = $('.channel-clients-table').DataTable();    
@@ -135,36 +137,41 @@ var ClientsInChannelView = Backbone.View.extend({
 			otherUsersInChannel.push(usersInChannel[i].username);
                         var salutation = "<strong>" + usersInChannel[i].username +  "</strong> has";
 			var actionIconsClass = "open-user-actions";
-			 var username = usersInChannel[i].username;
+			var username = usersInChannel[i].username;
 		}
-                                  
-		if (usersInChannel[i].status === 'online') {
-		       var contentFromUsername = salutation + ' joined this channel';
-		} else {
-		       var contentFromUsername = '<span class="disabled">' + salutation + ' offline</span>';
-		}
-
-		    
-		    
-		        var parameters = {
-                            connectedUserId: usersInChannel[i].id,
-                            connectedUsername: username,
-			    profileImageSrc: config.filePaths.userProfileImageDir + "/" + usersInChannel[i].id + "_profile.jpg",
-                            cssClass: "connected-client-list",
-                            time: "",
-                            connectedUserMessage: "",
-                            contentName: "",
-                            loaderClass: "hidden",
-                            actionIconsClass: actionIconsClass,
-                            userLocation: usersInChannel[i].userLocation,
-                            userGenre: usersInChannel[i].userGenre
-                        };
-                            
-             
-                        var userListItemView = new UserListItemView(parameters);   
-                        $('#clients-in-channel').append(userListItemView.afterRender());
-			//$('.user-list-action-td').hide();
-
+				    
+		      if (usersInChannel[i].status === 'online') {
+			
+			     var contentFromUsername = salutation + ' joined this channel';
+      
+			      var parameters = {
+				  connectedUserId: usersInChannel[i].id,
+				  connectedUsername: username,
+				  profileImageSrc: config.filePaths.userProfileImageDir + "/" + usersInChannel[i].id + "_profile.jpg",
+				  cssClass: "connected-client-list",
+				  time: "",
+				  connectedUserMessage: "",
+				  contentName: "",
+				  loaderClass: "hidden",
+				  actionIconsClass: actionIconsClass,
+				  userLocation: usersInChannel[i].userLocation,
+				  userGenre: usersInChannel[i].userGenre
+			      };
+				  
+		   
+			      var userListItemView = new UserListItemView(parameters);   
+			      $('#clients-in-channel').append(userListItemView.afterRender());
+			      //$('.user-list-action-td').hide();
+			      
+		      } else {
+			
+			    if(usersInChannel[i].id == localStorage.getItem("currentStreamerUserId")) {
+				
+				self.streamerHasDisconnected(usersInChannel[i].id);
+				
+			    }
+			
+		      }
 	     
 		}
 
@@ -188,20 +195,29 @@ var ClientsInChannelView = Backbone.View.extend({
  
     },
     
+    streamerHasDisconnected: function(userId) {
+	
+	$('#stop-all-audio').trigger('click');
+	 
+	 $('#start-recording').removeClass('disabled');
+	 $('#start-file-stream').removeClass('disabled');
+	
+	showNotification("danger", "<strong>Oh no!</strong> The current streamer disconnected!");
+	
+    },
+    
     destroy: function() { 
         
 	//console.log('connected clients remove funciont');
 	
 	//$('.invitation-modal').modal("hide");
-
-        
+     
         this.undelegateEvents();
 	this.$el.removeData().unbind();
         //return this;
         //Backbone.View.prototype.remove.call(this);
         
         this.$el.empty();
-	
 		
         localStorage.setItem("clientsInChannelViewLoaded", "false");
     }

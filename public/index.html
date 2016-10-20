@@ -30,7 +30,7 @@
       
                 <h1 class="site-title-h1">
                     <span class="pull-left site-title">
-                        <a title="Go Home" data-toggle="tooltip" class="deco-none padding10" href="/">
+                        <a title="Go Home" data-toggle="tooltip" class="deco-none padding10" href="/home">
                             listentome.io
                         <i class="fa fa-rocket"></i>
                         </a>
@@ -77,7 +77,6 @@
                 <div id="invitation_modal_container"></div>
                 <div id="start_stream_modal_container"></div>
 
-     
                 <iframe name="download-iframe" id="download-iframe" width="1" height="1" frameborder="0" src=""></iframe>
 
             </div>
@@ -353,9 +352,10 @@
                         </div>
                         
                         <div class="col-xs-3">
-                            <i class="fa fa-file-audio-o action-icon" data-toggle="tooltip" title="Stream MP3 or WAV" id="start-file-stream" title="Stream MP3 or WAV File" aria-hidden="true"></i>  
+                            <i class="fa fa-file-audio-o action-icon" data-toggle="tooltip" title="Stream MP3 or WAV" id="start-file-stream" aria-hidden="true"></i>
+                             <i class="fa fa-stop-circle-o action-icon" data-toggle="tooltip" title="Stop File Stream" id="stop-file-stream" type="submit" style="display: none"></i>
+                            <audio style="display: none" class="audio-file-element" id="audio-file-element" src=""></audio>  
                         </div>
-                        
                         <!--<div class="col-xs-15">   
                             <i class="fa fa-headphones action-icon" data-toggle="tooltip" title="Listen" id="listen" title="Listen" aria-hidden="true"></i>
                         </div>-->

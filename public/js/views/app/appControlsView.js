@@ -172,7 +172,7 @@ var AppControlsView = Backbone.View.extend({
 	     
 	     $('#start-recording').removeClass('disabled');
 	     $('#start-file-stream').removeClass('disabled');
-	     $('#send-file').removeClass("disabled");
+	     //$('#send-file').removeClass("disabled");
 	     
                     console.log('stream state started, so triggered stop button');
 		    return;

@@ -66,7 +66,8 @@
         return liClass;
     }
     
-         function convertoFloat32ToInt16(buffer) {
+        
+        function convertoFloat32ToInt16(buffer) {
         
            var l = buffer.length;
            var buf = new Int16Array(l)
@@ -77,20 +78,48 @@
            return buf.buffer
          }
          
+ 
+        function interleave(leftChannel, rightChannel) {
+          
+            var length = leftChannel.length + rightChannel.length;
+            var result = new Float32Array(length);
+           
+            var inputIndex = 0;
+           
+            for (var index = 0; index < length; ){
+              result[index++] = leftChannel[inputIndex];
+              result[index++] = rightChannel[inputIndex];
+              inputIndex++;
+            }
+            return result;
+          
+         }
          
-        
-        function initiateAudioContext() {
-            
+         function checkAudioContext() {
+                       
             try {
               // Fix up for prefixing
               window.AudioContext = window.AudioContext||window.webkitAudioContext;
               context = new AudioContext()
-              console.log("init new audio context");
-              return context;
+              
+              return true;
             }
             catch(e) {
               return false;
             }
+            
+         }
+         
+         
+        function initiateAudioContext() {
+
+            console.log('init audio context');
+            
+            window.AudioContext = window.AudioContext||window.webkitAudioContext;
+            
+            window.audioContext = new AudioContext();
+            
+            return window.audioContext;
             
        }
        
@@ -126,7 +155,7 @@
             spacing: 10,
             z_index: 1031,
             delay: 1000,
-            timer: 1000,
+            timer: 2000,
             url_target: '_blank',
             mouse_over: null,
                 animate: {

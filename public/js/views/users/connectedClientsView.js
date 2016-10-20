@@ -14,8 +14,11 @@ var ConnectedClientsView = Backbone.View.extend({
             socket.on('connected-clients', function(data) {
                 self.connectedClientsUpdated(data);
             });
-            
-                       
+                   
+	     socket.on('user-connected-or-disconnected', function(data) {
+                self.userStatusUpdated(data);
+            });
+	     
             socket.on('room-invitation', function(data) {
                 self.openRoomInvitation(data);
             });
@@ -64,6 +67,23 @@ var ConnectedClientsView = Backbone.View.extend({
      
     },
     
+    userStatusUpdated: function(data) {
+	
+	if (data.userId != localStorage.getItem("userId")) {
+	
+	    if (data.userStatus == 'Online') {
+		var connectedMessage = 'has connected';
+	    } else if (data.userStatus == 'Offline') {
+		var connectedMessage = 'has disconnected';
+	    }
+	    
+	    showNotification("info", "<strong>" + data.username + "</strong> " + connectedMessage);
+	} else {
+	    return;
+	}
+	
+    },
+    /*
     openContactInvitation: function(data) {
     
     //console.log('invitation ro toom');
@@ -119,6 +139,7 @@ var ConnectedClientsView = Backbone.View.extend({
         //$('.create-room-from-users').hide();
         //$('.accept-room-invitation').show();
     },
+    */
     
     connectedClientsUpdated: function(data) {
      
@@ -222,9 +243,13 @@ var ConnectedClientsView = Backbone.View.extend({
     
     destroy: function() { 
         
-	//console.log('connected clients remove funciont');
-	
-	//$('.invitation-modal').modal("hide");
+	socket.off('connected-clients');
+	       
+	socket.off('user-connected-or-disconnected');
+	 
+	socket.off('room-invitation');
+
+	socket.off('user-contact-request');
 	
         localStorage.setItem('connectedClientsViewLoaded', "false");
         

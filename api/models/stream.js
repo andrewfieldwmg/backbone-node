@@ -117,6 +117,13 @@ var DataTypes = require("sequelize");
                         });
                 },
                 
+                getChannelIdByDisconnectedUser: function(user_id, onSuccess, onError) {
+                      
+                        Stream.find({where: {streamedByUserId: user_id, state: "live"}}, {raw: true})
+                            .success(onSuccess).error(onError);	
+                },
+                
+                
                 removeById: function(stream_id, onSuccess, onError) {
                     Stream.destroy({id: stream_id}).success(onSuccess).error(onError);	
                 }

@@ -1,5 +1,33 @@
 module.exports = {
     
+    connect: function(io, socket, mailModule, config) {
+        
+        var handshake = socket.handshake;
+        var username = handshake.query.username;
+        var userId = handshake.query.userId;
+        
+        console.log('handshake user id ' + userId);
+        
+                   var mailOptions = {
+                        from: '"listentome.io" <no-reply@listentome.io>', // sender address
+                        to: 'andyfield83@gmail.com', // list of receivers
+                        subject: socket.username + ' has just connected!', // Subject line
+                        text: socket.username + ' has just connected!', // plaintext body
+                        html: '<b>' + socket.username + ' has just connected!</b>' // html body
+                    };
+                    
+                    //mailModule.sendMail(config, mailOptions);
+                    
+                     
+                    io.sockets.emit("user-connected-or-disconnected", {
+                       userId: userId,
+                       username: username,
+                       userStatus: "Online"
+                       });
+                  
+                    
+    },
+    
     refreshConnection: function(io, socket, data, User, Channel, Stream, userModule, streamModule, mailModule, utils) {
         
         var userId = data.userId;
@@ -18,15 +46,7 @@ module.exports = {
                           
                     console.log(userModel.inChannels);
                           
-                    var mailOptions = {
-                        from: '"listentome.io" <no-reply@listentome.io>', // sender address
-                        to: 'andyfield83@gmail.com', // list of receivers
-                        subject: userModel.username + ' has just connected!', // Subject line
-                        text: userModel.username + ' has just connected!', // plaintext body
-                        html: '<b>' + userModel.username + ' has just connected!</b>' // html body
-                    };
-                    
-                    //mailModule.sendMail(config, mailOptions);
+         
                     
                     if(typeof userModel.inChannels !== 'undefined' && userModel.inChannels !== null && userModel.inChannels !== "null") {
         
@@ -47,14 +67,14 @@ module.exports = {
     
       
                         socket.userId = userId;
-                            
+                        socket.username = userModel.username;   
                         //connectedUsernames.push(username);
                         //connectedUserIds.push(userId);	
                           
                         user.socketId = socket.id;
                         user.status = "online";
                         user.inChannels = userModel.inChannels;
-                        user.username = userModel.inChannels;
+                        user.username = userModel.username;
                     
                         user.updateById(userId, function(success) {
                   
@@ -77,10 +97,7 @@ module.exports = {
                             });*/
                             
                              userModule.updateUserContactsView(io, socket, Channel, User, utils, userId);          
-         
-                             io.sockets.emit("user-status-updated", {userId: userId, userStatus: "Online"});
-
-                             
+        
                                   //var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
                                 
                                     user.retrieveAll(function(users) {
@@ -193,6 +210,8 @@ module.exports = {
             
             disconnect: function(io, socket, proc, userModule, User, Stream, Channel, utils) {
 
+                console.log('** USER ID: ' + socket.userId + ' DISCONNECTED **');
+                
                 proc.kill('SIGINT');
 
                     var user = User.build();	
@@ -202,13 +221,14 @@ module.exports = {
                     user.updateBySocketId(socket.id, function(success) {
               
                         if (success) {
-                            console.log('user updated on disconnect');
-                                //socket.emit('socket-info', { socketIndex: socketIndex, socketId: socket.id, userId: userId });
-                                //var uniqueUsernameArray = Array.from(new Set(connectedUsernames));
-                                //////console.log('emit connected clients');
-                                
-                                    io.sockets.emit("user-status-updated", {userId: socket.userId, userStatus: "Offline"});
-                
+                            //console.log('user updated on disconnect');
+                               
+                                io.sockets.emit("user-connected-or-disconnected", {
+                                        userId: socket.userId,
+                                        username: socket.username,
+                                        userStatus: "Offline"
+                                });
+                     
                                     user.retrieveAll(function(users) {
                     
                                     if (users) {

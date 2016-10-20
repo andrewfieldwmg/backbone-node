@@ -13,7 +13,7 @@ $(document).on('ready', function() {
         //return;
     }
     
-    if (!initiateAudioContext) {
+    if (!checkAudioContext) {
             
         $('#no_audiocontext').show();
         return;
@@ -21,13 +21,13 @@ $(document).on('ready', function() {
     
     //if (typeof io !== "undefined" && isWebkit && !isMobileOrTablet() && initiateAudioContext) {
     
-     if (typeof io !== "undefined" && initiateAudioContext) {
+     if (typeof io !== "undefined" && checkAudioContext) {
      
         socket = initSocketIo();
 
         //localStorage.clear();
         
-        //LOCAL STORAGES
+        //LOCAL STORAGES BELOW
         
         //APP
         localStorage.setItem("appControlsViewLoaded", "false");
@@ -57,15 +57,29 @@ $(document).on('ready', function() {
         localStorage.setItem('featuredStreamsViewLoaded', "false");
           
         //MODALS
-         localStorage.setItem("userActionsModalViewLoaded", "false");
+        localStorage.setItem("userActionsModalViewLoaded", "false");
         localStorage.setItem("channelsModalViewLoaded", "false");
         localStorage.setItem("acceptInvitationViewLoaded", "false");
         
-        	//CONTROLLERS
+        //CONTROLLERS
 	localStorage.setItem("audioControllerLoaded", "false");
         
+        //ROUTING
         var router = new Router();
         Backbone.history.start({pushState: true});
+        
+        $(document).on("click", "a:not([data-bypass])", function(evt) {
+            var href = { prop: $(this).prop("href"), attr: $(this).attr("href") };
+            var root = location.protocol + "//" + location.host + Backbone.history.options.root;
+          
+            if (href.prop && href.prop.slice(0, root.length) === root) {
+              evt.preventDefault();
+              Backbone.history.navigate(href.attr, true);
+            }
+        });
+        
+        //WEB AUDIO API 
+        initiateAudioContext();
     
     }
     
@@ -74,13 +88,11 @@ $(document).on('ready', function() {
 
 function initSocketIo() {
 
-        /*var queryString = "username="+localStorage.getItem("username") +
-                                "&userId="+localStorage.getItem("userId") +
-                                "&channelIds="+localStorage.getItem("channelIds") +
-                                "&channelName="+localStorage.getItem("channelName") +
-                                "&userColour="+localStorage.getItem("userColour");*/
+        var queryString = "username="+localStorage.getItem("username") +
+                                "&userId="+localStorage.getItem("userId");
                                 
-        var socket = io.connect();
+                                
+        var socket = io.connect({query: queryString});
                 
          socket.on('connect', function() {       
              console.log("Socket IO connected");

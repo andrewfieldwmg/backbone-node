@@ -4,7 +4,7 @@ module.exports = {
                 
         var requestedFile = decodeURIComponent(req.query.file);
        
-        var file = config.filePaths.uploadDir + "/" + requestedFile;
+        var file = config.filePaths.fileTransferDir + "/" + requestedFile;
     
         var filename = path.basename(file);
         var mimetype = mime.lookup(file);
@@ -17,10 +17,10 @@ module.exports = {
         
     },
     
-    processFileTransfer: function(io, socket, data, fileStream, File, Message, Channel, config, fs, sanitise) {
+    processFileTransfer: function(io, socket, data, fileStream, File, Message, Channel, config, fs, sanitize) {
                         
                 //var socketIndex = connectedSocketIds.indexOf(socket.id);
-                socket.broadcast.to(data.activeChannelName).emit('sent-file-incoming', {
+                socket.broadcast.to(data.activeChannelId).emit('sent-file-incoming', {
                     username: data.username,
                     userColour: data.userColour,
                     sender: data.sender,
@@ -29,7 +29,7 @@ module.exports = {
                 
                 var cleanName = sanitize(data.name);
      
-                 fileUploadWriteStream = fs.createWriteStream(config.filePaths.uploadDir + "/" + cleanName);
+                 fileUploadWriteStream = fs.createWriteStream(config.filePaths.fileTransferDir + "/" + cleanName);
                  
                  fileStream.pipe(fileUploadWriteStream);
                  
@@ -69,7 +69,7 @@ module.exports = {
                                                         });
                                             
                                             //SEND THE FILE URL TO THE OTHER(S)//
-                                            socket.broadcast.to(data.activeChannelName).emit('sent-file', {
+                                            socket.broadcast.to(data.activeChannelId).emit('sent-file', {
                                                 username: data.username,
                                                 userColour: data.userColour,
                                                 //socketindex: socketIndex,

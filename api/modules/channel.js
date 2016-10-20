@@ -145,9 +145,7 @@ module.exports = {
                                 }
                                 
                                 socket.channelIds = Array.from(new Set(utils.flatten(socketChannelIdsArray)));            
-                                 
-                                 
-                                                                                    
+                                                                                         
                                 socket.emit('entered-channel-details', {
                                         channel: JSON.stringify(channels),
                                         

@@ -121,7 +121,8 @@ module.exports = {
                 
         },
         
-        processIncomingAudioStream: function(io, socket, data, inboundStream, Writable, Stream, Message, Channel, fs, config, SoxCommand, proc, waveform, utils) {
+        
+        processIncomingAudioStream: function(io, socket, data, inboundStream, Writable, Stream, streamModule, Message, Channel, fs, config, SoxCommand, proc, waveform, utils) {
              
             var self = this;
             
@@ -220,7 +221,7 @@ module.exports = {
                                         });
                                     
                                     
-                                var stream = Stream.build();
+                                /*var stream = Stream.build();
              
                                      stream.retrieveAll(function(streams) {
                                          
@@ -241,7 +242,7 @@ module.exports = {
                                          
                                    }, function(error) {
                                          //res.send("User not found");
-                                   });
+                                   });*/
          
                                
                           },
@@ -250,7 +251,7 @@ module.exports = {
                           });
        
        
-                    self.startOutboundStream(io, socket, data, inboundStream, streamId, Writable, Stream, Channel, fs, config, SoxCommand, proc, waveform, utils);
+                    self.startOutboundStream(io, socket, data, inboundStream, streamId, Writable, Stream, streamModule, Channel, fs, config, SoxCommand, proc, waveform, utils);
                     
               },
               
@@ -265,7 +266,7 @@ module.exports = {
         },
         
         
-        startOutboundStream: function(io, socket, data, inboundStream, streamId, Writable, Stream, Channel, fs, config, SoxCommand, proc, waveform, utils) {
+        startOutboundStream: function(io, socket, data, inboundStream, streamId, Writable, Stream, streamModule, Channel, fs, config, SoxCommand, proc, waveform, utils) {
  
                 var self = this;
                 
@@ -354,7 +355,7 @@ module.exports = {
       
                 } else if (mimeType === 'audio/wav') {                 
                                      
-                    console.log('audio/wav');
+                //console.log('audio/wav');
                     
                   var command = SoxCommand();
                     
@@ -393,80 +394,53 @@ module.exports = {
                    
                    proc.kill('SIGINT');
         
-                   ////console.log('Stopping stream from stop message INSIDE stream');  
+                   console.log('Stopping stream from stop message INSIDE stream');  
   
                    inboundStream.read(0);
                    inboundStream.push(null);
                    inboundStream.end();
                    inboundStream.destroy();
                    
-                   offlineFile.end();
+                   //offlineFile.end();
                    //offlineFile.finish();
 
                    buffer = [];
-                   
-                   var stream = Stream.build();	
-             
-                       stream.state = "offline";
-                       
-                       stream.updateStateById(streamId, function(success) {
-                 
-                           if (success) {
-
-                                    var channel = Channel.build(); 
-                  
-                                    channel.currentStreamStatus = "stopped";
-                                     
-                                    channel.updateStreamStatusByStreamId(streamId, function(success) {
-                                        
-                                            if (success) {	
-                                                    
-                                            } else {
-                                             
-                                            }
-                                      }, function(error) {
-                                            
-                                    });
-
-    
-                                   stream.retrieveAll(function(streams) {
-                                           
-                                           if (streams) {
-                                                      
-                                                  //socket.emit('emptyMessages');       
-                                                      //console.log('emitting mess ' + messages[i].message);
-                                                      io.sockets.emit('available-streams', {
-                                                          availableStreams: JSON.stringify(streams)
-                                                      });                                                                                         
-                                                  
-                                           } else {
-                                             //res.send(401, "User not found");
-                                           }
-                                           
-                                     }, function(error) {
-                                           //res.send("User not found");
-                                     });
-                            
-                                           
-                           } else {
-                               
-                                   ////console.log("User not found");
-                                   
-                           }
-                           
-                     }, function(error) {
-                       
-                     });
-                   
+  
+                   streamModule.updateStreamOnEnd(io, socket, streamId, Stream, Channel);
                    //socket.disconnect();
 
                });
+            
+                                
+                socket.on('disconnect', function() {
+                
+                    proc.kill('SIGINT');
 
-                  
+                   inboundStream.read(0);
+                   inboundStream.push(null);
+                   inboundStream.end();
+                   inboundStream.destroy();
+                   
+                   //offlineFile.end();
+                   //offlineFile.finish();
+
+                   buffer = [];
+  
+                   streamModule.updateStreamOnEnd(io, socket, streamId, Stream, Channel);
+                   
+                });
+                
+                         
                inboundStream.on('end', function() {
 
+                console.log('inbound audio stream ended');
                 
-                self.generateAudioWaveform(waveform, config, streamId, fs, utils);
+                socketSendWritableMp3.end();
+                offlineFile.end();
+                 
+                 streamModule.updateStreamOnEnd(io, socket, streamId, Stream, Channel);
+                 
+                //self.generateAudioWaveform(waveform, config, streamId, fs, utils);
                 
                        ////console.log('Inbound audio stream ended: ' + data.name);
                                              
@@ -509,6 +483,7 @@ module.exports = {
                        
                    
                });
+       
                
   
         },

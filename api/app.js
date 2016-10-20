@@ -81,15 +81,7 @@
 
         console.log('socket connected');
   
-        //connectedSocketIds.push(socket.id);
-             
-        /*var clientIp = socket.request.connection.remoteAddress;
-        var handshake = socket.handshake;
-        var username = handshake.query.username;
-        var userId = handshake.query.userId;
-        var channelIds = handshake.query.channelIds;
-        var channelName = handshake.query.channelName;
-        var userColour = handshake.query.userColour;*/
+        connectionModule.connect(io, socket, mailModule, config);
 
          //USER SIGNUP//
          
@@ -168,7 +160,7 @@
         //FILE TRANSFER//
         
         ss(socket).on('file-upload', function(fileStream, data) {
-                fileModule.processFileTransfer(io, socket, data, fileStream, File, Message, Channel, config, fs, sanitise);
+                fileModule.processFileTransfer(io, socket, data, fileStream, File, Message, Channel, config, fs, sanitize);
         });
     
         
@@ -200,7 +192,6 @@
                       
         socket.on('listen-to-featured-stream', function(data) {
             audioModule.listenToFeaturedStream(io, socket, data, Stream, Writable, fs, config);
-              
         });
     
         socket.on('stop-featured-audio-stream', function (data) {
@@ -208,7 +199,7 @@
         });
         
         ss(socket).on('audio-file', function(inboundStream, data) {
-                audioModule.processIncomingAudioStream(io, socket, data, inboundStream, Writable, Stream, Message, Channel, fs, config, SoxCommand, proc, waveform, utils);
+                audioModule.processIncomingAudioStream(io, socket, data, inboundStream, Writable, Stream, streamModule, Message, Channel, fs, config, SoxCommand, proc, waveform, utils);
         });  
                                 
         socket.on('stop-audio-stream', function (data) {
@@ -223,8 +214,14 @@
                 audioModule.updateCurrentStreamTime(io, socket, data, Channel);
         });
         
+        socket.on("stream-started", function(data) {
+                console.log("STREAM STARTED");
+                streamModule.updateAvailableStreams(io, socket, Stream);
+        });
+        
      
         //DISCONNECT//
+        
         socket.on('disconnect', function() {
                 connectionModule.disconnect(io, socket, proc, userModule, User, Stream, Channel, utils);
         });
@@ -233,6 +230,7 @@
     
     
         //SPARES?//
+        
         io.sockets.on("error", function(event) {
             ////console.log("Error from uploader", event);
         });

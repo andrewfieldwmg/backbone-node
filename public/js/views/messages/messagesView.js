@@ -243,8 +243,6 @@ var MessagesView = Backbone.View.extend({
         
          //console.log("receiving sent file");
          
-           //var socketIndex = data.socketindex;
-            //var socketCss = getSocketCss(socketIndex);
             var cssClass = "list-item-" + data.userColour;
             
             if(data.username == localStorage.getItem("username")) {
@@ -252,13 +250,17 @@ var MessagesView = Backbone.View.extend({
             } else {
                  var senderName = data.username;  
             }
-                    
+	    
+            var cleanURL = encodeURIComponent(data.name);        
+	    var downloadURL = '/api/download?file=' + cleanURL;
+	    var anchorLink = "<a href=" + downloadURL + ">" + data.name + " <i class='fa fa-download'></i></a>"; 
+	    
             var parameters = {
                             cssClass: cssClass,
                             backgroundColour: data.userColour,
                             time: time,
-                            contentFromUsername: "File transfer received from " + senderName + ":",
-                            contentName: data.name,
+                            contentFromUsername: "File transfer from " + senderName + ": ",
+                            contentName: anchorLink,
                             loaderClass: "hidden"
                             };
             
@@ -266,9 +268,7 @@ var MessagesView = Backbone.View.extend({
             
             $('#message-results').append(listItemView.render());
             
-            var cleanURL = encodeURIComponent(data.name);
-
-            $('#download-iframe').attr('src', '/api/download?file=' + cleanURL);
+            //$('#download-iframe').attr('src', '/api/download?file=' + cleanURL);
             
             $('.fa-refresh').hide();
             

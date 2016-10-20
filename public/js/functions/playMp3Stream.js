@@ -1,4 +1,4 @@
-function playMp3Stream(socket, currentStreamTime) {
+function playMp3Stream(socket) {
        
     console.log("PLAY MP3 FUNCTION CALLED");
     
@@ -6,7 +6,7 @@ function playMp3Stream(socket, currentStreamTime) {
       
       //socket.on('connect', function() {
 
-        audioContext = initiateAudioContext();
+        var audioContext = window.audioContext;
         
         var audioContextLoadedTime = new Date();
                 
@@ -15,13 +15,12 @@ function playMp3Stream(socket, currentStreamTime) {
         var nextTime = 0;
         var i = 0;
         
-        if (currentStreamTime > 0) {
+        /*if (currentStreamTime > 0) {
           var offset = currentStreamTime;
         } else {
           var offset = 0;
-        }
-       
-       console.log('offset: ' + offset);
+        }*/
+    
         //console.log('current stream start time: ' + currentStreamTime);
           
    
@@ -68,11 +67,10 @@ function playMp3Stream(socket, currentStreamTime) {
 
                   audioStack.push(buffer);
                   
-                  if ((init != 0) || (audioStack.length >= 2)) { // make sure we put at least 10 chunks in the buffer before starting
+                  //if ((init != 0) || (audioStack.length > 0)) { // make sure we put at least 10 chunks in the buffer before starting
                       init++;
                       scheduleBuffers(gainNode);
-                     
-                  }
+                  //}
                     
                      /*                
                      //renderWaveform(buff);
@@ -138,13 +136,13 @@ function playMp3Stream(socket, currentStreamTime) {
                        if (nextTime == 0)
                            nextTime = audioContext.currentTime + 0.05;  /// add 50ms latency to work well across systems - tune this if you like
                            
-                        source.start(nextTime, offset);
+                        source.start(nextTime);
                          
                         var sourceStartTime = new Date();
                                                                        
                         var playTimeOffset = (sourceStartTime - audioContextLoadedTime) / 1000;
                             
-                             if (i === 0) {
+                             /*if (i === 0) {
                                 
                                     if(localStorage.getItem("userRole") === "streamer") {
                                         
@@ -166,7 +164,7 @@ function playMp3Stream(socket, currentStreamTime) {
                                       
                                    }
                              
-                            }
+                            }*/
                              
                                      
                              if((audioContext.state == "running") && (i >= 2)) {
@@ -204,30 +202,27 @@ function playMp3Stream(socket, currentStreamTime) {
                     audioContext.suspend();
                     
                     $('.player-play-button').show();
-                   $('.player-pause-button').hide();
+                    $('.player-pause-button').hide();
                    
                 });
               
+              
                                
-                $('#stop-all-audio').on('click', function(e) {
+                /*$('#stop-all-audio').on('click', function(e) {
                 
                     console.log('stop clicked');
                       
                     e.stopPropagation();
                 
-                    if (typeof window.timerInterval != "undefined") {
+                    /*if (typeof window.timerInterval != "undefined") {
                         clearInterval(window.timerInterval);
-                    }             
+                    }*           
                 
                     socket.emit('stop-audio-stream', {
                         userRole: localStorage.getItem("userRole"),
                         activeChannelId: localStorage.getItem("activeChannelId")
                     });
-                     
-                      //$('.stop-featured-stream').trigger('click');
-                      
-                     //$('#message-results').append('<li class="list-group-item">Outbound stream stopped</li>')
-                       
+        
                     localStorage.setItem('streamState', 'stopped');
                                          
                                                
@@ -245,7 +240,8 @@ function playMp3Stream(socket, currentStreamTime) {
                     }
        
              
-                });
+                });*/
+            
             
 
           //});
