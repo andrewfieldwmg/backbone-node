@@ -6,7 +6,7 @@ var ConnectedClientsView = Backbone.View.extend({
            
     initialize: function(options){
             
-            console.log('connected clients view loaded');
+            //console.log('connected clients view loaded');
             this.options = options;
             
             var self = this;

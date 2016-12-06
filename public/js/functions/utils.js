@@ -95,6 +95,7 @@
           
          }
          
+         
          function checkAudioContext() {
                        
             try {
@@ -113,7 +114,7 @@
          
         function initiateAudioContext() {
 
-            console.log('init audio context');
+            //console.log('init audio context');
             
             window.AudioContext = window.AudioContext||window.webkitAudioContext;
             

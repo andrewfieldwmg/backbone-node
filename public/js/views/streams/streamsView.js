@@ -6,7 +6,7 @@ var StreamsView = Backbone.View.extend({
            
     initialize: function(){
 
-            console.log('featured streams init');
+            //console.log('featured streams init');
             
             var self = this;
             

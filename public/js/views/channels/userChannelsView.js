@@ -68,7 +68,7 @@ var UserChannelsView = Backbone.View.extend({
     
     enterChannel: function(e) {
 	
-	console.log('enterchannel');
+	//console.log('enterchannel');
 	     
 	var requestedChannelId = $(e.currentTarget).data('channel-id');
 	var requestedChannelName = $(e.currentTarget).data('channel-name');
@@ -86,9 +86,9 @@ var UserChannelsView = Backbone.View.extend({
         	
 	if (localStorage.getItem("channelsModalViewLoaded") == "false") {
         
-	    console.log('channels modal view NOT loaded, so proceeding');
+	    //console.log('channels modal view NOT loaded, so proceeding');
         	
-	    console.log('open channel modal');
+	    //console.log('open channel modal');
         
 	if(localStorage.getItem("userChannelIds")) {
 	    var chooseExistingChannelClass = "";
@@ -204,7 +204,7 @@ var UserChannelsView = Backbone.View.extend({
     
     socketMessageCountUpdated: function(data) {
         
-        console.log('message count updated');
+        //console.log('message count updated');
         
         $('.message-counter[data-channel-id="' + data.channelId + '"]').html(data.messageCount)
         .css('background-color', 'orange')

@@ -47,20 +47,51 @@ module.exports = {
                             channelsForUserArray.push(success.id.toString());
                             
                         }
-                                                             
+                           
+                        
+                            console.log('****NEW channel name ' + data.name);
+                            
+                            var channelNamesForUserArray = [];
+                            ////console.log('usersinchannel' + users.inChannels);
+                            
+                            if(typeof users.inChannelNames === 'undefined' || users.inChannelNames == null || users.inChannelNames == "null") {
+                               
+                                ////console.log('no inChannel');
+                                 channelNamesForUserArray.push(data.name);
+                                
+                            } else {
+                                
+                                ////console.log('already inChannel');
+                                
+                                var parsedInChannelNames = JSON.parse(users.inChannelNames);
+                                ////console.log(parsedInChannels);
+                                for(i = 0; i < parsedInChannelNames.length; i++) {
+                                    channelNamesForUserArray.push(parsedInChannelNames[i]);
+                                }
+                                
+                                channelNamesForUserArray.push(data.name);
+                                
+                            }
+                    
+                            var uniqueChannelsForUserArray = Array.from(new Set(utils.flatten(channelsForUserArray)));
+                            var uniqueChannelNamesForUserArray = Array.from(new Set(utils.flatten(channelNamesForUserArray)));
+                                                    
+                                            
                             user.status = "online";
                             user.socketId = socket.id;
-                            user.inChannels = JSON.stringify(channelsForUserArray);
+                            user.inChannels = JSON.stringify(uniqueChannelsForUserArray);
+                            user.inChannelNames = JSON.stringify(uniqueChannelNamesForUserArray);
                             user.currentChannel = success.id.toString();
                             
                             user.updateById(data.createdByUserId, function(success) {
                                 
                                     if (success) {	
-                                            //var channelsForUser = [];  
+                                            console.log(success);
                                     } else {
                                       //res.send(401, "User not found");
                                     }
                               }, function(error) {
+                                 console.log(error);
                                     //res.send("User not found");
                               });
                          
@@ -111,7 +142,7 @@ module.exports = {
     enterChannel: function(io, socket, data, User, Channel, Message, userModule, messageModule, utils) {
         
         var channelIdArray = [];
-        var channelNameArray = [];
+        //var channelNameArray = [];
  
             var channelId = data.channelId;
             socket.join(channelId);
@@ -129,7 +160,6 @@ module.exports = {
                   var uniqueUsersInChannel = Array.from(new Set(usersInChannel));
 
                     channel.usersInChannel = JSON.stringify(uniqueUsersInChannel);
-
                     channel.name = channels.name;
                     
                     channel.updateById(channelId, function(success) {
@@ -151,7 +181,7 @@ module.exports = {
                                         
                                 });
                                  
-                                 channelNameArray.push(channels.name);
+                                 //channelNameArray.push(channels.name);
                                  
                                  var usersInChannel = JSON.parse(channels.usersInChannel);
                
@@ -179,12 +209,38 @@ module.exports = {
                                                 
                                             }
                                             
+                                                                    
+                                                var channelNamesForUserArray = [];
+                                                ////console.log('usersinchannel' + users.inChannels);
+                                                
+                                                if(typeof users.inChannelNames === 'undefined' || users.inChannelNames == null || users.inChannelNames == "null") {
+                                                   
+                                                    ////console.log('no inChannel');
+                                                     channelNamesForUserArray.push(channels.name);
+                                                    
+                                                } else {
+                                                    
+                                                    ////console.log('already inChannel');
+                                                    
+                                                    var parsedInChannelNames = JSON.parse(users.inChannelNames);
+                                                    ////console.log(parsedInChannels);
+                                                    for(i = 0; i < parsedInChannelNames.length; i++) {
+                                                        channelNamesForUserArray.push(parsedInChannelNames[i]);
+                                                    }
+                                                    
+                                                    channelNamesForUserArray.push(channels.name);
+                                                    
+                                                }
+                        
                                                     user.status = "online";
                                                     user.socketId = socket.id;
                                                     
                                                     var uniqueChannelsForUserArray = Array.from(new Set(utils.flatten(channelsForUserArray)));
-                                                    
+                                                    var uniqueChannelNamesForUserArray = Array.from(new Set(utils.flatten(channelNamesForUserArray)));
+                                                                     
                                                     user.inChannels = JSON.stringify(uniqueChannelsForUserArray);
+                                                    user.inChannelNames = JSON.stringify(uniqueChannelNamesForUserArray);
+                                                   
                                                     user.currentChannel = channelId.toString();
                                                     
                                                     user.updateById(data.userEnteringChannel, function(success) {
@@ -196,7 +252,7 @@ module.exports = {
                                                                     
                                                                      if (users) {
                                                                      
-                                                                     userModule.updateConnectedClientsInChannel(io, socket, Channel, User, utils,JSON.stringify(channelIdArray), JSON.stringify(channelNameArray));
+                                                                     userModule.updateConnectedClientsInChannel(io, socket, Channel, User, utils, JSON.stringify(channelIdArray));
                                                                                                    
                                                                              /*//console.log('emitting channel clients: ' + channels.name+JSON.stringify(users));
                                                                              

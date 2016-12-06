@@ -6,10 +6,17 @@ var MessagesView = Backbone.View.extend({
 
             var self = this;
    
-             socket.on('message', function (data) {
+             /*socket.on('message', function (data) {
                  self.socketMessageReceived(data);
-             });
+             });*/
 	     
+            var socketIoWorker = new Worker("/js/webWorkers/socketIoWorker.js")
+       
+	    socketIoWorker.onmessage = function(e) {
+		self.socketMessageReceived(e.data);
+	     }
+
+  
 	    socket.on('message-history', function (data) {
                  self.updateMessageHistory(data);
              });
@@ -90,11 +97,11 @@ var MessagesView = Backbone.View.extend({
 	     
 	 }
 	 
-        if (data.channelId != localStorage.getItem("activeChannelId")) {
+        //if (data.channelId != localStorage.getItem("activeChannelId")) {
             
-            return;
+            //return;
         
-        } else {
+        //} else {
 	
 	
 	    if($('.list-group-item[data-id="'+ data.messageId + '"]').length) {
@@ -136,7 +143,7 @@ var MessagesView = Backbone.View.extend({
   
             scrollToBottom();
             playSound();
-        }
+        //}
         
     },
     

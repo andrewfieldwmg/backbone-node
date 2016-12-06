@@ -1,6 +1,6 @@
 module.exports = {
     
-    connect: function(io, socket, mailModule, config) {
+    connect: function(io, socket, mailModule, config, User, fs, utils) {
         
         var handshake = socket.handshake;
         var username = handshake.query.username;
@@ -8,6 +8,44 @@ module.exports = {
         
         console.log('handshake user id ' + userId);
         
+            var user = User.build();
+                           
+                user.retrieveById(userId, function(users) {
+                    
+                        if (users) {
+                            
+                            console.log(users);
+                            
+                            if (
+                                users.id != null &&
+                                users.username != null &&
+                                users.email != null &&
+                                users.password != null &&
+                                users.userGenre != null &&
+                                users.userLocation != null //&&
+                                //utils.fileExists(config.filePaths.userProfileImageDir + "/" + userId + "_profile.jpg")
+                                ) {
+                            
+                                console.log('user fully registered');
+                            
+                            } else {
+                                
+                                console.log('user NOT fully registered');
+                                
+                                socket.emit('user-not-registered');
+    
+                            }
+                            
+         
+                        } else {
+    
+                        }
+                        
+                  }, function(error) {
+                 
+                  });
+                    
+                        
                    var mailOptions = {
                         from: '"listentome.io" <no-reply@listentome.io>', // sender address
                         to: 'andyfield83@gmail.com', // list of receivers
@@ -19,12 +57,12 @@ module.exports = {
                     //mailModule.sendMail(config, mailOptions);
                     
                      
-                    io.sockets.emit("user-connected-or-disconnected", {
-                       userId: userId,
-                       username: username,
-                       userStatus: "Online"
-                       });
-                  
+            io.sockets.emit("user-connected-or-disconnected", {
+               userId: userId,
+               username: username,
+               userStatus: "Online"
+               });
+          
                     
     },
     
@@ -74,6 +112,7 @@ module.exports = {
                         user.socketId = socket.id;
                         user.status = "online";
                         user.inChannels = userModel.inChannels;
+                        user.inChannelNames = userModel.inChannelNames;
                         user.username = userModel.username;
                     
                         user.updateById(userId, function(success) {
@@ -88,7 +127,8 @@ module.exports = {
                                             userGenre: userModel.userGenre,
                                             userColour: userModel.userColour,
                                             userLocation: userModel.userLocation,
-                                            inChannels: userModel.inChannels
+                                            inChannels: userModel.inChannels,
+                                            inChannelNames: userModel.inChannelNames
                                 });
                             
    

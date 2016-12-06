@@ -113,7 +113,7 @@ var ClientsInChannelView = Backbone.View.extend({
                
 	    var self = this;
 	    
-	    console.log("connected clients in room UPDATED:::");
+	    //console.log("connected clients in room UPDATED:::");
 	    
 	    var channelClientsTable = $('.channel-clients-table').DataTable();    
 	    channelClientsTable.destroy();

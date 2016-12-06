@@ -6,7 +6,7 @@ var UserControlsView = Backbone.View.extend({
            
     initialize: function(options){
         
-	console.log('user controls init');
+	//console.log('user controls init');
 	
         var self = this;
         
@@ -112,14 +112,17 @@ var UserControlsView = Backbone.View.extend({
         	
 	    //console.log('open channel modal');
         
-	if(localStorage.getItem("userChannelIds")) {
+	if(localStorage.getItem("userChannelIds") != "null") {
+	    
 	    var chooseExistingChannelClass = "";
 	    var createChannelClass = "hidden";
 	    var createChannelSubmitClass = "enter-channel";
 	    var userChannelIdArray = JSON.parse(localStorage.getItem("userChannelIds"));
 	    var userChannelNameArray = JSON.parse(localStorage.getItem("userChannelNames"));
 	    var modalHeaderContent = "Choose a <strong>Stream Channel</strong>";
+	
 	} else {
+	    
 	    var chooseExistingChannelClass = "hidden";
 	    var createChannelClass = "";
 	    var createChannelSubmitClass = "create-channel";
@@ -209,7 +212,7 @@ var UserControlsView = Backbone.View.extend({
 		if (data.createdByUserId == localStorage.getItem("userId")) {
 		   
 		//CHANNEL IDS 
-		    if(localStorage.getItem("userChannelIds") !== null) {
+		    if(localStorage.getItem("userChannelIds") !== null && localStorage.getItem("userChannelIds") !== "null") {
 			var userChannelIdArray = JSON.parse(localStorage.getItem("userChannelIds"));
 		    } else {
 			var userChannelIdArray = [];
@@ -220,7 +223,7 @@ var UserControlsView = Backbone.View.extend({
 		     localStorage.setItem('userChannelIds', JSON.stringify(uniqueUserChannelIdArray));
 		
 		//CHANNEL NAMES
-		    if(localStorage.getItem("userChannelNames") !== null) {
+		    if(localStorage.getItem("userChannelNames") !== null && localStorage.getItem("userChannelNames") !== "null") {
 			var userChannelNameArray = JSON.parse(localStorage.getItem("userChannelNames"));
 		    } else {
 			var userChannelNameArray = [];

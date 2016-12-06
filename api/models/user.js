@@ -14,6 +14,7 @@ var DataTypes = require("sequelize");
         status: DataTypes.STRING,
         userColour: DataTypes.STRING,
         inChannels: DataTypes.STRING,
+        inChannelNames: DataTypes.STRING,
         currentChannel: DataTypes.STRING,
         userContacts: DataTypes.STRING
       }, {
@@ -119,6 +120,7 @@ var DataTypes = require("sequelize");
                     var socketId = this.socketId;
                     var status = this.status;
                     var inChannels = this.inChannels;
+                    var inChannelNames = this.inChannelNames;
                     var currentChannel = this.currentChannel;
 
                     //var shasum = crypto.createHash('sha1');
@@ -129,6 +131,7 @@ var DataTypes = require("sequelize");
                                 socketId: socketId,
                                  status: status,
                                  inChannels: inChannels,
+                                 inChannelNames: inChannelNames,
                                  currentChannel: currentChannel
                                  }, {id: id} )
                             .success(onSuccess).error(onError);
@@ -156,6 +159,7 @@ var DataTypes = require("sequelize");
                     var socketId = this.socketId;
                     var status = this.status;
                     var inChannels = this.inChannels;
+                    var inChannelNames = this.inChannelNames;
                     var currentChannel = this.currentChannel;
                     var userGenre = this.userGenre;
                     var userLocation = this.userLocation;

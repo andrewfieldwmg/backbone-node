@@ -123,7 +123,7 @@ var AudioController = Backbone.Controller.extend({
 			supplied: "mp3",
 			wmode: "window",
 			errorAlerts: true,
-			volume: "1",
+			volume: "0.5",
 			   
 			loadeddata: function(event){ // calls after setting the song duration
 			   
@@ -433,9 +433,13 @@ var AudioController = Backbone.Controller.extend({
 			      console.log('buffer counter ' + window.bufferCounter);
 			      
 			      if (window.bufferCounter == 0) {
-				console.log('BUFFER COUNTER - 0 - EMITTING STREAM STARTED');
-				  socket.emit("stream-started");
+			
 				  $('.audioplayer-loading-spinner').hide();
+				  
+				    if(localStorage.getItem("userRole") == 'streamer') {	
+					socket.emit("stream-started");
+				    }
+				  
 			      }
 			      
 			      //if ((bufferCounter != 0) || (audioStack.length > 0)) { // make sure we put at least 10 chunks in the buffer before starting

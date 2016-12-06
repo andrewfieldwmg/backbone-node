@@ -98,6 +98,12 @@ function initSocketIo() {
              console.log("Socket IO connected");
          });
          
+        socket.on('user-not-registered', function() {
+            localStorage.clear();
+            var router = new Router();
+             router.navigate("signup", {trigger: "true"});
+         });
+             
          socket.on('socket-info', function(data) {
             
             localStorage.setItem('socketId', data.socketId);
@@ -108,7 +114,10 @@ function initSocketIo() {
             localStorage.setItem("userColour", data.userColour);
             localStorage.setItem("userLocation", data.userLocation);
             localStorage.setItem("channelIds", data.inChannels);
-  
+            
+            localStorage.setItem("userChannelIds", data.inChannels); 
+            localStorage.setItem("userChannelNames", data.inChannelNames);
+            
          });
          
                                                     

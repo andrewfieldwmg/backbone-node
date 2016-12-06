@@ -108,7 +108,7 @@ var ContactsView = Backbone.View.extend({
 
     userContactsUpdated: function(data) {
      
-            console.log('update contacts message received');
+            //console.log('update contacts message received');
        
             var dataTable = $('.contacts-table').DataTable();    
 	    dataTable.destroy();
