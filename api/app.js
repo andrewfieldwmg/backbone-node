@@ -80,7 +80,6 @@
     io.sockets.on('connection', function (socket) {
 
         console.log('socket connected');
-
   
         connectionModule.connect(io, socket, mailModule, config, User, fs, utils);
 
@@ -131,11 +130,7 @@
         
         socket.on('message', function (data) {         
            console.log('Received a message!' + data.message);
-           messageModule.processNewMessage(io, socket, data, Message, Channel);
-           
-                   
-  io.sockets.emit("message", data);
-  
+           messageModule.processNewMessage(io, socket, data, Message, Channel);     
         });
             
                

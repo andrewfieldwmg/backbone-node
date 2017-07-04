@@ -6,39 +6,29 @@
              console.log("Socket IO connected in web worker");
          });
          
-          socket.on('socket-info', function(data) {
+   
+   	socket.on("audio", function(data) {
+            console.log('receiving audio stream IN WEB WORKER ' + data);  
+	    self.postMessage({type: "audio", data: data});
+	});
+          
+           
+	/*self.onmessage = function(e) {
             
-            console.log('socket info in web worker');
-            localStorage.setItem('socketId', data.socketId);
-            localStorage.setItem('userId', data.userId);
-            localStorage.setItem("username", data.username);
-            localStorage.setItem("userEmail", data.userEmail);
-            localStorage.setItem("userGenre", data.userGenre);
-            localStorage.setItem("userColour", data.userColour);
-            localStorage.setItem("userLocation", data.userLocation);
-            localStorage.setItem("channelIds", data.inChannels);
-            
-            localStorage.setItem("userChannelIds", data.inChannels); 
-            localStorage.setItem("userChannelNames", data.inChannelNames);
-            
-         });
-                  
-          socket.on('audio', function() {       
-             console.log("audio received in web worker");
-         });
+	    var messageType = e.data.type;
+	    
+	    var messageData = e.data.data;
 
-          socket.on('message', function (data) {
-                console.log('message received  in web worker!');
-                console.log(data);
-                self.postMessage(data);
-             });
- 
-        
-         socket.on('disconnect', function(){
-            console.log('SocketIO connection to the server terminated');    
-         });
-        
-        
+	    switch(messageType) {
+		
+		case "count-private-messages":
+		    socket.emit("count-private-messages", {userId: messageData.userId});
+		    break;
+
+	    }
+	    
+	 }*/
+         
         /*self.addEventListener('message', function(e) {
           //self.postMessage(e.data);
           //console.log(JSON.parse(e.data));

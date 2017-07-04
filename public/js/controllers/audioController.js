@@ -403,7 +403,7 @@ var AudioController = Backbone.Controller.extend({
 	  	 
 	      socket.on("audio", function(data) {
        
-		//console.log('receiving audio stream via socket io stream');  
+		console.log('receiving audio stream via socket io stream' + data);  
 		  
 		  if(localStorage.getItem("streamState") === "stopped") {
 			      
@@ -430,7 +430,7 @@ var AudioController = Backbone.Controller.extend({
 				  	   
 			      audioStack.push(buffer);
 			      
-			      console.log('buffer counter ' + window.bufferCounter);
+			      //console.log('buffer counter ' + window.bufferCounter);
 			      
 			      if (window.bufferCounter == 0) {
 			
